@@ -38,7 +38,7 @@ function bp_reshare_install(){
 		
 		update_option( 'bp-reshare-js-trick-one', 1);
 		update_option( 'bp-reshare-js-trick-two', 1);
-		update_option( 'bp-checkins-version', BP_RESHARE_PLUGIN_VERSION );
+		update_option( 'bp-reshare-version', BP_RESHARE_PLUGIN_VERSION );
 	}
 }
 
