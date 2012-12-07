@@ -1,0 +1,29 @@
+.bp-agu-reshare-img{
+	display:inline-block;
+	background:url('../images/reshare.png') no-repeat!important;
+	width:18px;
+	height:13px;
+	line-height:13px;
+	vertical-align:baseline;
+}
+
+
+.bp-agu-reshare-img.reshared{
+	background-position:0 -15px!important;
+}
+
+.bp-agu-reshare-img.unshare{
+	background:url('../images/unshare.png') no-repeat!important;
+	background-position:0 -15px!important;
+}
+
+.bp-agu-reshare-img.loading{
+	background:url('../images/loading.gif') no-repeat!important;
+	background-position:0 0!important;
+}
+
+
+.reshared-list ul li{
+	float:left;
+	border-bottom:none!important;
+}
