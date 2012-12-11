@@ -108,3 +108,9 @@ function bp_reshare_16_new_admin(){
 	}
 	else return 'bp-general-settings.php';
 }
+
+add_action('bp_reshare_plugin_updated', 'bp_reshare_version_updated');
+
+function bp_reshare_version_updated() {
+	update_option( 'bp-reshare-version', BP_RESHARE_PLUGIN_VERSION );
+}

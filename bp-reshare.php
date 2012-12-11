@@ -3,7 +3,7 @@
 Plugin Name: BP reshare
 Plugin URI: http://imath.owni.fr/2012/12/07/bp-reshare
 Description: BuddyPress component to reshare activities
-Version: 1.0-beta1
+Version: 1.0-beta2
 Author: imath
 Author URI: http://imath.owni.fr
 License: GPLv2
@@ -19,8 +19,8 @@ define ( 'BP_RESHARE_PLUGIN_URL',  plugins_url('' , __FILE__) );
 define ( 'BP_RESHARE_PLUGIN_URL_JS',  plugins_url('js' , __FILE__) );
 define ( 'BP_RESHARE_PLUGIN_URL_CSS',  plugins_url('css' , __FILE__) );
 define ( 'BP_RESHARE_PLUGIN_URL_IMG',  plugins_url('images' , __FILE__) );
-define ( 'BP_RESHARE_PLUGIN_DIR',  WP_PLUGIN_DIR . '/' . BP_RESHARE_PLUGIN_NAME );
-define ( 'BP_RESHARE_PLUGIN_VERSION', '1.0-beta1');
+define ( 'BP_RESHARE_PLUGIN_DIR',  WP_PLUGIN_DIR . '/' . basename( dirname( __FILE__ ) ) );
+define ( 'BP_RESHARE_PLUGIN_VERSION', '1.0-beta2');
 
 add_action('bp_include', 'bp_reshare_init');
 

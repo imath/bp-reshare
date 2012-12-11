@@ -14,7 +14,7 @@ class BP_Reshare
 	{
 		$this->includes();
 		
-		add_action( 'bp_ready', array ( $this, 'setup_nav') , 10 );
+		add_action( 'bp_setup_nav', array ( $this, 'setup_nav') , 10 );
 		add_action( 'bp_activity_setup_admin_bar', array ( $this, 'setup_admin_bar') , 10 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_plugin_styles' ), 10 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_plugin_scripts' ), 10 );
