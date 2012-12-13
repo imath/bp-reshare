@@ -39,13 +39,21 @@ jQuery(document).ready(function($){
 			resharePost( $(this) );
 		
 		if( $('div.activity-type-tabs ul li.selected').attr('id') == 'activity-reshares' || $('#activity-reshares-personal-li').hasClass('current') ) {
-			deleteReshare( $(this) )
+			deleteReshare( $(this), 0 )
 		}
 			
 		return false;
 	});
 	
-	//testing
+	$('.delete-reshare').live('click', function(){
+		
+		wpnonce = $(this).attr('href').split('_wpnonce=');
+		wpnonce = wpnonce[1];
+		
+		deleteReshare( $(this).parent('.activity-meta').find('.bp-agu-reshare'), wpnonce );
+			
+		return false;
+	});
 	
 	if( $('.activity #message').length ){
 		
@@ -53,9 +61,9 @@ jQuery(document).ready(function($){
 			return false;
 		
 		if( $('#activity-reshares').hasClass('selected') || $('#activity-reshares-personal-li').hasClass('selected') ) {
-			$('#message p').html( bp_reshare_vars.no_reshare_text );
+			$('.activity #message p').html( bp_reshare_vars.no_reshare_text );
 		} else {
-			$('#message p').html( $('#message p').html() + bp_reshare_vars.filter_text );
+			$('.activity #message p').html( $('#message p').html() + bp_reshare_vars.filter_text );
 		}
 
 	}
@@ -125,14 +133,29 @@ jQuery(document).ready(function($){
 	
 	}
 	
-	function deleteReshare(button){
+	function updateAllCount( activity_id ) {
+		$('.bp-agu-reshare').each(function(){
+			
+			if( $(this).attr('rel') == activity_id ) {
+				acount = Number( $(this).find('.rs-count').html() );
+				$(this).find('.rs-count').html( Number( acount-1 ) );
+				
+			}
+		});
+	}
+	
+	function deleteReshare( button, wpnonce ){
 		var aid = $(button).attr('id').replace('bp-agu-reshare-','');
+		var relid = $(button).attr('rel');
 		var loader = $(button).find('.bp-agu-reshare-img');
 		var li = $(button).parents('div.activity ul li');
 		loader.addClass('loading');
 		var acount = Number( $(button).find('.rs-count').html() );
-		var wpnonce = $(button).attr('href').split('_wpnonce=');
+		
+		if( wpnonce == 0 ) {
+			wpnonce = $(button).attr('href').split('_wpnonce=');
 			wpnonce = wpnonce[1];
+		}
 		
 		var data = {
 	      action: 'bp_delete_reshare',
@@ -150,6 +173,8 @@ jQuery(document).ready(function($){
 				var reshare_count = Number( $('.item-list-tabs ul li#activity-reshares span').html() );
 				
 				$('.item-list-tabs ul li#activity-reshares span').html( reshare_count - 1 );
+				
+				updateAllCount( relid );
 				
 			} else {
 				if(response == "-1")

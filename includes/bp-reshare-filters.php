@@ -85,3 +85,19 @@ function bp_reshare_notajaxed_feed_url( $feed_url ) {
 }
 
 add_filter( 'bp_get_sitewide_activity_feed_link', 'bp_reshare_notajaxed_feed_url', 10, 1 );
+
+function bp_reshare_replace_activity_delete_link( $link ) {
+
+	// if activity type is a reshare, then we replace the delete link behavior
+	if( bp_get_activity_type() == 'reshare_update' ) {
+		$class = 'delete-reshare';
+		$action_url = wp_nonce_url( bp_get_root_domain() . '/' . bp_get_activity_root_slug() . '/?delete_reshare=' . bp_get_activity_id(), '_reshare_delete' );
+
+		$link = '<a href="' . $action_url . '" class="button item-button bp-secondary-action ' . $class . ' confirm" rel="nofollow">' . __( 'Delete', 'buddypress' ) . '</a>';
+	}
+	
+	return apply_filters('bp_reshare_replace_activity_delete_link', $link );
+}
+
+/*** we need to replace the delete link in case activity type is a reshare ***/
+add_filter( 'bp_get_activity_delete_link', 'bp_reshare_replace_activity_delete_link', 10, 1 );
