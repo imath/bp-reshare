@@ -15,24 +15,38 @@ function bp_reshare_post_reshare() {
 		
 		$redirect = remove_query_arg( array( 'to_reshare','_wpnonce' ), wp_get_referer() );
 		
-		$reshared_args = bp_reshare_prepare_reshare( $_GET['to_reshare'] );
+		/* We need to check if loggedin user is the author of the original activity
+		and if the loggedin user has already reshared this activity before posting the reshare */
 		
-		$reshared_activity_id = bp_activity_add( $reshared_args );
+		$to_reshare_id = intval( $_GET['to_reshare'] );
 		
-		if ( !empty( $reshared_activity_id ) ) {
-			
-			do_action( 'bp_reshare_handle_nojs_posted', $reshared_activity_id );
-			
-			bp_core_add_message( __( 'Activity reshared !', 'bp-reshare' ) );
+		if( bp_reshare_user_did_reshared( $to_reshare_id ) ) {
+			// user is the author of the original activity or already reshared
+			do_action( 'bp_reshare_handle_nojs_already_reshared', $reshared_activity_id );
+
+			bp_core_add_message( __( 'OOps, looks like you already reshared this activity or you are the author of it..', 'bp-reshare' ), 'error' );
 			bp_core_redirect( $redirect );
-		}
 			
-		else{
-			
-			do_action( 'bp_reshare_handle_nojs_missed', $reshared_activity_id );
-			
-			bp_core_add_message( __( 'OOps, error while trying to reshare..', 'bp-reshare' ), 'error' );
-			bp_core_redirect( $redirect );
+		} else {
+			$reshared_args = bp_reshare_prepare_reshare( $to_reshare_id );
+
+			$reshared_activity_id = bp_activity_add( $reshared_args );
+
+			if ( !empty( $reshared_activity_id ) ) {
+
+				do_action( 'bp_reshare_handle_nojs_posted', $reshared_activity_id );
+
+				bp_core_add_message( __( 'Activity reshared !', 'bp-reshare' ) );
+				bp_core_redirect( $redirect );
+			}
+
+			else{
+
+				do_action( 'bp_reshare_handle_nojs_missed', $reshared_activity_id );
+
+				bp_core_add_message( __( 'OOps, error while trying to reshare..', 'bp-reshare' ), 'error' );
+				bp_core_redirect( $redirect );
+			}
 		}
 		
 	}

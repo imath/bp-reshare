@@ -93,7 +93,7 @@ function bp_reshare_replace_activity_delete_link( $link ) {
 		$class = 'delete-reshare';
 		$action_url = wp_nonce_url( bp_get_root_domain() . '/' . bp_get_activity_root_slug() . '/?delete_reshare=' . bp_get_activity_id(), '_reshare_delete' );
 
-		$link = '<a href="' . $action_url . '" class="button item-button bp-secondary-action ' . $class . ' confirm" rel="nofollow">' . __( 'Delete', 'buddypress' ) . '</a>';
+		$link = '<a href="' . $action_url . '" class="button item-button bp-secondary-action ' . $class . ' confirm" rel="nofollow">' . __( 'Delete', 'bp-reshare' ) . '</a>';
 	}
 	
 	return apply_filters('bp_reshare_replace_activity_delete_link', $link );

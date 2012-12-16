@@ -4,25 +4,33 @@ msgid ""
 msgstr ""
 "Project-Id-Version: BP reshare 1.0-beta1\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/bp-reshare\n"
-"POT-Creation-Date: 2012-12-07 08:07:28+00:00\n"
+"POT-Creation-Date: 2012-12-16 19:41:14+00:00\n"
+"PO-Revision-Date: 2012-12-16 20:44+0100\n"
+"Last-Translator: imath <i-math@club.fr>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2012-12-07 09:32+0100\n"
-"Last-Translator: imath <i-math@club.fr>\n"
-"Language-Team: \n"
+"X-Generator: Poedit 1.5.4\n"
 
-#: includes/bp-reshare-actions.php:26
+#: includes/bp-reshare-actions.php:27
+msgid ""
+"OOps, looks like you already reshared this activity or you are the author of "
+"it.."
+msgstr ""
+"OOps, il semblerait que vous ayez déjà repartagé cette activité ou que vous "
+"soyez son auteur.."
+
+#: includes/bp-reshare-actions.php:39
 msgid "Activity reshared !"
 msgstr "Activité repartagée !"
 
-#: includes/bp-reshare-actions.php:34
-#: includes/bp-reshare-actions.php:87
+#: includes/bp-reshare-actions.php:47 includes/bp-reshare-actions.php:101
 #: includes/bp-reshare-ajax.php:25
 msgid "OOps, error while trying to reshare.."
 msgstr "OOps, une erreur est survenue pendant le repartage.."
 
-#: includes/bp-reshare-actions.php:79
+#: includes/bp-reshare-actions.php:93
 msgid "Reshare deleted !"
 msgstr "Activité repartagée supprimée !"
 
@@ -40,25 +48,31 @@ msgstr "Réglages sauvegardés"
 
 #: includes/bp-reshare-admin.php:61
 msgid "Amount of user's avatar to show when a single activity is displayed"
-msgstr "Nombre d'utilisateurs à afficher sous l&#39;affichage de l&#39;activité unique"
+msgstr ""
+"Nombre d'utilisateurs à afficher sous l&#39;affichage de l&#39;activité "
+"unique"
 
 #: includes/bp-reshare-admin.php:67
 msgid "Use Javascript trick 1 : a link to remind where the filter dropdown is."
-msgstr "Utiliser le trick javascript 1 : un lien pour rappeler où se situe le filtre."
+msgstr ""
+"Utiliser le trick javascript 1 : un lien pour rappeler où se situe le filtre."
 
-#: includes/bp-reshare-admin.php:69
-#: includes/bp-reshare-admin.php:76
+#: includes/bp-reshare-admin.php:69 includes/bp-reshare-admin.php:76
 msgid "Yes"
 msgstr "Oui"
 
-#: includes/bp-reshare-admin.php:70
-#: includes/bp-reshare-admin.php:77
+#: includes/bp-reshare-admin.php:70 includes/bp-reshare-admin.php:77
 msgid "No"
 msgstr "Non"
 
 #: includes/bp-reshare-admin.php:74
-msgid "Use Javascript trick 2 : automatically activate all members tab when activity textarea receives the focus"
-msgstr "Utiliser le trick javascript 2 : active automatiquement l&#39;onglet des activités de tous les membres lorsque le champ d&#39;ajout d&#39;activité reçoit le focus"
+msgid ""
+"Use Javascript trick 2 : automatically activate all members tab when "
+"activity textarea receives the focus"
+msgstr ""
+"Utiliser le trick javascript 2 : active automatiquement l&#39;onglet des "
+"activités de tous les membres lorsque le champ d&#39;ajout d&#39;activité "
+"reçoit le focus"
 
 #: includes/bp-reshare-admin.php:84
 msgid "Save Settings"
@@ -70,37 +84,57 @@ msgstr "Activité inconnue ?!?"
 
 #: includes/bp-reshare-ajax.php:47
 msgid "OOps, error while trying to delete your reshare.."
-msgstr "OOps, une erreur est survenue lors de la tentative de suppresion de l&#39;activité repartagée.."
+msgstr ""
+"OOps, une erreur est survenue lors de la tentative de suppresion de l&#39;"
+"activité repartagée.."
 
-#: includes/bp-reshare-component.php:41
-#: includes/bp-reshare-component.php:57
+#: includes/bp-reshare-component.php:41 includes/bp-reshare-component.php:57
 #: includes/bp-reshare-screens.php:80
 msgid "Reshares"
 msgstr "Repartages"
 
 #: includes/bp-reshare-component.php:83
-msgid " Stuck ? <a href=\"#\" id=\"launch-filter\">Click here to add a yellow background to the filter</a>"
-msgstr " Coincé ? <a href=\"#\" id=\"launch-filter\">Cliquez ici pour ajouter un fond jaune au filtre</a>"
+msgid ""
+" Stuck ? <a href=\"#\" id=\"launch-filter\">Click here to add a yellow "
+"background to the filter</a>"
+msgstr ""
+" Coincé ? <a href=\"#\" id=\"launch-filter\">Cliquez ici pour ajouter un "
+"fond jaune au filtre</a>"
 
 #: includes/bp-reshare-component.php:84
 msgid "You did not reshared any activities so far."
 msgstr "Aucune activité repartagée jusqu&#39;à présent."
 
+#: includes/bp-reshare-filters.php:96
+msgid "Delete"
+msgstr "Supprimer"
+
 #: includes/bp-reshare-functions.php:83
 msgid "%s reshared a <a href=\"%s\">blog post</a> originally posted by %s"
-msgstr "%s a repartagé un <a href=\"%s\">article de blog</a> d&#39;abord partagé par %s"
+msgstr ""
+"%s a repartagé un <a href=\"%s\">article de blog</a> d&#39;abord partagé par "
+"%s"
 
 #: includes/bp-reshare-functions.php:86
 msgid "%s reshared a <a href=\"%s\">comment</a> originally posted by %s"
-msgstr "%s a repartagé un <a href=\"%s\">commentaire</a> d&#39;abord posté par %s"
+msgstr ""
+"%s a repartagé un <a href=\"%s\">commentaire</a> d&#39;abord posté par %s"
 
 #: includes/bp-reshare-functions.php:93
-msgid "%s reshared a <a href=\"%s\">forum topic</a> originally posted by %s in the group %s"
-msgstr "%s a repartagé <a href=\"%s\">sujet de forum</a> d&#39;abord posté par %s dans le groupe %s"
+msgid ""
+"%s reshared a <a href=\"%s\">forum topic</a> originally posted by %s in the "
+"group %s"
+msgstr ""
+"%s a repartagé <a href=\"%s\">sujet de forum</a> d&#39;abord posté par %s "
+"dans le groupe %s"
 
 #: includes/bp-reshare-functions.php:96
-msgid "%s reshared a <a href=\"%s\">forum reply</a> originally posted by %s in the group %s"
-msgstr "%s a repartagé <a href=\"%s\">une réponse à un forum</a> d&#39;abord posté par %s dans le groupe %s"
+msgid ""
+"%s reshared a <a href=\"%s\">forum reply</a> originally posted by %s in the "
+"group %s"
+msgstr ""
+"%s a repartagé <a href=\"%s\">une réponse à un forum</a> d&#39;abord posté "
+"par %s dans le groupe %s"
 
 #: includes/bp-reshare-functions.php:102
 msgid "%s reshared an activity originally shared by %s"
@@ -141,4 +175,3 @@ msgstr "imath"
 #. Author URI of the plugin/theme
 msgid "http://imath.owni.fr"
 msgstr "http://imath.owni.fr"
-
