@@ -1,11 +1,11 @@
 <?php
 /* 
 Plugin Name: BP reshare
-Plugin URI: http://imath.owni.fr/2012/12/07/bp-reshare
+Plugin URI: http://imathi.eu/2012/12/07/bp-reshare
 Description: BuddyPress component to reshare activities
 Version: 1.0-beta4
 Author: imath
-Author URI: http://imath.owni.fr
+Author URI: http://imathi.eu
 License: GPLv2
 Network: true
 Text Domain: bp-reshare
