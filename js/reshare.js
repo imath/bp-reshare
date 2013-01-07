@@ -55,15 +55,15 @@ jQuery(document).ready(function($){
 		return false;
 	});
 	
-	if( $('.activity #message').length ){
+	if( $('div.activity #message').length && !$('ul#activity-stream').length ){
 		
 		if( bp_reshare_vars.use_js_trick_one != 1 )
 			return false;
 		
 		if( $('#activity-reshares').hasClass('selected') || $('#activity-reshares-personal-li').hasClass('selected') ) {
-			$('.activity #message p').html( bp_reshare_vars.no_reshare_text );
+			$('div.activity #message p').html( bp_reshare_vars.no_reshare_text );
 		} else {
-			$('.activity #message p').html( $('#message p').html() + bp_reshare_vars.filter_text );
+			$('div.activity #message p').html( $('#message p').html() + bp_reshare_vars.filter_text );
 		}
 
 	}

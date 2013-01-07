@@ -101,3 +101,43 @@ function bp_reshare_replace_activity_delete_link( $link ) {
 
 /*** we need to replace the delete link in case activity type is a reshare ***/
 add_filter( 'bp_get_activity_delete_link', 'bp_reshare_replace_activity_delete_link', 10, 1 );
+
+
+function bp_reshare_check_for_parent_type( $can_comment ){
+	global $activities_template;
+	
+	if( $activities_template->disable_blogforum_replies == 0 ) {
+		return $can_comment;
+	}
+	
+	if('reshare_update' != bp_get_activity_type() )
+		return $can_comment;
+		
+	else {
+		
+		if ( !(int)bp_get_option( 'bp-reshare-disable-blogforum-comments' ) || '' == bp_get_option( 'bp-reshare-disable-blogforum-comments' ) )
+			return $can_comment;
+		
+		/*
+		 	the activity is a reshare, 
+			Admin wants to disable comments for blogs and forums
+			we now need to check for parent type
+		*/
+		
+		$activity_first_id = bp_get_activity_secondary_item_id();
+		
+		$parent_activity = bp_activity_get_specific('activity_ids='.$activity_first_id );
+		
+		if( in_array(  $parent_activity['activities'][0]->type, array( 'new_blog_post', 'new_blog_comment', 'new_forum_topic', 'new_forum_post') ) ){
+			return false;
+			
+		} else {
+			return $can_comment;
+		}
+		
+	}
+
+}
+
+/*** we need to check the parent type to see if the reshare can be commented.. ***/
+add_filter('bp_activity_can_comment', 'bp_reshare_check_for_parent_type', 10, 1);

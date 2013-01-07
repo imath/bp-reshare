@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: BP reshare 1.0-beta1\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/bp-reshare\n"
-"POT-Creation-Date: 2013-01-05 17:14:32+00:00\n"
-"PO-Revision-Date: 2013-01-05 18:15+0100\n"
+"POT-Creation-Date: 2013-01-07 02:36:44+00:00\n"
+"PO-Revision-Date: 2013-01-07 03:38+0100\n"
 "Last-Translator: imath <mathchristo@yahoo.fr>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -38,34 +38,45 @@ msgstr "Activité repartagée supprimée !"
 msgid "BP Reshare Settings"
 msgstr "Réglages BP Reshare"
 
-#: includes/bp-reshare-admin.php:46
+#: includes/bp-reshare-admin.php:47
 msgid "BP Reshare settings"
 msgstr "réglages BP Reshare"
 
-#: includes/bp-reshare-admin.php:51
+#: includes/bp-reshare-admin.php:52
 msgid "Settings Saved"
 msgstr "Réglages sauvegardés"
 
-#: includes/bp-reshare-admin.php:61
+#: includes/bp-reshare-admin.php:62
 msgid "Amount of user's avatar to show when a single activity is displayed"
 msgstr ""
 "Nombre d'utilisateurs à afficher sous l&#39;affichage de l&#39;activité "
 "unique"
 
-#: includes/bp-reshare-admin.php:67
+#: includes/bp-reshare-admin.php:71
+msgid ""
+"Blog & Forum Comments are disabled in activity stream, should we disable "
+"comments for Blog & Forum reshares"
+msgstr ""
+"Les commentaires sur les blogs et forums sont désactivé dans le composant "
+"activité, doit-on également désactiver les commentaires pour les reshares de "
+"ces activités ?"
+
+#: includes/bp-reshare-admin.php:73 includes/bp-reshare-admin.php:83
+#: includes/bp-reshare-admin.php:90
+msgid "Yes"
+msgstr "Oui"
+
+#: includes/bp-reshare-admin.php:74 includes/bp-reshare-admin.php:84
+#: includes/bp-reshare-admin.php:91
+msgid "No"
+msgstr "Non"
+
+#: includes/bp-reshare-admin.php:81
 msgid "Use Javascript trick 1 : a link to remind where the filter dropdown is."
 msgstr ""
 "Utiliser le trick javascript 1 : un lien pour rappeler où se situe le filtre."
 
-#: includes/bp-reshare-admin.php:69 includes/bp-reshare-admin.php:76
-msgid "Yes"
-msgstr "Oui"
-
-#: includes/bp-reshare-admin.php:70 includes/bp-reshare-admin.php:77
-msgid "No"
-msgstr "Non"
-
-#: includes/bp-reshare-admin.php:74
+#: includes/bp-reshare-admin.php:88
 msgid ""
 "Use Javascript trick 2 : automatically activate all members tab when "
 "activity textarea receives the focus"
@@ -74,7 +85,7 @@ msgstr ""
 "activités de tous les membres lorsque le champ d&#39;ajout d&#39;activité "
 "reçoit le focus"
 
-#: includes/bp-reshare-admin.php:84
+#: includes/bp-reshare-admin.php:98
 msgid "Save Settings"
 msgstr "Enregistrer les réglages"
 

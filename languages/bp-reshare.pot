@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the BP reshare package.
 msgid ""
 msgstr ""
-"Project-Id-Version: BP reshare 1.0-beta4\n"
+"Project-Id-Version: BP reshare 1.0-beta5\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/bp-reshare\n"
-"POT-Creation-Date: 2013-01-05 17:14:32+00:00\n"
+"POT-Creation-Date: 2013-01-07 02:36:44+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -33,35 +33,41 @@ msgstr ""
 msgid "BP Reshare Settings"
 msgstr ""
 
-#: includes/bp-reshare-admin.php:46
+#: includes/bp-reshare-admin.php:47
 msgid "BP Reshare settings"
 msgstr ""
 
-#: includes/bp-reshare-admin.php:51
+#: includes/bp-reshare-admin.php:52
 msgid "Settings Saved"
 msgstr ""
 
-#: includes/bp-reshare-admin.php:61
+#: includes/bp-reshare-admin.php:62
 msgid "Amount of user's avatar to show when a single activity is displayed"
 msgstr ""
 
-#: includes/bp-reshare-admin.php:67
-msgid "Use Javascript trick 1 : a link to remind where the filter dropdown is."
+#: includes/bp-reshare-admin.php:71
+msgid "Blog & Forum Comments are disabled in activity stream, should we disable comments for Blog & Forum reshares"
 msgstr ""
 
-#: includes/bp-reshare-admin.php:69 includes/bp-reshare-admin.php:76
+#: includes/bp-reshare-admin.php:73 includes/bp-reshare-admin.php:83
+#: includes/bp-reshare-admin.php:90
 msgid "Yes"
 msgstr ""
 
-#: includes/bp-reshare-admin.php:70 includes/bp-reshare-admin.php:77
+#: includes/bp-reshare-admin.php:74 includes/bp-reshare-admin.php:84
+#: includes/bp-reshare-admin.php:91
 msgid "No"
 msgstr ""
 
-#: includes/bp-reshare-admin.php:74
+#: includes/bp-reshare-admin.php:81
+msgid "Use Javascript trick 1 : a link to remind where the filter dropdown is."
+msgstr ""
+
+#: includes/bp-reshare-admin.php:88
 msgid "Use Javascript trick 2 : automatically activate all members tab when activity textarea receives the focus"
 msgstr ""
 
-#: includes/bp-reshare-admin.php:84
+#: includes/bp-reshare-admin.php:98
 msgid "Save Settings"
 msgstr ""
 

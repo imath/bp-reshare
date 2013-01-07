@@ -39,6 +39,7 @@ function bp_reshare_settings() {
 	}
 	
 	$amount_user = (int)bp_get_option( 'bp-reshare-user-amount' ) ? bp_get_option( 'bp-reshare-user-amount' ) : 5 ;
+	$blogforum_comments = bp_get_option( 'bp-disable-blogforum-comments' );
 	
 	?>
 	<div class="wrap">
@@ -63,6 +64,19 @@ function bp_reshare_settings() {
 								<input type="text" name="bp-reshare-admin[bp-reshare-user-amount]" value="<?php echo $amount_user;?>" id="bp-reshare-user-amount" />
 							</td>
 						</tr>
+
+						<?php if ( false === $blogforum_comments || (int) $blogforum_comments ):?>
+						
+						<tr>
+							<th scope="row"><?php _e( 'Blog & Forum Comments are disabled in activity stream, should we disable comments for Blog & Forum reshares', 'bp-reshare' ) ?></th>
+							<td>
+								<input type="radio" name="bp-reshare-admin[bp-reshare-disable-blogforum-comments]"<?php if ( (int)bp_get_option( 'bp-reshare-disable-blogforum-comments' ) ) : ?> checked="checked"<?php endif; ?> id="bp-reshare-disable-blogforum-comments-yes" value="1" /> <?php _e( 'Yes', 'bp-reshare' ) ?> &nbsp;
+								<input type="radio" name="bp-reshare-admin[bp-reshare-disable-blogforum-comments]"<?php if ( !(int)bp_get_option( 'bp-reshare-disable-blogforum-comments' ) || '' == bp_get_option( 'bp-reshare-disable-blogforum-comments' ) ) : ?> checked="checked"<?php endif; ?> id="bp-reshare-disable-blogforum-comments-no" value="0" /> <?php _e( 'No', 'bp-reshare' ) ?>
+							</td>
+						</tr>
+						
+						<?php endif;?>
+
 						<tr>
 							<th scope="row"><?php _e( 'Use Javascript trick 1 : a link to remind where the filter dropdown is.', 'bp-reshare' ) ?></th>
 							<td>
