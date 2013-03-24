@@ -94,7 +94,10 @@ function bp_reshare_prepare_reshare( $activity_id ) {
 
 			else if( $activity->type == 'new_forum_post' )
 				$action = sprintf( __( '%s reshared a <a href="%s">forum reply</a> originally posted by %s in the group %s', 'bp-reshare' ), bp_core_get_userlink( $bp->loggedin_user->id ), $activity->primary_link, $secondary_avatar . bp_core_get_userlink( $activity->user_id ), $group_link );
-			
+
+			else
+				$action = sprintf( __( "%s reshared an activity originally shared by %s in the group %s", 'bp-reshare' ), bp_core_get_userlink( $bp->loggedin_user->id ), $secondary_avatar . bp_core_get_userlink( $activity->user_id ), $group_link );
+
 		}
 		
 	} else {
