@@ -4,180 +4,183 @@ msgid ""
 msgstr ""
 "Project-Id-Version: BP reshare 1.0-beta1\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/bp-reshare\n"
-"POT-Creation-Date: 2013-01-07 02:36:44+00:00\n"
-"PO-Revision-Date: 2013-01-07 03:38+0100\n"
+"POT-Creation-Date: 2013-12-02 01:14:04+00:00\n"
+"PO-Revision-Date: 2013-12-02 02:15+0100\n"
 "Last-Translator: imath <mathchristo@yahoo.fr>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.5.7\n"
 
-#: includes/bp-reshare-actions.php:27
-msgid ""
-"OOps, looks like you already reshared this activity or you are the author of "
-"it.."
-msgstr ""
-"OOps, il semblerait que vous ayez déjà repartagé cette activité ou que vous "
-"soyez son auteur.."
-
-#: includes/bp-reshare-actions.php:39
+#: includes/actions.php:53
 msgid "Activity reshared !"
 msgstr "Activité repartagée !"
 
-#: includes/bp-reshare-actions.php:47 includes/bp-reshare-actions.php:101
-#: includes/bp-reshare-ajax.php:25
+#: includes/actions.php:59 includes/actions.php:150 includes/ajax.php:25
 msgid "OOps, error while trying to reshare.."
 msgstr "OOps, une erreur est survenue pendant le repartage.."
 
-#: includes/bp-reshare-actions.php:93
+#: includes/actions.php:132 includes/ajax.php:99
+msgid "Unable to reset the properties of the reshared activity"
+msgstr ""
+"Les propriétés de l&#39;activité repartagée n&#39;ont pu être mises à jour"
+
+#: includes/actions.php:142
 msgid "Reshare deleted !"
 msgstr "Activité repartagée supprimée !"
 
-#: includes/bp-reshare-admin.php:25
-msgid "BP Reshare Settings"
-msgstr "Réglages BP Reshare"
+#: includes/actions.php:224
+msgid "Reshared by :"
+msgstr "Repartagé par :"
 
-#: includes/bp-reshare-admin.php:47
-msgid "BP Reshare settings"
-msgstr "réglages BP Reshare"
+#: includes/admin.php:91
+msgid ""
+"BuddyPress is activated on the network, please deactivate BP Reshare from "
+"this site and make sure to activate BP Reshare on the network."
+msgstr ""
+"BuddyPress est activé sur le réseau, merci de désactiver BP Reshare de ce "
+"site et de l&#39;activer sur le réseau."
 
-#: includes/bp-reshare-admin.php:52
-msgid "Settings Saved"
-msgstr "Réglages sauvegardés"
+#: includes/admin.php:93
+#, fuzzy
+msgid ""
+"BP Reshare has been activated on a site where BuddyPress is not, please "
+"deactivate BP Reshare from this site and activate it on the same site where "
+"BuddyPress is activated."
+msgstr ""
+"BP Reshare a été activé sur un site sur lequel BuddyPress ne l&#39;est pas. "
+"Merci de désactiver BP Reshare de ce site et de l&#39;activer sur le site ou "
+"BuddyPress est activé."
 
-#: includes/bp-reshare-admin.php:62
-msgid "Amount of user's avatar to show when a single activity is displayed"
+#: includes/admin.php:114
+msgid ""
+"BP Reshare requires at least <strong>BuddyPress %s</strong>, please upgrade"
+msgstr ""
+"BP Reshare nécessite à minima <strong>BuddyPress %s</strong>, merci de "
+"mettre à jour votre configuration."
+
+#: includes/admin.php:158
+msgid "Reshared user list"
+msgstr "Liste d&#39;utilisateurs ayant repartagé"
+
+#: includes/admin.php:166
+msgid "\"Resharable\" Activity types"
+msgstr "Types d&#39;activité \"Repartageables\""
+
+#: includes/admin.php:190
+#, fuzzy
+msgid "Amount of user&#39;s avatar to show when a single activity is displayed"
 msgstr ""
 "Nombre d'utilisateurs à afficher sous l&#39;affichage de l&#39;activité "
 "unique"
 
-#: includes/bp-reshare-admin.php:71
-msgid ""
-"Blog & Forum Comments are disabled in activity stream, should we disable "
-"comments for Blog & Forum reshares"
-msgstr ""
-"Les commentaires sur les blogs et forums sont désactivé dans le composant "
-"activité, doit-on également désactiver les commentaires pour les reshares de "
-"ces activités ?"
+#: includes/ajax.php:31
+msgid "The activity was not found."
+msgstr "Activité introuvable"
 
-#: includes/bp-reshare-admin.php:73 includes/bp-reshare-admin.php:83
-#: includes/bp-reshare-admin.php:90
-msgid "Yes"
-msgstr "Oui"
+#: includes/ajax.php:48
+#, fuzzy
+msgid "Activity successfully reshared."
+msgstr "Activité repartagée !"
 
-#: includes/bp-reshare-admin.php:74 includes/bp-reshare-admin.php:84
-#: includes/bp-reshare-admin.php:91
-msgid "No"
-msgstr "Non"
-
-#: includes/bp-reshare-admin.php:81
-msgid "Use Javascript trick 1 : a link to remind where the filter dropdown is."
-msgstr ""
-"Utiliser le trick javascript 1 : un lien pour rappeler où se situe le filtre."
-
-#: includes/bp-reshare-admin.php:88
-msgid ""
-"Use Javascript trick 2 : automatically activate all members tab when "
-"activity textarea receives the focus"
-msgstr ""
-"Utiliser le trick javascript 2 : active automatiquement l&#39;onglet des "
-"activités de tous les membres lorsque le champ d&#39;ajout d&#39;activité "
-"reçoit le focus"
-
-#: includes/bp-reshare-admin.php:98
-msgid "Save Settings"
-msgstr "Enregistrer les réglages"
-
-#: includes/bp-reshare-ajax.php:16
-msgid "Unknown activity ?!?"
-msgstr "Activité inconnue ?!?"
-
-#: includes/bp-reshare-ajax.php:47
+#: includes/ajax.php:78
 msgid "OOps, error while trying to delete your reshare.."
 msgstr ""
 "OOps, une erreur est survenue lors de la tentative de suppresion de l&#39;"
 "activité repartagée.."
 
-#: includes/bp-reshare-component.php:41 includes/bp-reshare-component.php:57
-#: includes/bp-reshare-screens.php:80
+#: includes/ajax.php:84 includes/ajax.php:90
+msgid "The reshare was not found."
+msgstr "L&#39;activité repartagée est introuvable."
+
+#: includes/ajax.php:109
+#, fuzzy
+msgid "Reshare successfully deleted."
+msgstr "Activité repartagée supprimée !"
+
+#: includes/component.php:139
+msgid "Activities i reshared."
+msgstr "Activités que j&#39;ai repartagées."
+
+#: includes/component.php:139
+msgid "%s <span>%s</span>"
+msgstr "%s <span>%s</span>"
+
+#: includes/component.php:139 includes/helpers.php:147
+msgid "My Reshares"
+msgstr "Mes Repartages"
+
+#: includes/component.php:212
 msgid "Reshares"
 msgstr "Repartages"
 
-#: includes/bp-reshare-component.php:83
-msgid ""
-" Stuck ? <a href=\"#\" id=\"launch-filter\">Click here to add a yellow "
-"background to the filter</a>"
-msgstr ""
-" Coincé ? <a href=\"#\" id=\"launch-filter\">Cliquez ici pour ajouter un "
-"fond jaune au filtre</a>"
-
-#: includes/bp-reshare-component.php:84
-msgid "You did not reshared any activities so far."
-msgstr "Aucune activité repartagée jusqu&#39;à présent."
-
-#: includes/bp-reshare-filters.php:96
-msgid "Delete"
-msgstr "Supprimer"
-
-#: includes/bp-reshare-functions.php:83
-msgid "%s reshared a <a href=\"%s\">blog post</a> originally posted by %s"
-msgstr ""
-"%s a repartagé un <a href=\"%s\">article de blog</a> d&#39;abord partagé par "
-"%s"
-
-#: includes/bp-reshare-functions.php:86
-msgid "%s reshared a <a href=\"%s\">comment</a> originally posted by %s"
-msgstr ""
-"%s a repartagé un <a href=\"%s\">commentaire</a> d&#39;abord posté par %s"
-
-#: includes/bp-reshare-functions.php:93
-msgid ""
-"%s reshared a <a href=\"%s\">forum topic</a> originally posted by %s in the "
-"group %s"
-msgstr ""
-"%s a repartagé <a href=\"%s\">sujet de forum</a> d&#39;abord posté par %s "
-"dans le groupe %s"
-
-#: includes/bp-reshare-functions.php:96
-msgid ""
-"%s reshared a <a href=\"%s\">forum reply</a> originally posted by %s in the "
-"group %s"
-msgstr ""
-"%s a repartagé <a href=\"%s\">une réponse à un forum</a> d&#39;abord posté "
-"par %s dans le groupe %s"
-
-#: includes/bp-reshare-functions.php:102
-msgid "%s reshared an activity originally shared by %s"
-msgstr "%s a repartagé une activité d&#39;abord partagé par %s"
-
-#: includes/bp-reshare-screens.php:69
+#: includes/component.php:215
 msgid "Most Reshared"
 msgstr "Les plus repartagées"
 
-#: includes/bp-reshare-screens.php:80
-msgid "Activity that I have reshared."
-msgstr "Acivités que j&#39;ai repartagé"
+#: includes/filters.php:154
+msgid "Delete"
+msgstr "Supprimer"
 
-#: includes/bp-reshare-screens.php:80
-msgid "<span>%s</span>"
-msgstr "<span>%s</span>"
+#: includes/filters.php:189
+msgid "Unshare"
+msgstr "Effacer le Repartage"
 
-#: includes/bp-reshare-screens.php:100
-msgid "Reshared by :"
-msgstr "Repartagé par :"
+#: includes/functions.php:27
+msgid "OOps, looks like the activity does not exist anymore"
+msgstr "OOps, on dirait que l&#39;activité n&#39;existe plus."
+
+#: includes/functions.php:34
+msgid "OOps, looks like you already reshared this activity"
+msgstr "OOps, il semblerait que vous ayez déjà repartagé cette activité."
+
+#: includes/functions.php:37
+msgid "OOps, looks like you are trying to reshare your own activity"
+msgstr "OOps, il semblerait que vous soyez l&#39;auteur de l&#39;activité"
+
+#: includes/functions.php:63
+msgid "%s reshared a <a href=\"%s\">content</a> originally shared by %s"
+msgstr ""
+"%s a repartagé un <a href=\"%s\">contenu</a> d&#39;abord partagé par %s"
+
+#: includes/functions.php:71
+msgid "%s reshared some content originally shared by %s"
+msgstr "%s a repartagé du contenu d&#39;abord partagé par %s"
+
+#: includes/functions.php:80
+msgid "%s reshared an activity originally shared by %s"
+msgstr "%s a repartagé une activité d&#39;abord partagé par %s"
+
+#: includes/helpers.php:143
+msgid "You did not reshared any activities so far."
+msgstr "Aucune activité repartagée jusqu&#39;à présent."
+
+#: includes/helpers.php:144
+msgid "Cheating ?!"
+msgstr "On triche ?!"
+
+#: includes/helpers.php:145 includes/templates.php:171
+msgid "Reshared"
+msgstr "Repartagé"
+
+#: includes/templates.php:171
+msgid "Reshare"
+msgstr "Repartage"
 
 #. Plugin Name of the plugin/theme
-msgid "BP reshare"
-msgstr "BP reshare"
+msgid "BP Reshare"
+msgstr "BP Reshare"
 
 #. Plugin URI of the plugin/theme
 msgid "http://imathi.eu/2012/12/07/bp-reshare"
 msgstr "http://imathi.eu/2012/12/07/bp-reshare"
 
 #. Description of the plugin/theme
-msgid "BuddyPress component to reshare activities"
-msgstr "Composant BuddyPress pour repartager des activités"
+msgid "Allows members to reshare activities in a BuddyPress powered community"
+msgstr ""
+"Permet aux membres de repartager des activités au sein d&#39;une communauté "
+"motorisée par BuddyPress"
 
 #. Author of the plugin/theme
 msgid "imath"
@@ -186,3 +189,75 @@ msgstr "imath"
 #. Author URI of the plugin/theme
 msgid "http://imathi.eu"
 msgstr "http://imathi.eu"
+
+#~ msgid "BP Reshare Settings"
+#~ msgstr "Réglages BP Reshare"
+
+#~ msgid "Settings Saved"
+#~ msgstr "Réglages sauvegardés"
+
+#~ msgid ""
+#~ "Blog & Forum Comments are disabled in activity stream, should we disable "
+#~ "comments for Blog & Forum reshares"
+#~ msgstr ""
+#~ "Les commentaires sur les blogs et forums sont désactivé dans le composant "
+#~ "activité, doit-on également désactiver les commentaires pour les reshares "
+#~ "de ces activités ?"
+
+#~ msgid "Yes"
+#~ msgstr "Oui"
+
+#~ msgid "No"
+#~ msgstr "Non"
+
+#~ msgid ""
+#~ "Use Javascript trick 1 : a link to remind where the filter dropdown is."
+#~ msgstr ""
+#~ "Utiliser le trick javascript 1 : un lien pour rappeler où se situe le "
+#~ "filtre."
+
+#~ msgid ""
+#~ "Use Javascript trick 2 : automatically activate all members tab when "
+#~ "activity textarea receives the focus"
+#~ msgstr ""
+#~ "Utiliser le trick javascript 2 : active automatiquement l&#39;onglet des "
+#~ "activités de tous les membres lorsque le champ d&#39;ajout d&#39;activité "
+#~ "reçoit le focus"
+
+#~ msgid "Save Settings"
+#~ msgstr "Enregistrer les réglages"
+
+#~ msgid "Unknown activity ?!?"
+#~ msgstr "Activité inconnue ?!?"
+
+#~ msgid ""
+#~ " Stuck ? <a href=\"#\" id=\"launch-filter\">Click here to add a yellow "
+#~ "background to the filter</a>"
+#~ msgstr ""
+#~ " Coincé ? <a href=\"#\" id=\"launch-filter\">Cliquez ici pour ajouter un "
+#~ "fond jaune au filtre</a>"
+
+#~ msgid "%s reshared a <a href=\"%s\">blog post</a> originally posted by %s"
+#~ msgstr ""
+#~ "%s a repartagé un <a href=\"%s\">article de blog</a> d&#39;abord partagé "
+#~ "par %s"
+
+#~ msgid ""
+#~ "%s reshared a <a href=\"%s\">forum topic</a> originally posted by %s in "
+#~ "the group %s"
+#~ msgstr ""
+#~ "%s a repartagé <a href=\"%s\">sujet de forum</a> d&#39;abord posté par %s "
+#~ "dans le groupe %s"
+
+#~ msgid ""
+#~ "%s reshared a <a href=\"%s\">forum reply</a> originally posted by %s in "
+#~ "the group %s"
+#~ msgstr ""
+#~ "%s a repartagé <a href=\"%s\">une réponse à un forum</a> d&#39;abord "
+#~ "posté par %s dans le groupe %s"
+
+#~ msgid "Activity that I have reshared."
+#~ msgstr "Acivités que j&#39;ai repartagé"
+
+#~ msgid "BuddyPress component to reshare activities"
+#~ msgstr "Composant BuddyPress pour repartager des activités"
