@@ -18,7 +18,7 @@ window.bpReshare = window.bpReshare || {};
 		$.each( $( '.bp-reshare' ), function( j, link ) {
 			var id = parseInt( $( link ).parents( 'li' ).prop( 'id' ).replace( 'activity-', '' ), 10 );
 
-			bpReshare.Ajax.get( id, { user_id: bpReshare.params.u } ).done( function( response ) {
+			bpReshare.Ajax.get( id, { user_id: bpReshare.params.u }, function( response ) {
 				$( link ).prop( 'href', bpReshare.strings[ response.link ].replace( '%i', id ) )
 				         .removeClass( 'add-reshare remove-reshare' )
 				         .addClass( 'removeLink' === response.link ? 'remove-reshare' : 'add-reshare' );

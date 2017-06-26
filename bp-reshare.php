@@ -199,7 +199,7 @@ class BuddyReshare {
 		wp_register_script(
 			'bp-reshare-request',
 			$this->js_url . 'request.js',
-			array( 'jquery' ),
+			array(),
 			$this->version,
 			true
 		);
@@ -216,7 +216,7 @@ class BuddyReshare {
 			wp_enqueue_script(
 				'bp-reshare',
 				$this->js_url . 'script.js',
-				array( 'bp-reshare-request' ),
+				array( 'bp-reshare-request', 'jquery' ),
 				$this->version,
 				true
 			);

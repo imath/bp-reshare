@@ -230,18 +230,20 @@ function buddyreshare_rest_get_items( WP_REST_Request $request ) {
 	$count = count( $reshares );
 
 	if ( empty( $reshares ) || ! in_array( $user_id, $reshares, true ) ) {
-		return array(
+		$result = array(
 			'link'  => 'addLink',
 			'text'  => 'addReshare',
 			'count' => $count,
 		);
 	} else {
-		return array(
+		$result = array(
 			'link'  => 'removeLink',
 			'text'  => 'removeReshare',
 			'count' => $count,
 		);
 	}
+
+	return rest_ensure_response( $result );
 }
 
 function buddyreshare_rest_get_items_permissions_check( WP_REST_Request $request ) {
@@ -249,7 +251,7 @@ function buddyreshare_rest_get_items_permissions_check( WP_REST_Request $request
 }
 
 function buddyreshare_rest_update_item( WP_REST_Request $request ) {
-	return $request->get_params();
+	return rest_ensure_response( $request->get_params() );
 }
 
 function buddyreshare_rest_update_item_permissions_check( WP_REST_Request $request ) {
