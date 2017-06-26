@@ -222,8 +222,12 @@ function buddyreshare_rest_get_items( WP_REST_Request $request ) {
 	$activity_id = (int) $request->get_param( 'id' );
 	$user_id     = (int) $request->get_param( 'user_id' );
 
-	$reshares = (array) bp_activity_get_meta( $activity_id, 'reshared_by' );
-	$count    = count( $reshares );
+	$reshares = bp_activity_get_meta( $activity_id, 'reshared_by' );
+	if ( ! is_array( $reshares ) && '' === $reshares ) {
+		$reshares = array();
+	}
+
+	$count = count( $reshares );
 
 	if ( empty( $reshares ) || ! in_array( $user_id, $reshares, true ) ) {
 		return array(
