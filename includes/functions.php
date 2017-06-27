@@ -218,23 +218,57 @@ function buddyreshare_get_class( $activity = null, $activity_first_id = 0 ) {
 		return 'reshared';
 }
 
+function buddyreshare_get_l10n_time_since() {
+	return array(
+		'sometime'  => _x( 'sometime', 'javascript time since', 'bp-reshare' ),
+		'now'       => _x( 'right now', 'javascript time since', 'bp-reshare' ),
+		'ago'       => _x( '(Reshared % ago)', 'javascript time since', 'bp-reshare' ),
+		'separator' => _x( ',', 'Separator in javascript time since', 'bp-reshare' ),
+		'year'      => _x( '% year', 'javascript time since singular', 'bp-reshare' ),
+		'years'     => _x( '% years', 'javascript time since plural', 'bp-reshare' ),
+		'month'     => _x( '% month', 'javascript time since singular', 'bp-reshare' ),
+		'months'    => _x( '% months', 'javascript time since plural', 'bp-reshare' ),
+		'week'      => _x( '% week', 'javascript time since singular', 'bp-reshare' ),
+		'weeks'     => _x( '% weeks', 'javascript time since plural', 'bp-reshare' ),
+		'day'       => _x( '% day', 'javascript time since singular', 'bp-reshare' ),
+		'days'      => _x( '% days', 'javascript time since plural', 'bp-reshare' ),
+		'hour'      => _x( '% hour', 'javascript time since singular', 'bp-reshare' ),
+		'hours'     => _x( '% hours', 'javascript time since plural', 'bp-reshare' ),
+		'minute'    => _x( '% minute', 'javascript time since singular', 'bp-reshare' ),
+		'minutes'   => _x( '% minutes', 'javascript time since plural', 'bp-reshare' ),
+		'second'    => _x( '% second', 'javascript time since singular', 'bp-reshare' ),
+		'seconds'   => _x( '% seconds', 'javascript time since plural', 'bp-reshare' ),
+		'time_chunks' => array(
+			'a_year'   => YEAR_IN_SECONDS,
+			'b_month'  => 30 * DAY_IN_SECONDS,
+			'c_week'   => WEEK_IN_SECONDS,
+			'd_day'    => DAY_IN_SECONDS,
+			'e_hour'   => HOUR_IN_SECONDS,
+			'f_minute' => MINUTE_IN_SECONDS,
+			'g_second' => 1,
+		),
+	);
+}
+
 function buddyreshare_rest_get_all_items( WP_REST_Request $request ) {
 	global $wpdb;
 
 	$table = bp_core_get_table_prefix() . 'bp_activity_user_reshares';
-	$query = "SELECT activity_id, user_id  FROM {$table}";
+	$query = "SELECT activity_id, user_id, date_reshared FROM {$table}";
 
 	$activities = $request->get_param( 'activities' );
 	if ( $activities ) {
 		$query .= ' WHERE activity_id IN (' . join( ',', wp_parse_id_list( $activities ) ) . ')';
 	}
 
+	$query .= ' ORDER BY date_reshared DESC';
+
 	$reshares = $wpdb->get_results( $query );
 
 	$result = array();
 	foreach ( $reshares as $reshare ) {
 		if ( ! isset( $result[ $reshare->activity_id ] ) ) {
-			$result[ $reshare->activity_id ] = array( 'id' => $reshare->activity_id, 'users' => array( $reshare->user_id ) );
+			$result[ $reshare->activity_id ] = array( 'id' => $reshare->activity_id, 'users' => array( $reshare->user_id ), 'time' => strtotime( $reshare->date_reshared ) );
 		} else {
 			$result[ $reshare->activity_id ]['users'] = array_merge( $result[ $reshare->activity_id ]['users'], array( $reshare->user_id ) );
 		}

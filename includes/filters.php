@@ -30,12 +30,12 @@ function buddyreshare_extend_activities_template( $has_activities = false, $acti
 
 		/* Reshare count */
 		$activity_first_id = $activity->id;
-	
+
 		if( 'reshare_update' == $activity->type )
 			$activity_first_id = $activity->secondary_item_id;
 
 		$activity->reshares->activity_id = $activity_first_id;
-			
+
 		$rs_count = bp_activity_get_meta( $activity_first_id, 'reshared_count' );
 		$rs_count = !empty( $rs_count ) ? $rs_count : 0;
 
@@ -53,7 +53,7 @@ function buddyreshare_extend_activities_template( $has_activities = false, $acti
  *
  * @package BP Reshare
  * @since    1.0
- * 
+ *
  * @param  string $query_string
  * @param  string $object
  * @uses   wp_parse_args() to merge user's args with defaults
@@ -75,15 +75,15 @@ function buddyreshare_activity_querystring_filter( $query_string, $object ) {
 		'page'    => 1
 
 	) );
-	
+
 	/* global activities */
 	if( $r['scope'] == 'reshares' || buddyreshare_is_user_profile_reshares() ) {
-		
+
 		$r['user_id'] = bp_displayed_user_id() ? bp_displayed_user_id() : bp_loggedin_user_id();
 		$r['action'] = $r['type'] = 'reshare_update';
 		$query_string = empty( $r ) ? $query_string : http_build_query( $r );
 	}
-	
+
 	/* most reshared */
 	if( $r['action'] == 'activity_mostreshared' ) {
 		unset( $r['action'], $r['type'] );
@@ -103,7 +103,7 @@ function buddyreshare_activity_querystring_filter( $query_string, $object ) {
 
 		$query_string = empty( $r ) ? $query_string : $r;
 	}
-	
+
 	return apply_filters( 'bp_reshare_activity_querystring_filter', $query_string, $object );
 }
 
@@ -112,20 +112,20 @@ function buddyreshare_activity_querystring_filter( $query_string, $object ) {
  *
  * @package BP Reshare
  * @since    1.0
- * 
- * @param  string $sql        
+ *
+ * @param  string $sql
  * @param  string $select_sql
- * @param  string $from_sql   
- * @param  string $where_sql 
- * @param  string $sort       
- * @param  string $pag_sql   
+ * @param  string $from_sql
+ * @param  string $where_sql
+ * @param  string $sort
+ * @param  string $pag_sql
  * @return string $sql
  */
 function buddyreshare_order_by_most_reshared( $sql = '', $select_sql = '', $from_sql = '', $where_sql = '', $sort = '', $pag_sql = '' ) {
 
 	if( strpos( $sql, 'reshared_count' ) !== false ) {
 		preg_match( '/\'reshared_count\' AND CAST\((.*) AS/', $where_sql, $match );
-		
+
 		if( !empty( $match[1] ) )
 			$sql = str_replace( 'ORDER BY a.date_recorded', 'ORDER BY '. $match[1] .' + 0' , $sql );
 	}
@@ -138,8 +138,8 @@ function buddyreshare_order_by_most_reshared( $sql = '', $select_sql = '', $from
  *
  * @package BP Reshare
  * @since    1.0
- * 
- * @param  string $delete_link        
+ *
+ * @param  string $delete_link
  * @uses   bp_get_activity_type() to get activity type
  * @uses   wp_nonce_url() for security reason
  * @uses   bp_get_root_domain() to get the blog's url
@@ -153,7 +153,7 @@ function buddyreshare_maybe_replace_delete_link( $delete_link = '' ) {
 		$action_url = wp_nonce_url( bp_get_root_domain() . '/' . bp_get_activity_root_slug() . '/' . buddyreshare_get_component_slug() . '/delete/' . bp_get_activity_id() . '/' , 'buddyreshare_delete' );
 		$delete_link = '<a href="' . $action_url . '" class="button item-button bp-secondary-action delete-reshare confirm" rel="nofollow">' . __( 'Delete', 'bp-reshare' ) . '</a>';
 	}
-	
+
 	return $delete_link;
 }
 
@@ -162,7 +162,7 @@ function buddyreshare_maybe_replace_delete_link( $delete_link = '' ) {
  *
  * @package BP Reshare
  * @since    1.0
- * 
+ *
  * @param  array  $classes
  * @uses   buddyreshare_can_unshare() to check if the context is good to allow delete action
  * @return array  $classes
@@ -179,7 +179,7 @@ function buddyreshare_activity_filter_button_class( $classes = array() ) {
  *
  * @package BP Reshare
  * @since    1.0
- * 
+ *
  * @param  string  $title
  * @uses   buddyreshare_can_unshare() to check if the context is good to allow delete action
  * @return string  $title
@@ -196,7 +196,7 @@ function buddyreshare_activity_filter_button_title( $title = '' ) {
  *
  * @package BP Reshare
  * @since    1.0
- * 
+ *
  * @param  string $action_url
  * @uses   buddyreshare_can_unshare() to check if the context is good to allow delete action
  * @uses   wp_nonce_url() for security reason
@@ -212,3 +212,21 @@ function buddyreshare_activity_filter_action_url( $action_url = '' ) {
 
 	return $action_url;
 }
+
+function buddyreshare_sort_activities_by_reshared_date( $sql = '', $args = array() ) {
+	if ( false === apply_filters( 'buddyreshare_sort_activities_by_reshared', true ) || ! is_user_logged_in() ) {
+		return $sql;
+	}
+
+	return str_replace( array(
+			'WHERE',
+			'ORDER BY'
+		),
+		array(
+			sprintf( 'LEFT JOIN %sbp_activity_user_reshares r ON ( a.id = r.activity_id ) WHERE', bp_core_get_table_prefix() ),
+			'ORDER BY IF( r.date_reshared > a.date_recorded, r.date_reshared, a.date_recorded ) DESC, ',
+		),
+		$sql
+	);
+}
+add_filter( 'bp_activity_paged_activities_sql', 'buddyreshare_sort_activities_by_reshared_date', 20, 2 );

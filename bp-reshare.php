@@ -166,6 +166,7 @@ class BuddyReshare {
 
 		if ( self::buddypress_version_check() && self::buddypress_site_check() ) {
 			require( $this->includes_dir . 'functions.php' );
+			require( $this->includes_dir . 'filters.php' );
 		}
 
 		if( is_admin() ) {
@@ -231,6 +232,7 @@ class BuddyReshare {
 				$script_data['params'] = array_merge( $script_data['params'], array(
 					'root_members' => $root_members,
 					'u_nicename'   => $user_nicename,
+					'time_since'   => buddyreshare_get_l10n_time_since(),
 				) );
 			}
 

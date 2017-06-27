@@ -55,6 +55,70 @@ window.bpReshare = window.bpReshare || {};
 		return r;
 	};
 
+	bpReshare.getTimeSince = function( timestamp ) {
+		var now = new Date( $.now() ), diff, count_1, chunk_1, count_2, chunk_2,
+			time_since = [], time_chunks = $.extend( {}, bpReshare.params.time_since.time_chunks ), ms;
+
+		// Returns sometime
+		if ( undefined === timestamp ) {
+			return bpReshare.params.time_since.sometime;
+		}
+
+		// Javascript timestamps are in ms.
+		timestamp = new Date( timestamp * 1000 );
+
+		// Calculate the diff
+		diff = now - timestamp;
+
+		// Returns right now
+		if ( 0 === diff ) {
+			return bpReshare.params.time_since.now;
+		}
+
+		$.each( time_chunks, function( c, chunk ) {
+			var milliseconds = chunk * 1000;
+			var rounded_time = Math.floor( diff / milliseconds );
+
+			if ( 0 !== rounded_time && ! chunk_1 ) {
+				chunk_1 = c;
+				count_1 = rounded_time;
+				ms      = milliseconds;
+			}
+		} );
+
+		// First chunk
+		chunk_1 = chunk_1.substr( 2 );
+		time_since.push( ( 1 === count_1 ) ? bpReshare.params.time_since[ chunk_1 ].replace( '%', count_1 ) : bpReshare.params.time_since[ chunk_1 + 's' ].replace( '%', count_1 ) );
+
+		// Remove Year from chunks
+		delete time_chunks.a_year;
+
+		$.each( time_chunks, function( c, chunk ) {
+			var milliseconds = chunk * 1000;
+			var rounded_time = Math.floor( ( diff - ( ms * count_1 ) ) / milliseconds );
+
+			if ( 0 !== rounded_time && ! chunk_2 ) {
+				chunk_2 = c;
+				count_2 = rounded_time;
+			}
+		} );
+
+		// Second chunk
+		if ( undefined !== chunk_2 ) {
+			chunk_2 = chunk_2.substr( 2 );
+			time_since.push( ( 1 === count_2 ) ? bpReshare.params.time_since[ chunk_2 ].replace( '%', count_2 ) : bpReshare.params.time_since[ chunk_2 + 's' ].replace( '%', count_2 ) );
+		}
+
+		// Returns x time, y time ago
+		if ( time_since.length >= 1 ) {
+			return bpReshare.params.time_since.ago.replace( '%', time_since.join( bpReshare.params.time_since.separator + ' ' ) );
+
+		// Returns sometime
+		} else {
+			return bpReshare.params.time_since.sometime;
+		}
+	}
+
 	bpReshare.get = function() {
 		if ( ! $( '.bp-reshare' ).length ) {
 			return false;
@@ -71,13 +135,20 @@ window.bpReshare = window.bpReshare || {};
 				}
 
 				$.each( response, function( i, r ) {
-					var a_id = parseInt( r.id, 10 ), link, reshareData = { link: 'addLink', text: 'addReshare' },
+					var a_id = parseInt( r.id, 10 ), entry, link, reshareData = { link: 'addLink', text: 'addReshare' },
 					    a = bpReshare.IndexOf( a_id, bpReshare.activities );
 
 					if ( -1 !== a ) {
 						bpReshare.activities[a].users = r.users;
-						link = $( '#activity-' + a_id + ' .bp-reshare' );
 
+						entry = $( '#activity-' + a_id );
+						entry.prop( 'class', entry.prop( 'class' ).replace( /date-recorded-([0-9]+)/, 'date-recorded-' + r.time ) );
+						entry.find( '.activity-header a.activity-time-since' ).after(
+							$( '<span></span>' ).addClass( 'time-since' )
+							                    .html( '&nbsp;' + bpReshare.getTimeSince( r.time ) )
+						);
+
+						link  = entry.find( '.bp-reshare' ).first();
 						link.find( 'span.count' ).first().html( r.users.length );
 
 						if ( -1 !== $.inArray( bpReshare.params.u.toString(), r.users ) ) {
