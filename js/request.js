@@ -4,7 +4,7 @@ window.bpReshare = window.bpReshare || {};
 ( function( bpReshare ) {
 
 	// Bail if not set
-	if ( typeof bpReshare.params === 'undefined' ) {
+	if ( 'undefined' === typeof bpReshare.params ) {
 		return;
 	}
 
@@ -14,7 +14,7 @@ window.bpReshare = window.bpReshare || {};
 	 */
 	bpReshare.Ajax = {
 
-		request: function( endpoint, data, method, result ) {
+		request: function( endpoint, data, method, response ) {
 			var ajaxRequest, queryVars,
 			    headers = {
 			    	'X-Requested-With' : 'XMLHttpRequest',
@@ -42,7 +42,15 @@ window.bpReshare = window.bpReshare || {};
 
 			ajaxRequest.onreadystatechange = function( event ) {
 				if ( event.currentTarget && 4 === event.currentTarget.readyState ) {
-					result && result( JSON.parse( event.currentTarget.responseText ) );
+					var r = JSON.parse( event.currentTarget.responseText ), status;
+
+					if ( r.status ) {
+						status = r.status;
+					} else {
+						status = event.currentTarget.status;
+					}
+					
+					response && response( status, r );
 				}
 			}
 

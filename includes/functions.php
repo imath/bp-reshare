@@ -218,6 +218,35 @@ function buddyreshare_get_class( $activity = null, $activity_first_id = 0 ) {
 		return 'reshared';
 }
 
+function buddyreshare_rest_get_all_items( WP_REST_Request $request ) {
+	global $wpdb;
+
+	$table = bp_core_get_table_prefix() . 'bp_activity_user_reshares';
+	$query = "SELECT activity_id, user_id  FROM {$table}";
+
+	$activities = $request->get_param( 'activities' );
+	if ( $activities ) {
+		$query .= ' WHERE activity_id IN (' . join( ',', wp_parse_id_list( $activities ) ) . ')';
+	}
+
+	$reshares = $wpdb->get_results( $query );
+
+	$result = array();
+	foreach ( $reshares as $reshare ) {
+		if ( ! isset( $result[ $reshare->activity_id ] ) ) {
+			$result[ $reshare->activity_id ] = array( 'id' => $reshare->activity_id, 'users' => array( $reshare->user_id ) );
+		} else {
+			$result[ $reshare->activity_id ]['users'] = array_merge( $result[ $reshare->activity_id ]['users'], array( $reshare->user_id ) );
+		}
+	}
+
+	return rest_ensure_response( array_values( $result ) );
+}
+
+function buddyreshare_rest_get_all_items_permissions_check( WP_REST_Request $request ) {
+	return true;
+}
+
 function buddyreshare_rest_get_items( WP_REST_Request $request ) {
 	$activity_id = (int) $request->get_param( 'id' );
 	$user_id     = (int) $request->get_param( 'user_id' );
@@ -251,7 +280,33 @@ function buddyreshare_rest_get_items_permissions_check( WP_REST_Request $request
 }
 
 function buddyreshare_rest_update_item( WP_REST_Request $request ) {
-	return rest_ensure_response( $request->get_params() );
+	global $wpdb;
+
+	$table = bp_core_get_table_prefix() . 'bp_activity_user_reshares';
+	$args = $request->get_params();
+
+	if ( isset( $args['id'] ) ) {
+		$args['activity_id'] = (int) $args['id'];
+	}
+
+	$defaults = array(
+		'user_id'       => get_current_user_id(),
+		'activity_id'   => 0,
+		'date_reshared' => current_time( 'mysql' ),
+	);
+
+	$r = array_intersect_key( wp_parse_args( $args, $defaults ), $defaults );
+
+	if ( empty( $r['user_id'] ) || empty( $r['activity_id'] ) || empty( $r['date_reshared'] ) ) {
+		return new WP_Error( 'bp_reshare_missing_argument', __( 'Missing argument' ), array( 'status' => 500 ) );
+	}
+
+	$reshared = $wpdb->insert(
+		$table,
+		$r
+	);
+
+	return rest_ensure_response( array( 'reshared' => (bool) $reshared ) );
 }
 
 function buddyreshare_rest_update_item_permissions_check( WP_REST_Request $request ) {
@@ -318,5 +373,29 @@ function buddyreshare_rest_routes() {
 			),
 		),
 	) );
+
+	register_rest_route( $namespace, '/all', array(
+			'methods'  => WP_REST_Server::READABLE,
+			'callback' => 'buddyreshare_rest_get_all_items',
+			'permission_callback' => 'buddyreshare_rest_get_all_items_permissions_check',
+			'args'     => array(
+				'activities' => array(
+					'page' => array(
+					'type' => 'string',
+					'default' => '',
+					'description' => __( 'comma separated list of activity ids to fetch' ),
+				),
+				'page' => array(
+					'type' => 'integer',
+					'default' => 1,
+					'description' => __( 'The number of the page to fetch' ),
+				),
+				'per_page' => array(
+					'type' => 'integer',
+					'default' => 20,
+					'description' => __( 'The amount of reshares per page to fetch' ),
+				),
+			),
+		) ) );
 }
 add_action( 'rest_api_init', 'buddyreshare_rest_routes' );

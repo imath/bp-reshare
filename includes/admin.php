@@ -241,7 +241,8 @@ class BuddyReshare_Admin {
 					date_reshared datetime NOT NULL,
 					KEY user_id (user_id),
 					KEY activity_id (activity_id),
-					KEY date_reshared (date_reshared)
+					KEY date_reshared (date_reshared),
+					UNIQUE KEY user_reshared ( user_id, activity_id )
 				) {$charset_collate};"
 			) );
 		}

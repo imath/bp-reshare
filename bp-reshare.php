@@ -221,10 +221,23 @@ class BuddyReshare {
 				true
 			);
 
+			if ( ! empty( $script_data['params']['u'] ) ) {
+				$user_domain       = bp_core_get_user_domain( $script_data['params']['u'] );
+				$user_domain_path  = parse_url( $user_domain, PHP_URL_PATH );
+				$user_domain_array = explode( '/', rtrim( $user_domain_path, '/' ) );
+				$user_nicename     = end( $user_domain_array );
+				$root_members      = str_replace( $user_nicename, '', rtrim( $user_domain, '/' ) );
+
+				$script_data['params'] = array_merge( $script_data['params'], array(
+					'root_members' => $root_members,
+					'u_nicename'   => $user_nicename,
+				) );
+			}
+
 			$reshare_url = trailingslashit( bp_get_root_domain() ) .  bp_get_activity_root_slug() . '/' . buddyreshare_get_component_slug();
 
 			$script_data = array_merge( $script_data, array(
-				'template' => '<a href="%l" class="bp-reshare button bp-secondary-action">
+				'template' => '<a href="%l" class="bp-reshare button bp-secondary-action" data-activity-id="%a" data-author-name="%u">
 					<span class="dashicons dashicons-share-alt2"></span>
 					<span class="bp-screen-reader-text">%t</span>
 					<span class="count">%c</span>
@@ -351,4 +364,3 @@ function buddyreshare() {
 add_action( 'bp_include', 'buddyreshare', 9 );
 
 endif;
-
