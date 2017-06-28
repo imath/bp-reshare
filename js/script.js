@@ -287,19 +287,11 @@ window.bpReshare = window.bpReshare || {};
 			bpReshare.setMarkup();
 			bpReshare.get();
 
-		// When Ajax refreshing the stream, use an interval before populating counts.
+		// When Ajax refreshing the stream, wait a few milliseconds before populating counts.
 		} else {
-			bpReshare.interval = setInterval( function() {
-				// Always init the  markup
+			window.setTimeout( function() {
 				bpReshare.setMarkup();
-
-				// Check if it needs to be refreshed.
-				var isRefreshed = bpReshare.get();
-
-				if ( true === isRefreshed ) {
-					bpReshare.clearInterval();
-					return;
-				}
+				bpReshare.get();
 			}, 500 );
 		}
 	}
@@ -334,6 +326,24 @@ window.bpReshare = window.bpReshare || {};
 
 			bpReshare.Button( 'refresh', activities );
 		}
+	} );
+
+	/**
+	 * Heartbeat Activities.
+	 * @param  {object} event The click event.
+	 * @return {void}
+	 */
+	$( '#buddypress ul.activity-list' ).click( '#newest', function( event ) {
+		var stream = $( event.currentTarget ).closest( 'ul' );
+
+		// Wait a few milliseconds to be able to only get the Heartbeat Activities.
+		window.setTimeout( function() {
+			activities = $( '<ul></ul>' ).html( $.map( $( stream.find( '.just-posted' ) ), function( l ) {
+				return $( l ).prop( 'outerHTML' );
+			} ).join( ' ' ) );
+
+			bpReshare.Button( 'populate', activities );
+		}, 500 );
 	} );
 
 	bpReshare.add = function( event ) {
