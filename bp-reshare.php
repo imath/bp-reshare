@@ -239,7 +239,7 @@ class BuddyReshare {
 			$reshare_url = trailingslashit( bp_get_root_domain() ) .  bp_get_activity_root_slug() . '/' . buddyreshare_get_component_slug();
 
 			$script_data = array_merge( $script_data, array(
-				'template' => '<a href="%l" class="bp-reshare button bp-secondary-action" data-activity-id="%a" data-author-name="%u">
+				'template' => '<a href="%l" class="bp-reshare button bp-secondary-action %r" data-activity-id="%a" data-author-name="%u">
 					<span class="dashicons dashicons-share-alt2"></span>
 					<span class="bp-screen-reader-text">%t</span>
 					<span class="count">%c</span>

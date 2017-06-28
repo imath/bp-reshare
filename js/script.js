@@ -144,12 +144,13 @@ window.bpReshare = window.bpReshare || {};
 		}
 
 		entry = $( '#activity-' + activity.id );
-		entry.prop( 'class',
-			entry.prop( 'class' )
-			     .replace( /date-recorded-([0-9]+)/, 'date-recorded-' + activity.time )
-		);
 
 		if ( ! entry.find( '.reshare-time-since' ).length && activity.time ) {
+			entry.prop( 'class',
+				entry.prop( 'class' )
+				     .replace( /date-recorded-([0-9]+)/, 'date-recorded-' + activity.time )
+			);
+
 			entry.find( '.activity-header a.activity-time-since' ).after(
 				$( '<span></span>' ).addClass( 'time-since reshare-time-since' )
 				                    .html( '&nbsp;' + bpReshare.getTimeSince( activity.time ) )
@@ -160,7 +161,7 @@ window.bpReshare = window.bpReshare || {};
 		link.find( 'span.count' ).first().html( activity.users.length );
 
 		if ( -1 !== $.inArray( bpReshare.params.u.toString(), activity.users ) ) {
-			reshareData = { link: 'removeLink', text: 'removeReshare' }
+			reshareData = { link: 'removeLink', text: 'removeReshare' };
 		}
 
 		link.prop( 'href', bpReshare.strings[ reshareData.link ].replace( '%i', activity.id ) )
@@ -253,6 +254,7 @@ window.bpReshare = window.bpReshare || {};
 
 			if ( false === activity.markUp ) {
 				bpReshare.activities[i].markUp = bpReshare.template.replace( '%l', bpReshare.strings.addLink.replace( '%i', activity.id ) )
+				                                                   .replace( '%r', 'add-reshare' )
 				                                                   .replace( '%a', activity.id )
 				                                                   .replace( '%u', authorLink.replace( bpReshare.params.root_members, '' ).replace( '/', '' ) )
 				                                                   .replace( '%t', bpReshare.strings.addReshare )
@@ -351,23 +353,37 @@ window.bpReshare = window.bpReshare || {};
 
 		event.preventDefault();
 
+		// If the user is the author: can't add or remove.
 		if ( author === bpReshare.params.u_nicename ) {
 			return;
 		}
 
-		/**
-		 * @todo
-		 * If the user is the author: can't add or remove.
-		 * If the user is in the users who reshared: can remove reshare.
-		 * If the user is not in the users who reshared: can add reshare.
-		 */
-		bpReshare.Ajax.post( id, { user_id: bpReshare.params.u }, function( status, response ) {
-			if ( 200 === status ) {
-				console.log( response );
-			} else {
-				console.log( status );
-			}
-		} );
+		// If the user is not in the users who reshared: can add reshare.
+		if ( $( link ).hasClass( 'add-reshare' ) ) {
+			bpReshare.Ajax.post( id, { user_id: bpReshare.params.u }, function( status, response ) {
+				if ( 200 === status ) {
+					/**
+					 * @todo Once done, the class and link need to be updated
+					 */
+					console.log( response );
+				} else {
+					console.log( status );
+				}
+			} );
+
+		// If the user is in the users who reshared: can remove reshare.
+		} else if ( $( link ).hasClass( 'remove-reshare' ) ) {
+			bpReshare.Ajax.delete( id, { user_id: bpReshare.params.u }, function( status, response ) {
+				if ( 200 === status ) {
+					/**
+					 * @todo Once done, the class and link need to be updated
+					 */
+					console.log( response );
+				} else {
+					console.log( status );
+				}
+			} );
+		}
 	}
 	$( '#buddypress' ).on( 'click', '.bp-reshare', bpReshare.add );
 

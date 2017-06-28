@@ -326,7 +326,7 @@ function buddyreshare_rest_update_item( WP_REST_Request $request ) {
 	$defaults = array(
 		'user_id'       => get_current_user_id(),
 		'activity_id'   => 0,
-		'date_reshared' => current_time( 'mysql' ),
+		'date_reshared' => bp_core_current_time(),
 	);
 
 	$r = array_intersect_key( wp_parse_args( $args, $defaults ), $defaults );
@@ -348,7 +348,33 @@ function buddyreshare_rest_update_item_permissions_check( WP_REST_Request $reque
 }
 
 function buddyreshare_rest_delete_item( WP_REST_Request $request ) {
-	return $request->get_params();
+	global $wpdb;
+
+	$table = bp_core_get_table_prefix() . 'bp_activity_user_reshares';
+	$args  = $request->get_params();
+
+	if ( isset( $args['id'] ) ) {
+		$args['activity_id'] = (int) $args['id'];
+	}
+
+	$defaults = array(
+		'user_id'       => get_current_user_id(),
+		'activity_id'   => 0,
+	);
+
+	$r = array_intersect_key( wp_parse_args( $args, $defaults ), $defaults );
+
+	if ( empty( $r['user_id'] ) || empty( $r['activity_id'] ) ) {
+		return new WP_Error( 'bp_reshare_missing_argument', __( 'Missing argument' ), array( 'status' => 500 ) );
+	}
+
+	$deleted = $wpdb->query( $wpdb->prepare( "DELETE FROM {$table} WHERE user_id = %d AND activity_id = %d", $r['user_id'], $r['activity_id'] ) );
+
+	if ( is_wp_error( $deleted ) ) {
+		return $deleted;
+	}
+
+	return rest_ensure_response( array( 'deleted' => (bool) $deleted ) );
 }
 
 function buddyreshare_rest_delete_item_permissions_check( WP_REST_Request $request ) {
