@@ -493,6 +493,36 @@ function buddyreshare_enqueue_notifications_script() {
 	) );
 }
 
+function buddyreshare_user_email_preferences() {
+	$send_emails = 'yes';
+	if ( 'no' === bp_get_user_meta( bp_displayed_user_id(), 'buddyreshare_send_emails', true ) ) {
+		$send_emails = 'no';
+	}
+
+	$checked   = ' ' . checked( $send_emails, 'yes', false );
+	$unchecked = ' ' . checked( $send_emails, 'no', false );
+
+	printf( '<tr id="activity-notification-settings-reshares">
+		<td>&nbsp;</td>
+		<td>%1$s</td>
+		<td class="yes">
+			<input type="radio" name="notifications[buddyreshare_send_emails]" id="notification-activity-reshares-yes" value="yes"%2$s/>
+			<label for="notification-activity-reshares-yes" class="bp-screen-reader-text">%3$s</label>
+		</td>
+		<td class="no">
+			<input type="radio" name="notifications[buddyreshare_send_emails]" id="notification-activity-reshares-no" value="no"%4$s/>
+			<label for="notification-activity-reshares-no" class="bp-screen-reader-text">%5$s</label>
+		</td>
+		</tr>',
+		esc_html__( 'A member reshares one of your updates.', 'bp-reshares' ),
+		$checked,
+		esc_html__( 'Yes, send email', 'bp-reshares' ),
+		$unchecked,
+		esc_html__( 'No, do not send email', 'bp-reshares' )
+	);
+}
+add_action( 'bp_activity_screen_notification_settings', 'buddyreshare_user_email_preferences' );
+
 /**
  * Get email templates
  *
