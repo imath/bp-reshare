@@ -195,6 +195,10 @@ class BuddyReshare {
 
 		// Register/enqueue scripts
 		add_action( 'bp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+
+		if ( bp_is_active( 'notifications' ) && is_user_logged_in() ) {
+			add_action( 'admin_bar_init', 'buddyreshare_enqueue_notifications_script' );
+		}
 	}
 
 	public function enqueue_scripts() {

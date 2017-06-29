@@ -460,3 +460,23 @@ function buddyreshare_rest_routes() {
 		) ) );
 }
 add_action( 'rest_api_init', 'buddyreshare_rest_routes' );
+
+function buddyreshare_enqueue_notifications_script() {
+	wp_enqueue_script(
+		'bp-reshare-notifications',
+		buddyreshare()->js_url . 'notifications.js',
+		array(),
+		buddyreshare()->version,
+		true
+	);
+
+	wp_localize_script( 'bp-reshare-notifications', 'bpReshare', array(
+		'userNotifications' => array(
+			'amount'   => 15,
+			'template' => array(
+				'one'  => __( '%n new activity reshare', 'bp-reshare' ),
+				'more' => __( '%n new activity reshares', 'bp-reshare' ),
+			),
+		),
+	) );
+}
