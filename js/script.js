@@ -253,10 +253,15 @@ window.bpReshare = window.bpReshare || {};
 			}
 
 			if ( false === activity.markUp ) {
+				var authorName = authorLink.replace( bpReshare.params.root_members, '' ).replace( '/', '' ), className = 'add-reshare';
+				if ( authorName === bpReshare.params.u_nicename ) {
+					className = 'disabled';
+				}
+
 				bpReshare.activities[i].markUp = bpReshare.template.replace( '%l', bpReshare.strings.addLink.replace( '%i', activity.id ) )
-				                                                   .replace( '%r', 'add-reshare' )
+				                                                   .replace( '%r', className )
 				                                                   .replace( '%a', activity.id )
-				                                                   .replace( '%u', authorLink.replace( bpReshare.params.root_members, '' ).replace( '/', '' ) )
+				                                                   .replace( '%u', authorName )
 				                                                   .replace( '%t', bpReshare.strings.addReshare )
 				                                                   .replace( '%c', 0 );
 			}
@@ -340,8 +345,8 @@ window.bpReshare = window.bpReshare || {};
 	 * @param  {object} event The click event.
 	 * @return {void}
 	 */
-	$( '#buddypress ul.activity-list' ).click( '#newest', function( event ) {
-		var stream = $( event.currentTarget ).closest( 'ul' );
+	$( 'body.activity #buddypress' ).on( 'click', '.load-newest a', function( event ) {
+		var stream = $( event.currentTarget ).closest( 'ul' ), parent = $( event.currentTarget ).parent();
 
 		// Wait a few milliseconds to be able to only get the Heartbeat Activities.
 		window.setTimeout( function() {
@@ -350,6 +355,10 @@ window.bpReshare = window.bpReshare || {};
 			} ).join( ' ' ) );
 
 			bpReshare.Button( 'populate', activities );
+
+			if ( parent.length ) {
+				parent.remove();
+			}
 		}, 500 );
 	} );
 
