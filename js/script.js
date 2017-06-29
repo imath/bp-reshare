@@ -324,6 +324,11 @@ window.bpReshare = window.bpReshare || {};
 						return $( l ).prop( 'outerHTML' );
 					} ).join( ' ' ) );
 				}
+
+				// Reset the activities to get fresher reshares
+				if ( 'activity_widget_filter' === action ) {
+					bpReshare.activities = [];
+				}
 			}
 
 			bpReshare.Button( 'refresh', activities );
