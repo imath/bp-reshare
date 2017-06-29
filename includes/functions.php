@@ -484,7 +484,12 @@ function buddyreshare_enqueue_notifications_script() {
 
 	wp_localize_script( 'bp-reshare-notifications', 'bpReshare', array(
 		'userNotifications' => array(
-			'amount'   => 15,
+			'amount'   => BP_Notifications_Notification::get_total_count( array(
+				'user_id'          => get_current_user_id(),
+				'component_name'   => 'bp_reshare',
+				'componant_action' => 'new_reshare',
+				'is_new'           => 1,
+			) ),
 			'template' => array(
 				'one'  => __( '%n new activity reshare', 'bp-reshare' ),
 				'more' => __( '%n new activity reshares', 'bp-reshare' ),
@@ -492,6 +497,11 @@ function buddyreshare_enqueue_notifications_script() {
 		),
 	) );
 }
+
+/**
+ * @todo
+ * Email functions should live in a separate file
+ */
 
 function buddyreshare_user_email_preferences() {
 	$send_emails = 'yes';
@@ -661,3 +671,24 @@ function buddyreshare_install_emails() {
 	}
 }
 add_action( 'bp_core_install_emails', 'buddyreshare_install_emails' );
+
+/**
+ * @todo
+ * Screen notification functions should live in a separate file
+ */
+function buddyreshare_add_notification( $activity = null, $args = array() ) {
+	if ( ! bp_is_active( 'notifications' ) || empty( $activity->id ) || empty( $args['user_id'] ) ) {
+		return;
+	}
+
+	bp_notifications_add_notification( array(
+		'user_id'           => $activity->user_id,
+		'item_id'           => $activity->id,
+		'secondary_item_id' => $args['user_id'],
+		'component_name'    => 'bp_reshare',
+		'component_action'  => 'new_reshare',
+		'date_notified'     => bp_core_current_time(),
+		'is_new'            => 1,
+	) );
+}
+add_action( 'buddyreshare_notify_reshare', 'buddyreshare_add_notification', 10, 2 );
