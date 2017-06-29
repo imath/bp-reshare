@@ -523,6 +523,67 @@ function buddyreshare_user_email_preferences() {
 }
 add_action( 'bp_activity_screen_notification_settings', 'buddyreshare_user_email_preferences' );
 
+function buddyreshare_user_email_schema( $emails = array() ) {
+	return array_merge( $emails, array(
+		'buddyreshare-new-reshare' => array(
+			'description'	=> __( 'Reshared activities.', 'bp-reshare' ),
+			'unsubscribe'	=> array(
+				'meta_key'	=> 'buddyreshare_send_emails',
+				'message'	=> __( 'You will no longer receive emails when someone reshared on of your activity.', 'bp-reshare' ),
+			),
+		),
+	) );
+}
+add_filter( 'bp_email_get_unsubscribe_type_schema', 'buddyreshare_user_email_schema' );
+
+function buddyreshare_send_emails( $args = array() ) {
+	if ( empty( $args['user_id'] ) || empty( $args['activity_id'] ) ) {
+		return;
+	}
+
+	$activity  = new BP_Activity_Activity( $args['activity_id'] );
+	$resharer  = bp_core_get_user_displayname( $args['user_id'] );
+
+	if ( empty( $activity->id ) || ! $resharer ) {
+		return;
+	}
+
+	// Send the email only if user did not disallow it.
+	if ( 'no' != bp_get_user_meta( $activity->user_id, 'buddyreshare_send_emails', true ) ) {
+		$email_type = 'buddyreshare-new-reshare';
+		$link       = bp_activity_get_permalink( $activity->id, $activity );
+
+		remove_filter( 'bp_get_activity_content_body', 'convert_smilies' );
+		remove_filter( 'bp_get_activity_content_body', 'wpautop' );
+		remove_filter( 'bp_get_activity_content_body', 'bp_activity_truncate_entry', 5 );
+
+		$content = apply_filters_ref_array( 'bp_get_activity_content_body', array( $activity->content, &$activity ) );
+
+		add_filter( 'bp_get_activity_content_body', 'convert_smilies' );
+		add_filter( 'bp_get_activity_content_body', 'wpautop' );
+		add_filter( 'bp_get_activity_content_body', 'bp_activity_truncate_entry', 5 );
+
+		$unsubscribe_args = array(
+			'user_id'           => $activity->user_id,
+			'notification_type' => $email_type,
+		);
+
+		bp_send_email( $email_type, $activity->user_id, array(
+			'tokens' => array(
+				'activity'         => $activity,
+				'usermessage'      => wp_strip_all_tags( $content ),
+				'thread.url'       => $link,
+				'poster.name'      => $resharer,
+				'receiver-user.id' => $activity->user_id,
+				'unsubscribe' 	   => esc_url( bp_email_get_unsubscribe_link( $unsubscribe_args ) ),
+			),
+		) );
+	}
+
+	do_action( 'buddyreshare_notify_reshare', $activity, $args );
+}
+add_action( 'buddyreshare_reshare_added', 'buddyreshare_send_emails', 11, 1 );
+
 /**
  * Get email templates
  *
