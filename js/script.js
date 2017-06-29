@@ -71,7 +71,7 @@ window.bpReshare = window.bpReshare || {};
 		diff = now - timestamp;
 
 		// Returns right now
-		if ( 0 === diff ) {
+		if ( 1000 > diff ) {
 			return bpReshare.params.time_since.now;
 		}
 
@@ -363,7 +363,8 @@ window.bpReshare = window.bpReshare || {};
 	} );
 
 	bpReshare.add = function( event ) {
-		var link = event.currentTarget, id = $( link ).data( 'activity-id' ), author = $( link ).data( 'author-name' );
+		var link = event.currentTarget, id = $( link ).data( 'activity-id' ), author = $( link ).data( 'author-name' ),
+		    countSpan = $(link).find( 'span.count' ).first();
 
 		event.preventDefault();
 
@@ -375,11 +376,23 @@ window.bpReshare = window.bpReshare || {};
 		// If the user is not in the users who reshared: can add reshare.
 		if ( $( link ).hasClass( 'add-reshare' ) ) {
 			bpReshare.Ajax.post( id, { user_id: bpReshare.params.u }, function( status, response ) {
-				if ( 200 === status ) {
-					/**
-					 * @todo Once done, the class and link need to be updated
-					 */
-					console.log( response );
+				if ( 200 === status && response.reshared ) {
+
+					// Remove the reshare header if any.
+					$( link ).closest( '.activity-content' ).find( '.reshare-time-since' ).remove();
+
+					// Update the link for a remove reshare one
+					$( link ).removeClass( 'add-reshare' )
+					         .addClass( 'remove-reshare' )
+					         .prop( 'href', bpReshare.strings.removeLink.replace( '%i', id ) )
+					         .closest( '.activity-content' )
+					         .find( '.activity-header a.activity-time-since' )
+					         .after(
+					          $( '<span></span>' ).addClass( 'time-since reshare-time-since' )
+					                              .html( '&nbsp;' + bpReshare.getTimeSince( response.reshared ) )
+					         );
+
+					$( countSpan ).html( parseInt( $( countSpan ).html(), 10 ) + 1 );
 				} else {
 					console.log( status );
 				}
@@ -389,10 +402,16 @@ window.bpReshare = window.bpReshare || {};
 		} else if ( $( link ).hasClass( 'remove-reshare' ) ) {
 			bpReshare.Ajax.delete( id, { user_id: bpReshare.params.u }, function( status, response ) {
 				if ( 200 === status ) {
-					/**
-					 * @todo Once done, the class and link need to be updated
-					 */
-					console.log( response );
+
+					// Update the link for a remove reshare one
+					$( link ).removeClass( 'remove-reshare' )
+					         .addClass( 'add-reshare' )
+					         .prop( 'href', bpReshare.strings.addLink.replace( '%i', id ) )
+					         .closest( '.activity-content' )
+					         .find( '.reshare-time-since' )
+					         .remove();
+
+					$( countSpan ).html( parseInt( $( countSpan ).html(), 10 ) - 1 );
 				} else {
 					console.log( status );
 				}

@@ -49,7 +49,7 @@ window.bpReshare = window.bpReshare || {};
 					} else {
 						status = event.currentTarget.status;
 					}
-					
+
 					response && response( status, r );
 				}
 			}
@@ -77,7 +77,7 @@ window.bpReshare = window.bpReshare || {};
 		},
 
 		post: function( endpoint, data, response ) {
-			return this.request( endpoint, data, 'POST' );
+			return this.request( endpoint, data, 'POST', response );
 		},
 
 		delete: function( endpoint, data, response ) {

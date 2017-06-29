@@ -220,8 +220,8 @@ function buddyreshare_get_class( $activity = null, $activity_first_id = 0 ) {
 
 function buddyreshare_get_l10n_time_since() {
 	return array(
-		'sometime'  => _x( 'sometime', 'javascript time since', 'bp-reshare' ),
-		'now'       => _x( 'right now', 'javascript time since', 'bp-reshare' ),
+		'sometime'  => _x( '(Reshared sometime)', 'javascript time since', 'bp-reshare' ),
+		'now'       => _x( '(Reshared right now)', 'javascript time since', 'bp-reshare' ),
 		'ago'       => _x( '(Reshared % ago)', 'javascript time since', 'bp-reshare' ),
 		'separator' => _x( ',', 'Separator in javascript time since', 'bp-reshare' ),
 		'year'      => _x( '% year', 'javascript time since singular', 'bp-reshare' ),
@@ -335,12 +335,13 @@ function buddyreshare_rest_update_item( WP_REST_Request $request ) {
 		return new WP_Error( 'bp_reshare_missing_argument', __( 'Missing argument' ), array( 'status' => 500 ) );
 	}
 
-	$reshared = $wpdb->insert(
-		$table,
-		$r
-	);
+	$result = array( 'reshared' => false );
 
-	return rest_ensure_response( array( 'reshared' => (bool) $reshared ) );
+	if ( $wpdb->insert( $table, $r ) ) {
+		$result['reshared'] = strtotime( $r['date_reshared'] );
+	}
+
+	return rest_ensure_response( $result );
 }
 
 function buddyreshare_rest_update_item_permissions_check( WP_REST_Request $request ) {
