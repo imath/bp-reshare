@@ -112,7 +112,8 @@ class BuddyReshare {
 		$this->component_slug                   = self::$init_vars['reshare_slug'];
 		$this->component_name                   = self::$init_vars['reshare_name'];
 
-		$this->js_url = trailingslashit( $this->plugin_url . 'js' );
+		$this->js_url  = trailingslashit( $this->plugin_url . 'js'  );
+		$this->css_url = trailingslashit( $this->plugin_url . 'css' );
 
 		// Rest namespace and version.
 		$this->rest = (object) array(
@@ -205,6 +206,14 @@ class BuddyReshare {
 			true
 		);
 
+		wp_register_style(
+			'bp-reshare-style',
+			$this->css_url . 'style.css',
+			array(),
+			$this->version,
+			'all'
+		);
+
 		$script_data = array(
 			'params' => array(
 				'root_url' => esc_url_raw( rest_url( trailingslashit( $this->rest->namespace . '/' . $this->rest->version ) ) ),
@@ -221,6 +230,8 @@ class BuddyReshare {
 				$this->version,
 				true
 			);
+
+			wp_enqueue_style( 'bp-reshare-style' );
 
 			if ( ! empty( $script_data['params']['u'] ) ) {
 				$user_domain       = bp_core_get_user_domain( $script_data['params']['u'] );
@@ -240,7 +251,7 @@ class BuddyReshare {
 
 			$script_data = array_merge( $script_data, array(
 				'template' => '<a href="%l" class="bp-reshare button bp-secondary-action %r" data-activity-id="%a" data-author-name="%u">
-					<span class="dashicons dashicons-share-alt2"></span>
+					<span class="bp-reshare-icon"></span>
 					<span class="bp-screen-reader-text">%t</span>
 					<span class="count">%c</span>
 				</a>',
