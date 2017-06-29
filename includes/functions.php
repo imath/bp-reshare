@@ -324,8 +324,8 @@ function buddyreshare_rest_update_item( WP_REST_Request $request ) {
 	}
 
 	$defaults = array(
-		'user_id'       => get_current_user_id(),
 		'activity_id'   => 0,
+		'user_id'       => get_current_user_id(),
 		'date_reshared' => bp_core_current_time(),
 	);
 
@@ -340,6 +340,8 @@ function buddyreshare_rest_update_item( WP_REST_Request $request ) {
 	if ( $wpdb->insert( $table, $r ) ) {
 		$result['reshared'] = strtotime( $r['date_reshared'] );
 	}
+
+	do_action( 'buddyreshare_reshare_added', $args );
 
 	return rest_ensure_response( $result );
 }
@@ -374,6 +376,8 @@ function buddyreshare_rest_delete_item( WP_REST_Request $request ) {
 	if ( is_wp_error( $deleted ) ) {
 		return $deleted;
 	}
+
+	do_action( 'buddyreshare_reshare_deleted', $args );
 
 	return rest_ensure_response( array( 'deleted' => (bool) $deleted ) );
 }
@@ -461,6 +465,14 @@ function buddyreshare_rest_routes() {
 }
 add_action( 'rest_api_init', 'buddyreshare_rest_routes' );
 
+function buddyreshare_reset_activity_cache() {
+	wp_cache_delete( 'bp_activity_sitewide_front', 'bp' );
+	bp_core_reset_incrementor( 'bp_activity' );
+	bp_core_reset_incrementor( 'bp_activity_with_last_activity' );
+}
+add_action( 'buddyreshare_reshare_added', 'buddyreshare_reset_activity_cache' );
+add_action( 'buddyreshare_reshare_deleted', 'buddyreshare_reset_activity_cache' );
+
 function buddyreshare_enqueue_notifications_script() {
 	wp_enqueue_script(
 		'bp-reshare-notifications',
@@ -480,3 +492,81 @@ function buddyreshare_enqueue_notifications_script() {
 		),
 	) );
 }
+
+/**
+ * Get email templates
+ *
+ * @since 2.0.0
+ *
+ * @return array An associative array containing the email type and the email template data.
+ */
+function buddyreshare_get_emails() {
+	return apply_filters( 'buddyreshare_get_emails', array(
+		'buddyreshare-new-reshare' => array(
+			'description'  => _x( 'A member reshared an activity', 'BP Email template description', 'bp-reshare' ),
+			'term_id'      => 0,
+			'post_title'   => _x( '[{{{site.name}}}] {{poster.name}} reshared your update', 'BP Email template subject', 'bp-reshare' ),
+			'post_content' => _x( "{{poster.name}} reshared this update:\n\n<blockquote>&quot;{{usermessage}}&quot;</blockquote>\n\n<a href=\"{{{thread.url}}}\">Go to your update</a>.", 'BP Email template HTML text', 'bp-reshare' ),
+			'post_excerpt' => _x( "{{poster.name}} reshared this update:\n\n\"{{usermessage}}\"\n\nGo to your update: {{{thread.url}}}", 'BP Email template plain text', 'bp-reshare' ),
+		),
+		'buddyreshare-reshared-activities' => array(
+			'description' => _x( 'Reshared activities summary', 'BP Email template description', 'bp-reshare' ),
+			'term_id'     => 0,
+			'post_title'   => _x( '[{{{site.name}}}] Summary of your reshared updates', 'BP Email template subject', 'bp-reshare' ),
+			'post_content' => _x( "Howdy!\n\n\{{reshared.amount}} of your updates were reshared by some of our members:\n\nYou can view them at anytime from <a href=\"{{{reshares.url}}}\">your profile page</a>.", 'BP Email template HTML text', 'bp-reshare' ),
+			'post_excerpt' => _x( "Howdy!\n\n\{{reshared.amount}} of your updates were reshared by some of our members:\n\nYou can view them at anytime from: {{{reshares.url}}}", 'BP Email template plain text', 'bp-reshare' ),
+		),
+	) );
+}
+
+/**
+ * Install/Reinstall email templates for the plugin's notifications
+ *
+ * @since 2.0.0
+ */
+function buddyreshare_install_emails() {
+	$switched = false;
+
+	// Switch to the root blog, where the email posts live.
+	if ( ! bp_is_root_blog() ) {
+		switch_to_blog( bp_get_root_blog_id() );
+		$switched = true;
+	}
+
+	// Get Emails
+	$email_types = buddyreshare_get_emails();
+
+	// Set email types
+	foreach( $email_types as $email_term => $term_args ) {
+		if ( term_exists( $email_term, bp_get_email_tax_type() ) ) {
+			$email_type = get_term_by( 'slug', $email_term, bp_get_email_tax_type() );
+
+			$email_types[ $email_term ]['term_id'] = $email_type->term_id;
+		} else {
+			$term = wp_insert_term( $email_term, bp_get_email_tax_type(), array(
+				'description' => $term_args['description'],
+			) );
+
+			$email_types[ $email_term ]['term_id'] = $term['term_id'];
+		}
+
+		// Insert Email templates if needed
+		if ( ! empty( $email_types[ $email_term ]['term_id'] ) && ! is_a( bp_get_email( $email_term ), 'BP_Email' ) ) {
+			wp_insert_post( array(
+				'post_status'  => 'publish',
+				'post_type'    => bp_get_email_post_type(),
+				'post_title'   => $email_types[ $email_term ]['post_title'],
+				'post_content' => $email_types[ $email_term ]['post_content'],
+				'post_excerpt' => $email_types[ $email_term ]['post_excerpt'],
+				'tax_input'    => array(
+					bp_get_email_tax_type() => array( $email_types[ $email_term ]['term_id'] )
+				),
+			) );
+		}
+	}
+
+	if ( $switched ) {
+		restore_current_blog();
+	}
+}
+add_action( 'bp_core_install_emails', 'buddyreshare_install_emails' );

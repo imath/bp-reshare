@@ -220,7 +220,7 @@ class BuddyReshare_Admin {
 			return;
 		}
 
-		$db_version = bp_get_option( 'bp-reshare-version' );
+		$db_version = bp_get_option( 'bp-reshare-version', 0 );
 		$version    = buddyreshare_get_plugin_version();
 
 		if ( ! version_compare( $db_version, $version, '<' ) ) {
@@ -236,15 +236,19 @@ class BuddyReshare_Admin {
 			dbDelta( array(
 				"CREATE TABLE {$prefix}bp_activity_user_reshares (
 					id bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-					user_id bigint(20) NOT NULL,
 					activity_id bigint(20) NOT NULL,
+					user_id bigint(20) NOT NULL,
 					date_reshared datetime NOT NULL,
 					KEY user_id (user_id),
 					KEY activity_id (activity_id),
 					KEY date_reshared (date_reshared),
-					UNIQUE KEY user_reshared ( user_id, activity_id )
+					UNIQUE KEY user_reshared ( activity_id, user_id )
 				) {$charset_collate};"
 			) );
+
+			// Install Emails
+			remove_action( 'bp_core_install_emails', 'buddyreshare_install_emails' );
+			buddyreshare_install_emails();
 		}
 
 		bp_update_option( 'bp-reshare-version', $version );
