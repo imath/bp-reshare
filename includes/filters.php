@@ -218,13 +218,19 @@ function buddyreshare_sort_activities_by_reshared_date( $sql = '', $args = array
 		return $sql;
 	}
 
+	$and = '';
+
+	if ( buddyreshare_is_user_profile_reshares() ) {
+		$and = ' AND r.date_reshared IS NOT NULL ';
+	}
+
 	return str_replace( array(
 			'WHERE',
 			'ORDER BY'
 		),
 		array(
 			sprintf( 'LEFT JOIN %sbp_activity_user_reshares r ON ( a.id = r.activity_id ) WHERE', bp_core_get_table_prefix() ),
-			'ORDER BY IF( r.date_reshared > a.date_recorded, r.date_reshared, a.date_recorded ) DESC, ',
+			sprintf( '%sORDER BY IF( r.date_reshared > a.date_recorded, r.date_reshared, a.date_recorded ) DESC, ', $and ),
 		),
 		$sql
 	);

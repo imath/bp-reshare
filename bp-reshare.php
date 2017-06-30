@@ -150,8 +150,10 @@ class BuddyReshare {
 	 * @uses  is_admin() to include the administration screens of the plugin if needed
 	 */
 	private function includes() {
-		if ( self::buddypress_version_check() && self::buddypress_site_check() ) {
-			require( $this->includes_dir . 'functions.php' );
+		require( $this->includes_dir . 'functions.php' );
+
+		if ( bp_is_root_blog() ) {
+			require( $this->includes_dir . 'users.php' );
 			require( $this->includes_dir . 'filters.php' );
 
 			if ( buddyreshare_are_emails_active() ) {

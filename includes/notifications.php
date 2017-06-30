@@ -10,6 +10,23 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
+function buddyreshare_notifications_get_unread_item_ids( $user_id = 0 ) {
+	if ( ! $user_id ) {
+		$user_id = get_current_user_id();
+	}
+
+	global $wpdb;
+
+	$table = buddypress()->notifications->table_name;
+
+	return $wpdb->get_col( $wpdb->prepare(
+		"SELECT DISTINCT item_id FROM {$table} WHERE user_id = %d AND component_name = %s AND component_action = %s AND is_new = 1",
+		$user_id,
+		buddyreshare_get_component_id(),
+		'new_reshare'
+	) );
+}
+
 function buddyreshare_notifications_enqueue_script() {
 	if ( ! is_user_logged_in() ) {
 		return;
@@ -25,15 +42,14 @@ function buddyreshare_notifications_enqueue_script() {
 
 	wp_localize_script( 'bp-reshare-notifications', 'bpReshare', array(
 		'userNotifications' => array(
-			'amount'   => BP_Notifications_Notification::get_total_count( array(
-				'user_id'          => get_current_user_id(),
-				'component_name'   => 'bp_reshare',
-				'componant_action' => 'new_reshare',
-				'is_new'           => 1,
-			) ),
+			'items'   => buddyreshare_notifications_get_unread_item_ids(),
 			'template' => array(
-				'one'  => __( '%n new activity reshare', 'bp-reshare' ),
-				'more' => __( '%n new activity reshares', 'bp-reshare' ),
+				'one'  => __( '%n reshared activity', 'bp-reshare' ),
+				'more' => __( '%n reshared activities', 'bp-reshare' ),
+			),
+			'link' => array(
+				'one'  => bp_get_root_domain() . '/' . bp_get_activity_root_slug() . '/p/%n/',
+				'more' => trailingslashit( bp_loggedin_user_domain() . bp_get_activity_slug() . '/' . buddyreshare_get_component_slug() ),
 			),
 		),
 	) );
@@ -83,3 +99,11 @@ function buddyreshare_notifications_remove( $args = array() ) {
 	);
 }
 add_action( 'buddyreshare_reshare_deleted', 'buddyreshare_notifications_remove', 10, 1 );
+
+function buddyreshare_notifications_read() {
+	/**
+	 * @todo
+	 */
+	return;
+}
+add_action( 'buddyreshare_users_reshared_screen', 'buddyreshare_notifications_read' );
