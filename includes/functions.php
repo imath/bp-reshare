@@ -1,142 +1,198 @@
 <?php
-// Exit if accessed directly
-if ( !defined( 'ABSPATH' ) ) exit;
+/**
+ * Main functions.
+ *
+ * @package BP Reshare\includes
+ *
+ * @since 1.0.0
+ */
+
+// Exit if accessed directly.
+defined( 'ABSPATH' ) || exit;
 
 /**
- * Builds the argument of the reshared activity
+ * Returns plugin version
  *
- * @package BP Reshare
- * @since    1.0
+ * @since 1.0
  *
- * @param  integer $activity_id the activity id
- * @uses   bp_activity_get_specific() to fetch the specific activity
- * @uses   bp_activity_get_meta() to get some meta infos about the activity
- * @uses   bp_loggedin_user_id() to get current user id
- * @uses   bp_activity_update_meta() to save some meta infos for the activity
- * @uses   bp_core_fetch_avatar() to build the avatar for the user
- * @uses   bp_core_get_userlink() to build the user link
- * @uses   bp_core_current_time() to date the reshare
- * @uses   apply_filters() at various places to let plugins/themes override values
- * @return array the reshared activity arguments
+ * @return string The plugin's version
  */
-function buddyreshare_prepare_reshare( $activity_id = 0 ) {
-
-	$activity_to_reshare = bp_activity_get_specific( array( 'activity_ids' => $activity_id ) );
-
-	if( empty( $activity_to_reshare ) )
-		return array( 'error' => __( 'OOps, looks like the activity does not exist anymore', 'bp-reshare' ) );
-
-	$activity = $activity_to_reshare['activities'][0];
-
-	$reshared_by = bp_activity_get_meta( $activity_id, 'reshared_by' );
-
-	if( is_array( $reshared_by ) && in_array( bp_loggedin_user_id(), $reshared_by ) )
-		return array( 'error' => __( 'OOps, looks like you already reshared this activity', 'bp-reshare' ) );
-
-	if( $activity->user_id == bp_loggedin_user_id() )
-		return array( 'error' => __( 'OOps, looks like you are trying to reshare your own activity', 'bp-reshare' ) );
-
-	/* get and increment reshared count */
-	$rs_count = bp_activity_get_meta( $activity_id, 'reshared_count' );
-	$rs_count = !empty( $rs_count ) ? (int)$rs_count + 1 : 1;
-	bp_activity_update_meta( $activity_id, 'reshared_count', $rs_count );
-
-	if( is_array( $reshared_by ) && !in_array( bp_loggedin_user_id(), $reshared_by ) )
-		$reshared_by[] = bp_loggedin_user_id();
-	else
-		$reshared_by[] = bp_loggedin_user_id();
-
-	bp_activity_update_meta( $activity_id, 'reshared_by', $reshared_by );
-
-	$secondary_avatar = bp_core_fetch_avatar( array( 'item_id' => $activity->user_id, 'object' => 'user', 'type' => 'thumb', 'class' => 'avatar', 'width' => 20, 'height' => 20 ) );
-
-	$component = $activity->component;
-	$item_id = $activity->item_id;
-
-	if( $component != 'activity' ){
-
-		$user_link = bp_core_get_userlink( $activity->user_id );
-
-		if( strpos( $activity->primary_link, $user_link ) === false ) {
-
-			$action = apply_filters( 'buddyreshare_prepare_reshare_content', sprintf(
-				__( '%s reshared a <a href="%s">content</a> originally shared by %s', 'bp-reshare' ),
-				bp_core_get_userlink( bp_loggedin_user_id() ),
-				$activity->primary_link,
-				bp_core_get_userlink( $activity->user_id )
-			), $activity );
-
-		} else {
-			$action = apply_filters( 'buddyreshare_prepare_reshare_nocontent', sprintf(
-				__( '%s reshared some content originally shared by %s', 'bp-reshare' ),
-				bp_core_get_userlink( bp_loggedin_user_id() ),
-				bp_core_get_userlink( $activity->user_id )
-			), $activity );
-		}
-
-	} else {
-
-		$action = apply_filters( 'buddyreshare_prepare_reshare_activity', sprintf(
-			__( '%s reshared an activity originally shared by %s', 'bp-reshare' ),
-			bp_core_get_userlink( bp_loggedin_user_id() ),
-			$secondary_avatar . bp_core_get_userlink( $activity->user_id )
-		), $activity );
-
-	}
-
-	$reshared_args = array(
-		'action'            => apply_filters( 'bp_reshare_action_parent_activity' , $action, $activity->type ),
-		'content'           => $activity->content,
-		'component'         => $component,
-		'type'              => 'reshare_update',
-		'user_id'           => bp_loggedin_user_id(),
-		'secondary_item_id' => $activity_id,
-		'recorded_time'     => bp_core_current_time(),
-		'hide_sitewide'     => $activity->hide_sitewide
-	);
-
-	if( !empty( $item_id ) )
-		$reshared_args['item_id'] = $item_id;
-
-	return apply_filters( 'buddyreshare_prepare_reshare', $reshared_args, $activity_id );
+function buddyreshare_get_plugin_version() {
+	return buddyreshare()->version;
 }
 
 /**
- * In case of a reshare delete, reset some activity metas
+ * Returns plugin's dir
+ *
+ * @since 1.0
+ *
+ * @return string The plugin's dir path
+ */
+function buddyreshare_get_plugin_dir() {
+	return buddyreshare()->plugin_dir;
+}
+
+/**
+ * Returns plugin's includes dir
+ *
+ * @since 1.0
+ *
+ * @return string The plugin's includes dir path
+ */
+function buddyreshare_get_includes_dir() {
+	return buddyreshare()->includes_dir;
+}
+
+/**
+ * Returns plugin's js url
+ *
+ * @since  1.0
+ * @since  2.0.0 Path edited to one level up.
+ *
+ * @return string The plugin's url to JavaScript's dir.
+ */
+function buddyreshare_get_js_url() {
+	return buddyreshare()->js_url;
+}
+
+/**
+ * Returns plugin's css url
+ *
+ * @since  1.0
+ * @since  2.0.0 Path edited to one level up.
+ *
+ * @return string The plugin's url to Style's dir.
+ */
+function buddyreshare_get_css_url() {
+	return buddyreshare()->css_url;
+}
+
+/**
+ * Get the JS/CSS minified suffix.
+ *
+ * @since  2.0.0
+ *
+ * @return string the JS/CSS minified suffix.
+ */
+function buddyreshare_min_suffix() {
+	$min = '.min';
+
+	if ( defined( 'SCRIPT_DEBUG' ) && true === SCRIPT_DEBUG )  {
+		$min = '';
+	}
+
+	/**
+	 * Filter here to edit the minified suffix.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @param  string $min The minified suffix.
+	 */
+	return apply_filters( 'buddyreshare_min_suffix', $min );
+}
+
+/**
+ * Returns plugin's component id
+ *
+ * @since    1.0
+ *
+ * @return string plugin's component id
+ */
+function buddyreshare_get_component_id() {
+	return buddyreshare()->component_id;
+}
+
+/**
+ * Returns plugin's component slug
+ *
+ * @since    1.0
+ *
+ * @return string plugin's component slug
+ */
+function buddyreshare_get_component_slug() {
+	return apply_filters( 'buddyreshare_get_component_slug', buddyreshare()->component_slug );
+}
+
+/**
+ * Displays the component name
+ *
+ * @since    1.0
+ */
+function buddyreshare_component_name() {
+	echo buddyreshare_get_component_name();
+}
+
+/**
+ * Returns plugin's component name
+ *
+ * @since    1.0
+ *
+ * @return string plugin's component name
+ */
+function buddyreshare_get_component_name() {
+	return apply_filters( 'buddyreshare_get_component_name', buddyreshare()->component_name );
+}
+
+/**
+ * Are email notifications active ?
+ *
+ * @since 2.0.0
+ *
+ * @return boolean True to send emails, False otherwise.
+ */
+function buddyreshare_are_emails_active() {
+	return apply_filters( 'buddyreshare_are_emails_active', false );
+}
+
+/**
+ * Are we on a the current user's profile reshare tab
+ *
+ * @since    1.0
+ * @since    2.0.0 Code clean up.
+ *
+ * @return  boolean true|false
+ */
+function buddyreshare_is_user_profile_reshares() {
+	$return = false;
+
+	if ( bp_is_activity_component() && bp_is_user() && bp_is_current_action( buddyreshare_get_component_slug() ) ) {
+		$return = true;
+	}
+
+	return $return;
+}
+
+/**
+ * Builds an array of the reshare activity actions
  *
  * @package BP Reshare
  * @since    1.0
  *
- * @param  integer $activity_id the reshared activity id
- * @param  integer $user_id     the user id
- * @uses   bp_activity_get_meta() to get some meta infos about the activity
- * @uses   bp_activity_delete_meta() to delete some meta infos for the activity
- * @uses   bp_activity_update_meta() to save some meta infos for the activity
- * @return boolean true
+ * @uses buddypress() to get BuddyPress main instance
+ * @uses buddyreshare_get_component_id() to get plugin's id
  */
-function buddyreshare_reset_metas( $activity_id = 0, $user_id = 0 ) {
-	if( empty( $activity_id ) || empty( $user_id ) )
-		return false;
+function buddyreshare_reshare_types() {
+	$activity_types = buddypress()->activity->actions;
 
-	$count = bp_activity_get_meta( $activity_id, 'reshared_count' );
-	$count = $count - 1;
-	$reshared_by = bp_activity_get_meta( $activity_id, 'reshared_by' );
+	$reshare_types = array();
 
-	if( $count == 0 ) {
-		// if count is null, then we can delete all metas !
-		bp_activity_delete_meta( $activity_id, 'reshared_count' );
-		bp_activity_delete_meta( $activity_id, 'reshared_by' );
-	} else {
-		foreach( $reshared_by as $key => $val ) {
-			if( $user_id  == $val )
-				unset( $reshared_by[$key] );
-		}
-		bp_activity_update_meta( $activity_id, 'reshared_count', $count );
-		bp_activity_update_meta( $activity_id, 'reshared_by', $reshared_by );
-	}
+	if( !empty( $activity_types->{buddyreshare_get_component_id()} ) )
+		$reshare_types = array_values( (array) $activity_types->{buddyreshare_get_component_id()} );
 
-	return true;
+	return $reshare_types;
+}
 
+/**
+ * Returns the allowed activity actions
+ *
+ * @since    1.0
+ *
+ * @return array the allowed activity actions.
+ */
+function buddyreshare_activity_types() {
+	$allowed_types = bp_get_option( 'buddyreshare-allowed-types', array( 'activity_update' ) );
+
+	return apply_filters( 'buddyreshare_activity_types', $allowed_types );
 }
 
 /**
@@ -183,39 +239,6 @@ function buddyreshare_can_reshare( $activity = null ) {
 		return false;
 
 	return true;
-}
-
-
-/**
- * Returns the reshared css class in case an activity has been reshared by the user
- *
- * @package BP Reshare
- * @since    1.0
- *
- * @param  BP_Activity_Activity $activity the activity object
- * @param  integer $activity_first_id the reshared activity id
- * @uses   bp_loggedin_user_id() to get current user id
- * @uses   bp_activity_get_meta() to get some meta infos about the activity
- * @uses   bp_activity_get_specific() to fetch the specific activity
- * @return string the reshared css class
- */
-function buddyreshare_get_class( $activity = null, $activity_first_id = 0 ) {
-	if( empty( $activity ) )
-		return false;
-
-	if( bp_loggedin_user_id() == $activity->user_id )
-		return 'reshared';
-
-	$reshared_by = bp_activity_get_meta( $activity_first_id, 'reshared_by' );
-
-	if( is_array( $reshared_by ) && in_array( bp_loggedin_user_id(), $reshared_by ) )
-		return 'reshared';
-
-	// is the loggedin_user the original author ?
-	$originally_shared = bp_activity_get_specific( array( 'activity_ids' => $activity_first_id ) );
-
-	if( $originally_shared['activities'][0]->user_id == bp_loggedin_user_id() )
-		return 'reshared';
 }
 
 function buddyreshare_get_l10n_time_since() {
@@ -394,7 +417,7 @@ function buddyreshare_rest_routes() {
 	register_rest_route( $namespace, '/(?P<id>[\d]+)', array(
 		'args' => array(
 			'id' => array(
-				'description' => __( 'Unique identifier for the object.' ),
+				'description' => __( 'Unique identifier for the object.', 'bp-reshare' ),
 				'type'        => 'integer',
 				'validate_callback' => function( $param, $request, $key ) {
 					return is_numeric( $param );
@@ -409,7 +432,7 @@ function buddyreshare_rest_routes() {
 				'count' => array(
 					'type' => 'boolean',
 					'default' => false,
-					'description' => __( 'Whether to get only the count or not' ),
+					'description' => __( 'Whether to get only the count or not', 'bp-reshare' ),
 				),
 			),
 		),
@@ -421,7 +444,12 @@ function buddyreshare_rest_routes() {
 				'user_id' => array(
 					'type'        => 'integer',
 					'default'     => 0,
-					'description' => __( 'The user ID.' ),
+					'description' => __( 'The user ID.', 'bp-reshare' ),
+				),
+				'author_slug' => array(
+					'type'        => 'string',
+					'default'     => '',
+					'description' => __( 'The activity author slug.', 'bp-reshare' ),
 				),
 			),
 		),
@@ -433,7 +461,12 @@ function buddyreshare_rest_routes() {
 				'user_id' => array(
 					'type'        => 'integer',
 					'default'     => 0,
-					'description' => __( 'The user ID.' ),
+					'description' => __( 'The user ID.', 'bp-reshare' ),
+				),
+				'author_slug' => array(
+					'type'        => 'string',
+					'default'     => '',
+					'description' => __( 'The activity author slug.', 'bp-reshare' ),
 				),
 			),
 		),
@@ -448,17 +481,17 @@ function buddyreshare_rest_routes() {
 					'page' => array(
 					'type' => 'string',
 					'default' => '',
-					'description' => __( 'comma separated list of activity ids to fetch' ),
+					'description' => __( 'comma separated list of activity ids to fetch', 'bp-reshare' ),
 				),
 				'page' => array(
 					'type' => 'integer',
 					'default' => 1,
-					'description' => __( 'The number of the page to fetch' ),
+					'description' => __( 'The number of the page to fetch', 'bp-reshare' ),
 				),
 				'per_page' => array(
 					'type' => 'integer',
 					'default' => 20,
-					'description' => __( 'The amount of reshares per page to fetch' ),
+					'description' => __( 'The amount of reshares per page to fetch', 'bp-reshare' ),
 				),
 			),
 		) ) );
@@ -472,223 +505,3 @@ function buddyreshare_reset_activity_cache() {
 }
 add_action( 'buddyreshare_reshare_added', 'buddyreshare_reset_activity_cache' );
 add_action( 'buddyreshare_reshare_deleted', 'buddyreshare_reset_activity_cache' );
-
-function buddyreshare_enqueue_notifications_script() {
-	wp_enqueue_script(
-		'bp-reshare-notifications',
-		buddyreshare()->js_url . 'notifications.js',
-		array(),
-		buddyreshare()->version,
-		true
-	);
-
-	wp_localize_script( 'bp-reshare-notifications', 'bpReshare', array(
-		'userNotifications' => array(
-			'amount'   => BP_Notifications_Notification::get_total_count( array(
-				'user_id'          => get_current_user_id(),
-				'component_name'   => 'bp_reshare',
-				'componant_action' => 'new_reshare',
-				'is_new'           => 1,
-			) ),
-			'template' => array(
-				'one'  => __( '%n new activity reshare', 'bp-reshare' ),
-				'more' => __( '%n new activity reshares', 'bp-reshare' ),
-			),
-		),
-	) );
-}
-
-/**
- * @todo
- * Email functions should live in a separate file
- */
-
-function buddyreshare_user_email_preferences() {
-	$send_emails = 'yes';
-	if ( 'no' === bp_get_user_meta( bp_displayed_user_id(), 'buddyreshare_send_emails', true ) ) {
-		$send_emails = 'no';
-	}
-
-	$checked   = ' ' . checked( $send_emails, 'yes', false );
-	$unchecked = ' ' . checked( $send_emails, 'no', false );
-
-	printf( '<tr id="activity-notification-settings-reshares">
-		<td>&nbsp;</td>
-		<td>%1$s</td>
-		<td class="yes">
-			<input type="radio" name="notifications[buddyreshare_send_emails]" id="notification-activity-reshares-yes" value="yes"%2$s/>
-			<label for="notification-activity-reshares-yes" class="bp-screen-reader-text">%3$s</label>
-		</td>
-		<td class="no">
-			<input type="radio" name="notifications[buddyreshare_send_emails]" id="notification-activity-reshares-no" value="no"%4$s/>
-			<label for="notification-activity-reshares-no" class="bp-screen-reader-text">%5$s</label>
-		</td>
-		</tr>',
-		esc_html__( 'A member reshares one of your updates.', 'bp-reshares' ),
-		$checked,
-		esc_html__( 'Yes, send email', 'bp-reshares' ),
-		$unchecked,
-		esc_html__( 'No, do not send email', 'bp-reshares' )
-	);
-}
-add_action( 'bp_activity_screen_notification_settings', 'buddyreshare_user_email_preferences' );
-
-function buddyreshare_user_email_schema( $emails = array() ) {
-	return array_merge( $emails, array(
-		'buddyreshare-new-reshare' => array(
-			'description'	=> __( 'Reshared activities.', 'bp-reshare' ),
-			'unsubscribe'	=> array(
-				'meta_key'	=> 'buddyreshare_send_emails',
-				'message'	=> __( 'You will no longer receive emails when someone reshared on of your activity.', 'bp-reshare' ),
-			),
-		),
-	) );
-}
-add_filter( 'bp_email_get_unsubscribe_type_schema', 'buddyreshare_user_email_schema' );
-
-function buddyreshare_send_emails( $args = array() ) {
-	if ( empty( $args['user_id'] ) || empty( $args['activity_id'] ) ) {
-		return;
-	}
-
-	$activity  = new BP_Activity_Activity( $args['activity_id'] );
-	$resharer  = bp_core_get_user_displayname( $args['user_id'] );
-
-	if ( empty( $activity->id ) || ! $resharer ) {
-		return;
-	}
-
-	// Send the email only if user did not disallow it.
-	if ( 'no' != bp_get_user_meta( $activity->user_id, 'buddyreshare_send_emails', true ) ) {
-		$email_type = 'buddyreshare-new-reshare';
-		$link       = bp_activity_get_permalink( $activity->id, $activity );
-
-		remove_filter( 'bp_get_activity_content_body', 'convert_smilies' );
-		remove_filter( 'bp_get_activity_content_body', 'wpautop' );
-		remove_filter( 'bp_get_activity_content_body', 'bp_activity_truncate_entry', 5 );
-
-		$content = apply_filters_ref_array( 'bp_get_activity_content_body', array( $activity->content, &$activity ) );
-
-		add_filter( 'bp_get_activity_content_body', 'convert_smilies' );
-		add_filter( 'bp_get_activity_content_body', 'wpautop' );
-		add_filter( 'bp_get_activity_content_body', 'bp_activity_truncate_entry', 5 );
-
-		$unsubscribe_args = array(
-			'user_id'           => $activity->user_id,
-			'notification_type' => $email_type,
-		);
-
-		bp_send_email( $email_type, $activity->user_id, array(
-			'tokens' => array(
-				'activity'         => $activity,
-				'usermessage'      => wp_strip_all_tags( $content ),
-				'thread.url'       => $link,
-				'poster.name'      => $resharer,
-				'receiver-user.id' => $activity->user_id,
-				'unsubscribe' 	   => esc_url( bp_email_get_unsubscribe_link( $unsubscribe_args ) ),
-			),
-		) );
-	}
-
-	do_action( 'buddyreshare_notify_reshare', $activity, $args );
-}
-add_action( 'buddyreshare_reshare_added', 'buddyreshare_send_emails', 11, 1 );
-
-/**
- * Get email templates
- *
- * @since 2.0.0
- *
- * @return array An associative array containing the email type and the email template data.
- */
-function buddyreshare_get_emails() {
-	return apply_filters( 'buddyreshare_get_emails', array(
-		'buddyreshare-new-reshare' => array(
-			'description'  => _x( 'A member reshared an activity', 'BP Email template description', 'bp-reshare' ),
-			'term_id'      => 0,
-			'post_title'   => _x( '[{{{site.name}}}] {{poster.name}} reshared your update', 'BP Email template subject', 'bp-reshare' ),
-			'post_content' => _x( "{{poster.name}} reshared this update:\n\n<blockquote>&quot;{{usermessage}}&quot;</blockquote>\n\n<a href=\"{{{thread.url}}}\">Go to your update</a>.", 'BP Email template HTML text', 'bp-reshare' ),
-			'post_excerpt' => _x( "{{poster.name}} reshared this update:\n\n\"{{usermessage}}\"\n\nGo to your update: {{{thread.url}}}", 'BP Email template plain text', 'bp-reshare' ),
-		),
-		'buddyreshare-reshared-activities' => array(
-			'description' => _x( 'Reshared activities summary', 'BP Email template description', 'bp-reshare' ),
-			'term_id'     => 0,
-			'post_title'   => _x( '[{{{site.name}}}] Summary of your reshared updates', 'BP Email template subject', 'bp-reshare' ),
-			'post_content' => _x( "Howdy!\n\n\{{reshared.amount}} of your updates were reshared by some of our members:\n\nYou can view them at anytime from <a href=\"{{{reshares.url}}}\">your profile page</a>.", 'BP Email template HTML text', 'bp-reshare' ),
-			'post_excerpt' => _x( "Howdy!\n\n\{{reshared.amount}} of your updates were reshared by some of our members:\n\nYou can view them at anytime from: {{{reshares.url}}}", 'BP Email template plain text', 'bp-reshare' ),
-		),
-	) );
-}
-
-/**
- * Install/Reinstall email templates for the plugin's notifications
- *
- * @since 2.0.0
- */
-function buddyreshare_install_emails() {
-	$switched = false;
-
-	// Switch to the root blog, where the email posts live.
-	if ( ! bp_is_root_blog() ) {
-		switch_to_blog( bp_get_root_blog_id() );
-		$switched = true;
-	}
-
-	// Get Emails
-	$email_types = buddyreshare_get_emails();
-
-	// Set email types
-	foreach( $email_types as $email_term => $term_args ) {
-		if ( term_exists( $email_term, bp_get_email_tax_type() ) ) {
-			$email_type = get_term_by( 'slug', $email_term, bp_get_email_tax_type() );
-
-			$email_types[ $email_term ]['term_id'] = $email_type->term_id;
-		} else {
-			$term = wp_insert_term( $email_term, bp_get_email_tax_type(), array(
-				'description' => $term_args['description'],
-			) );
-
-			$email_types[ $email_term ]['term_id'] = $term['term_id'];
-		}
-
-		// Insert Email templates if needed
-		if ( ! empty( $email_types[ $email_term ]['term_id'] ) && ! is_a( bp_get_email( $email_term ), 'BP_Email' ) ) {
-			wp_insert_post( array(
-				'post_status'  => 'publish',
-				'post_type'    => bp_get_email_post_type(),
-				'post_title'   => $email_types[ $email_term ]['post_title'],
-				'post_content' => $email_types[ $email_term ]['post_content'],
-				'post_excerpt' => $email_types[ $email_term ]['post_excerpt'],
-				'tax_input'    => array(
-					bp_get_email_tax_type() => array( $email_types[ $email_term ]['term_id'] )
-				),
-			) );
-		}
-	}
-
-	if ( $switched ) {
-		restore_current_blog();
-	}
-}
-add_action( 'bp_core_install_emails', 'buddyreshare_install_emails' );
-
-/**
- * @todo
- * Screen notification functions should live in a separate file
- */
-function buddyreshare_add_notification( $activity = null, $args = array() ) {
-	if ( ! bp_is_active( 'notifications' ) || empty( $activity->id ) || empty( $args['user_id'] ) ) {
-		return;
-	}
-
-	bp_notifications_add_notification( array(
-		'user_id'           => $activity->user_id,
-		'item_id'           => $activity->id,
-		'secondary_item_id' => $args['user_id'],
-		'component_name'    => 'bp_reshare',
-		'component_action'  => 'new_reshare',
-		'date_notified'     => bp_core_current_time(),
-		'is_new'            => 1,
-	) );
-}
-add_action( 'buddyreshare_notify_reshare', 'buddyreshare_add_notification', 10, 2 );

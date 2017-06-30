@@ -21,10 +21,10 @@
  * GitHub Plugin URI: https://github.com/imath/bp-reshare
  */
 
-// Exit if accessed directly
-if ( !defined( 'ABSPATH' ) ) exit;
+// Exit if accessed directly.
+defined( 'ABSPATH' ) || exit;
 
-if ( !class_exists( 'BuddyReshare' ) ) :
+if ( ! class_exists( 'BuddyReshare' ) ) :
 /**
  * Main BP Reshare Class
  *
@@ -34,7 +34,6 @@ class BuddyReshare {
 	/**
 	 * Instance of this class.
 	 *
-	 * @package BP Reshare
 	 * @since    1.0
 	 *
 	 * @var      object
@@ -44,7 +43,6 @@ class BuddyReshare {
 	/**
 	 * Some init vars
 	 *
-	 * @package BP Reshare
 	 * @since    1.0
 	 *
 	 * @var      array
@@ -59,7 +57,6 @@ class BuddyReshare {
 	/**
 	 * Initialize the plugin
 	 *
-	 * @package BP Reshare
 	 * @since    1.0
 	 */
 	private function __construct() {
@@ -71,7 +68,6 @@ class BuddyReshare {
 	/**
 	 * Return an instance of this class.
 	 *
-	 * @package BP Reshare
 	 * @since    1.0
 	 *
 	 * @return    object    A single instance of this class.
@@ -89,7 +85,6 @@ class BuddyReshare {
 	/**
 	 * Sets some globals for the plugin
 	 *
-	 * @package BP Reshare
 	 * @since    1.0
 	 */
 	private function setup_globals() {
@@ -102,18 +97,13 @@ class BuddyReshare {
 		$this->plugin_url   = plugin_dir_url( $this->file );
 		$this->lang_dir     = trailingslashit( $this->plugin_dir . 'languages' );
 		$this->includes_dir = trailingslashit( $this->plugin_dir . 'includes' );
-		$this->includes_url = trailingslashit( $this->plugin_url . 'includes' );
-		$this->plugin_js    = trailingslashit( $this->includes_url . 'js' );
-		$this->plugin_css   = trailingslashit( $this->includes_url . 'css' );
-		$this->plugin_img   = trailingslashit( $this->includes_url . 'images' );
+		$this->js_url       = trailingslashit( $this->plugin_url . 'js'  );
+		$this->css_url      = trailingslashit( $this->plugin_url . 'css' );
 
 		/** Component specific globals ********************************************/
-		$this->component_id                     = self::$init_vars['reshare_id'];
-		$this->component_slug                   = self::$init_vars['reshare_slug'];
-		$this->component_name                   = self::$init_vars['reshare_name'];
-
-		$this->js_url  = trailingslashit( $this->plugin_url . 'js'  );
-		$this->css_url = trailingslashit( $this->plugin_url . 'css' );
+		$this->component_id   = self::$init_vars['reshare_id'];
+		$this->component_slug = self::$init_vars['reshare_slug'];
+		$this->component_name = self::$init_vars['reshare_name'];
 
 		// Rest namespace and version.
 		$this->rest = (object) array(
@@ -125,7 +115,6 @@ class BuddyReshare {
 	/**
 	 * Checks BuddyPress version
 	 *
-	 * @package BP Reshare
 	 * @since    1.0
 	 */
 	public static function buddypress_version_check() {
@@ -139,7 +128,6 @@ class BuddyReshare {
 	/**
 	 * Checks if current blog is the one where is activated BuddyPress
 	 *
-	 * @package BP Reshare
 	 * @since    1.0
 	 */
 	public static function buddypress_site_check() {
@@ -157,17 +145,26 @@ class BuddyReshare {
 	/**
 	 * Includes the needed files
 	 *
-	 * @package BP Reshare
 	 * @since    1.0
 	 *
 	 * @uses  is_admin() to include the administration screens of the plugin if needed
 	 */
 	private function includes() {
-		require( $this->includes_dir . 'helpers.php' );
-
 		if ( self::buddypress_version_check() && self::buddypress_site_check() ) {
 			require( $this->includes_dir . 'functions.php' );
 			require( $this->includes_dir . 'filters.php' );
+
+			if ( buddyreshare_are_emails_active() ) {
+				require( $this->includes_dir . 'emails.php' );
+			}
+
+			if ( bp_is_active( 'notifications' ) ) {
+				require( $this->includes_dir . 'notifications.php' );
+			}
+
+			if ( defined( 'WP_DEBUG' ) && true === WP_DEBUG ) {
+				require( $this->includes_dir . 'deprecated.php' );
+			}
 		}
 
 		if( is_admin() ) {
@@ -189,16 +186,11 @@ class BuddyReshare {
 			return;
 		}
 
-		//Actions
 		// loads the languages..
 		add_action( 'bp_init', array( $this, 'load_textdomain' ), 6 );
 
 		// Register/enqueue scripts
 		add_action( 'bp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-
-		if ( bp_is_active( 'notifications' ) && is_user_logged_in() ) {
-			add_action( 'admin_bar_init', 'buddyreshare_enqueue_notifications_script' );
-		}
 	}
 
 	public function enqueue_scripts() {
@@ -274,104 +266,39 @@ class BuddyReshare {
 	/**
 	 * Loads the component
 	 *
-	 * @package BP Reshare
 	 * @since   1.0
+	 * @deprecated 2.0.0
 	 */
-	public function load_component() {
-		require( $this->includes_dir . 'component.php' );
-	}
+	public function load_component() {}
 
 	/**
 	 * Enqueues the js and css files only if BP Reshare needs it
 	 *
-	 * @package BP Reshare
 	 * @since   1.0
-	 *
-	 * @uses bp_is_active() to check if the plugin's component is active
-	 * @uses bp_is_activity_component() to check if we are in the Activity component area
-	 * @uses bp_is_group_home() to check if we are in a group home
-	 * @uses wp_enqueue_style() to safely add our style to WordPress queue
-	 * @uses wp_enqueue_script() to safely add our script to WordPress queue
-	 * @uses wp_localize_script() to attach some vars to it
-	 * @uses buddyreshare_js_vars() to get the js vars for the plugin
+	 * @deprecated 2.0.0
 	 */
-	public function cssjs() {
-
-		if( ! bp_is_active( $this->component_id ) )
-			return;
-
-		if( bp_is_activity_component() || ( bp_is_active( 'groups' ) && bp_is_group_home() ) ) {
-
-			// CSS is Theme's territory, so let's help him to easily override our css.
-			$css_datas = (array) $this->css_datas();
-
-			wp_enqueue_style( $css_datas['handle'], $css_datas['location'], false, $this->version );
-			wp_enqueue_script( 'bp-reshare-js', $this->plugin_js . 'reshare.js', array( 'jquery' ), $this->version, true );
-			wp_localize_script( 'bp-reshare-js', 'bp_reshare_vars', buddyreshare_js_vars() );
-		}
-
-	}
+	public function cssjs() {}
 
 	/**
 	 * The theme can override plugin's css
 	 *
-	 * @package BP Reshare
 	 * @since    1.0
-	 *
-	 * @uses get_stylesheet_directory()
-	 * @uses get_stylesheet_directory_uri()
-	 * @uses get_template_directory()
-	 * @uses get_template_directory_uri()
+	 * @deprecated 2.0.0
 	 */
-	public function css_datas() {
-		$file = 'css/reshare.css';
-
-		// Check child theme
-		if ( file_exists( trailingslashit( get_stylesheet_directory() ) . $file ) ) {
-			$location = trailingslashit( get_stylesheet_directory_uri() ) . $file ;
-			$handle   = 'bp-reshare-child-css';
-
-		// Check parent theme
-		} elseif ( file_exists( trailingslashit( get_template_directory() ) . $file ) ) {
-			$location = trailingslashit( get_template_directory_uri() ) . $file ;
-			$handle   = 'bp-reshare-parent-css';
-
-		// use our style
-		} else {
-			$location = $this->includes_url . $file;
-			$handle   = 'bp-reshare-css';
-		}
-
-		return array( 'handle' => $handle, 'location' => $location );
-	}
+	public function css_datas() {}
 
 	/**
 	 * Loads the translation files
 	 *
-	 * @package BP Reshare
-	 * @since    1.0
-	 *
-	 * @uses get_locale() to get the language of WordPress config
-	 * @uses load_texdomain() to load the translation if any is available for the language
+	 * @since 1.0
+	 * @since 2.0.0 Uses load_plugin_textdomain.
 	 */
 	public function load_textdomain() {
-		// Traditional WordPress plugin locale filter
-		$locale        = apply_filters( 'plugin_locale', get_locale(), $this->domain );
-		$mofile        = sprintf( '%1$s-%2$s.mo', $this->domain, $locale );
-
-		// Setup paths to current locale file
-		$mofile_local  = $this->lang_dir . $mofile;
-		$mofile_global = WP_LANG_DIR . '/bp-reshare/' . $mofile;
-
-		// Look in global /wp-content/languages/bp-reshare folder
-		load_textdomain( $this->domain, $mofile_global );
-
-		// Look in local /wp-content/plugins/bp-reshare/languages/ folder
-		load_textdomain( $this->domain, $mofile_local );
+		load_plugin_textdomain( $this->domain, false, trailingslashit( basename( $this->plugin_dir ) ) . 'languages' );
 	}
-
-
 }
+
+endif;
 
 // Let's start !
 function buddyreshare() {
@@ -379,5 +306,3 @@ function buddyreshare() {
 }
 // Not too early and not too late ! 9 seems ok ;)
 add_action( 'bp_include', 'buddyreshare', 9 );
-
-endif;

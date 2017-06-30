@@ -247,8 +247,12 @@ class BuddyReshare_Admin {
 			) );
 
 			// Install Emails
-			remove_action( 'bp_core_install_emails', 'buddyreshare_install_emails' );
-			buddyreshare_install_emails();
+			if ( ! function_exists( 'buddyreshare_emails_install' ) ) {
+				require_once( buddyreshare_get_includes_dir() . 'emails.php' );
+			}
+
+			remove_action( 'bp_core_install_emails', 'buddyreshare_emails_install' );
+			buddyreshare_emails_install();
 		}
 
 		bp_update_option( 'bp-reshare-version', $version );

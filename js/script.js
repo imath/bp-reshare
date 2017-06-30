@@ -375,7 +375,7 @@ window.bpReshare = window.bpReshare || {};
 
 		// If the user is not in the users who reshared: can add reshare.
 		if ( $( link ).hasClass( 'add-reshare' ) ) {
-			bpReshare.Ajax.post( id, { user_id: bpReshare.params.u }, function( status, response ) {
+			bpReshare.Ajax.post( id, { 'user_id': bpReshare.params.u, 'author_slug': author }, function( status, response ) {
 				if ( 200 === status && response.reshared ) {
 
 					// Remove the reshare header if any.
@@ -400,7 +400,7 @@ window.bpReshare = window.bpReshare || {};
 
 		// If the user is in the users who reshared: can remove reshare.
 		} else if ( $( link ).hasClass( 'remove-reshare' ) ) {
-			bpReshare.Ajax.delete( id, { user_id: bpReshare.params.u }, function( status, response ) {
+			bpReshare.Ajax.delete( id, { 'user_id': bpReshare.params.u, 'author_slug': author }, function( status, response ) {
 				if ( 200 === status ) {
 
 					// Update the link for a remove reshare one
