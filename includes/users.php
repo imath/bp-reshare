@@ -10,6 +10,34 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Returns the total reshares for a given user
+ *
+ * @since   2.0.0
+ *
+ * @param  integer $user_id The user ID to get the number of reshares of.
+ * @return integer the number of reshares of the user
+ */
+function buddyreshare_users_reshares_count( $user_id = 0 ) {
+	if ( ! $user_id ) {
+		$user_id = get_current_user_id();
+	}
+
+	$user_id        = (int) $user_id;
+	$reshares_count = wp_cache_get( $user_id, 'reshares_count' );
+
+	if ( empty( $reshares_count ) ) {
+		global $wpdb;
+
+		$table          = bp_core_get_table_prefix() . 'bp_activity_user_reshares';
+		$reshares_count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT( id ) as count FROM {$table} WHERE user_id = %d", $user_id ) );
+
+		wp_cache_add( $user_id, $reshares_count, 'reshares_count' );
+	}
+
+	return $reshares_count;
+}
+
 function buddyreshare_users_reshared_screen() {
 	if ( ! buddyreshare_is_user_profile_reshares() ) {
 		return;
@@ -45,3 +73,14 @@ function buddyreshare_users_admin_menu() {
 	) );
 }
 add_action( 'bp_activity_setup_admin_bar', 'buddyreshare_users_admin_menu' );
+
+function buddyreshare_users_clean_cache( $args = array() ) {
+	if ( empty( $args['user_id'] ) ) {
+		return;
+	}
+
+	$user_id = (int) $args['user_id'];
+	wp_cache_delete( $user_id, 'reshares_count' );
+}
+add_action( 'buddyreshare_reshare_added',   'buddyreshare_users_clean_cache', 12, 1 );
+add_action( 'buddyreshare_reshare_deleted', 'buddyreshare_users_clean_cache', 12, 1 );

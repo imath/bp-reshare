@@ -196,20 +196,6 @@ function buddyreshare_activity_types() {
 }
 
 /**
- * Returns the total reshares for a given user
- *
- * @package BP Reshare
- * @since    1.0
- *
- * @param  integer $user_id [description]
- * @uses   bp_get_user_meta() to get the number of reshares of the user
- * @return integer the number of reshares of the user
- */
-function buddyreshare_get_total_reshares_count( $user_id = 0 ) {
-	return intval( bp_get_user_meta( $user_id, 'buddyreshare_count', true ) );
-}
-
-/**
  * Can this activity be reshared
  *
  * @package BP Reshare

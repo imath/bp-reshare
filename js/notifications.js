@@ -97,6 +97,10 @@ window.bpReshare = window.bpReshare || {};
 		},
 
 		updateBubbles: function( number ) {
+			if ( ! this.amount ) {
+				return;
+			}
+			
 			this.bubble.innerHTML = parseInt( this.bubble.innerHTML, 10 ) - number;
 
 			if ( 0 === parseInt( this.bubble.innerHTML, 10 ) ) {

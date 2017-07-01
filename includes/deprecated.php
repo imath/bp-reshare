@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Returns plugin's includes url
- * 
+ *
  * @since   1.0
  * @deprecated 2.0.0
  *
@@ -80,4 +80,19 @@ function buddyreshare_reset_metas( $activity_id = 0, $user_id = 0 ) {
  */
 function buddyreshare_get_class( $activity = null, $activity_first_id = 0 ) {
 	_deprecated_function( __FUNCTION__, '2.0.0' );
+}
+
+/**
+ * Returns the total reshares for a given user
+ *
+ * @package BP Reshare
+ * @since    1.0
+ * @deprecated 2.0.0
+ *
+ * @param  integer $user_id The user ID to get the number of reshares of.
+ * @return integer the number of reshares of the user
+ */
+function buddyreshare_get_total_reshares_count( $user_id = 0 ) {
+	_deprecated_function( __FUNCTION__, '2.0.0', 'buddyreshare_users_reshares_count()' );
+	return buddyreshare_users_reshares_count( $user_id );
 }

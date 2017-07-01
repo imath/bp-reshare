@@ -222,15 +222,17 @@ function buddyreshare_sort_activities_by_reshared_date( $sql = '', $args = array
 
 	if ( buddyreshare_is_user_profile_reshares() ) {
 		$and = ' AND r.date_reshared IS NOT NULL ';
+	} elseif ( isset( $args['scope'] ) && 'reshares' === $args['scope'] ) {
+		$and = sprintf( ' AND r.user_id = %d ', get_current_user_id() );
 	}
 
 	return str_replace( array(
 			'WHERE',
-			'ORDER BY'
+			'ORDER BY a.date_recorded DESC'
 		),
 		array(
-			sprintf( 'LEFT JOIN %sbp_activity_user_reshares r ON ( a.id = r.activity_id ) WHERE', bp_core_get_table_prefix() ),
-			sprintf( '%sORDER BY IF( r.date_reshared > a.date_recorded, r.date_reshared, a.date_recorded ) DESC, ', $and ),
+			sprintf( 'LEFT JOIN ( SELECT activity_id, user_id, date_reshared FROM %sbp_activity_user_reshares ORDER BY id DESC ) r ON ( a.id = r.activity_id ) WHERE', bp_core_get_table_prefix() ),
+			sprintf( '%sORDER BY IF( r.date_reshared > a.date_recorded, r.date_reshared, a.date_recorded ) DESC', $and ),
 		),
 		$sql
 	);

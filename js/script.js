@@ -6,7 +6,7 @@ window.bpReshare = window.bpReshare || {};
 ( function( bpReshare, $ ) {
 
 	// Bail if not set
-	if ( 'undefined' === typeof bpReshare.template ) {
+	if ( 'undefined' === typeof bpReshare.templates ) {
 		return;
 	}
 
@@ -124,7 +124,8 @@ window.bpReshare = window.bpReshare || {};
 			return false;
 		}
 
-		var link, entry, reshareData = { link: 'addLink', text: 'addReshare' }, activity = {};
+		var link, entry, reshareData = { link: 'addLink', text: 'addReshare' }, activity = {},
+		    timeSince = '.activity-header a.activity-time-since';
 
 		if ( activityId.id ) {
 			activity = activityId;
@@ -151,7 +152,11 @@ window.bpReshare = window.bpReshare || {};
 				     .replace( /date-recorded-([0-9]+)/, 'date-recorded-' + activity.time )
 			);
 
-			entry.find( '.activity-header a.activity-time-since' ).after(
+			if ( ! entry.find( timeSince ).length ) {
+				timeSince = '.activity-header span.time-since';
+			}
+
+			entry.find( timeSince ).after(
 				$( '<span></span>' ).addClass( 'time-since reshare-time-since' )
 				                    .html( '&nbsp;' + bpReshare.getTimeSince( activity.time ) )
 			);
@@ -258,12 +263,12 @@ window.bpReshare = window.bpReshare || {};
 					className = 'disabled';
 				}
 
-				bpReshare.activities[i].markUp = bpReshare.template.replace( '%l', bpReshare.strings.addLink.replace( '%i', activity.id ) )
-				                                                   .replace( '%r', className )
-				                                                   .replace( '%a', activity.id )
-				                                                   .replace( '%u', authorName )
-				                                                   .replace( '%t', bpReshare.strings.addReshare )
-				                                                   .replace( '%c', 0 );
+				bpReshare.activities[i].markUp = bpReshare.templates.reshareButton.replace( '%l', bpReshare.strings.addLink.replace( '%i', activity.id ) )
+				                                                                  .replace( '%r', className )
+				                                                                  .replace( '%a', activity.id )
+				                                                                  .replace( '%u', authorName )
+				                                                                  .replace( '%t', bpReshare.strings.addReshare )
+				                                                                  .replace( '%c', 0 );
 			}
 
 			$( selector ).find( '.activity-meta a' ).first().after(
@@ -272,6 +277,44 @@ window.bpReshare = window.bpReshare || {};
 		} );
 
 		return true;
+	};
+
+	bpReshare.isResharesScope = function() {
+		return 'reshares' === decodeURIComponent( document.cookie ).split( ';' ).map( function( i ) {
+			var j = i.split( '=' );
+
+			if ( 'bp-activity-scope' === $.trim( j[0] ) ) {
+				return $.trim( j[1] );
+			}
+		} ).filter( function( k ) {
+			if ( k ) {
+				return k;
+			}
+		} ).shift();
+	};
+
+	bpReshare.activityTab = function( number, tabClass ) {
+		bpReshare.params.u_count = parseInt( bpReshare.params.u_count, 10 );
+
+		if ( ! bpReshare.params.u_count && ! number ) {
+			return;
+		}
+
+		if ( ! number ) {
+			number = bpReshare.params.u_count;
+		} else if ( '-1' === number )  {
+			bpReshare.params.u_count -= 1;
+		} else {
+			bpReshare.params.u_count += parseInt( number, 10 );
+		}
+
+		if ( $( 'body.directory #activity-reshares' ).length ) {
+			$( 'body.directory #activity-reshares' ).find( 'span' ).first().html( bpReshare.params.u_count );
+		} else {
+			$( 'body.directory .activity-type-tabs ul li' ).first().after(
+				$( bpReshare.templates.directoryTab.replace( '%c', bpReshare.params.u_count ) ).addClass( true === tabClass ? 'selected' : '' )
+			);
+		}
 	};
 
 	/**
@@ -302,7 +345,11 @@ window.bpReshare = window.bpReshare || {};
 			}, 500 );
 		}
 	}
-	$( document ).ready( bpReshare.Button( 'populate' ) );
+
+	$( document ).ready( function() {
+		bpReshare.Button( 'populate' );
+		bpReshare.activityTab( null, bpReshare.isResharesScope() );
+	} );
 
 	/**
 	 * Intercepts Ajax responses to make sure Reshare buttons are added to it.
@@ -364,7 +411,7 @@ window.bpReshare = window.bpReshare || {};
 
 	bpReshare.add = function( event ) {
 		var link = event.currentTarget, id = $( link ).data( 'activity-id' ), author = $( link ).data( 'author-name' ),
-		    countSpan = $(link).find( 'span.count' ).first();
+		    countSpan = $(link).find( 'span.count' ).first(), timeSince = '.activity-header a.activity-time-since';
 
 		event.preventDefault();
 
@@ -381,18 +428,24 @@ window.bpReshare = window.bpReshare || {};
 					// Remove the reshare header if any.
 					$( link ).closest( '.activity-content' ).find( '.reshare-time-since' ).remove();
 
+					if ( ! $( '#activity-' + id ).find( timeSince ).length ) {
+						timeSince = '.activity-header span.time-since';
+					}
+
 					// Update the link for a remove reshare one
 					$( link ).removeClass( 'add-reshare' )
 					         .addClass( 'remove-reshare' )
 					         .prop( 'href', bpReshare.strings.removeLink.replace( '%i', id ) )
 					         .closest( '.activity-content' )
-					         .find( '.activity-header a.activity-time-since' )
+					         .find( timeSince )
 					         .after(
 					          $( '<span></span>' ).addClass( 'time-since reshare-time-since' )
 					                              .html( '&nbsp;' + bpReshare.getTimeSince( response.reshared ) )
 					         );
 
 					$( countSpan ).html( parseInt( $( countSpan ).html(), 10 ) + 1 );
+
+					bpReshare.activityTab( 1 );
 				} else {
 					console.log( status );
 				}
@@ -412,6 +465,12 @@ window.bpReshare = window.bpReshare || {};
 					         .remove();
 
 					$( countSpan ).html( parseInt( $( countSpan ).html(), 10 ) - 1 );
+
+					bpReshare.activityTab( '-1' );
+
+					if ( bpReshare.isResharesScope() ) {
+						$( '#activity-' + id ).remove();
+					}
 				} else {
 					console.log( status );
 				}

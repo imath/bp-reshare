@@ -114,6 +114,7 @@ class BuddyReshare {
 		// Set Cache Global groups.
 		wp_cache_add_global_groups( array(
 			'user_reshares',
+			'reshares_count',
 			'reshared_notifications',
 		) );
 	}
@@ -247,6 +248,7 @@ class BuddyReshare {
 				$script_data['params'] = array_merge( $script_data['params'], array(
 					'root_members' => $root_members,
 					'u_nicename'   => $user_nicename,
+					'u_count'      => buddyreshare_users_reshares_count(),
 					'time_since'   => buddyreshare_get_l10n_time_since(),
 				) );
 			}
@@ -254,11 +256,21 @@ class BuddyReshare {
 			$reshare_url = trailingslashit( bp_get_root_domain() ) .  bp_get_activity_root_slug() . '/' . buddyreshare_get_component_slug();
 
 			$script_data = array_merge( $script_data, array(
-				'template' => '<a href="%l" class="bp-reshare button bp-secondary-action %r" data-activity-id="%a" data-author-name="%u">
-					<span class="bp-reshare-icon"></span>
-					<span class="bp-screen-reader-text">%t</span>
-					<span class="count">%c</span>
-				</a>',
+				'templates' => array(
+					'reshareButton' => '<a href="%l" class="bp-reshare button bp-secondary-action %r" data-activity-id="%a" data-author-name="%u">
+						<span class="bp-reshare-icon"></span>
+						<span class="bp-screen-reader-text">%t</span>
+						<span class="count">%c</span>
+					</a>',
+					'directoryTab' => sprintf( '<li id="activity-reshares">
+							<a href="%1$s" aria-label="%2$s">%3$s %4$s</a>
+						</li>',
+						esc_url_raw( bp_loggedin_user_domain() . bp_get_activity_slug() . '/'. buddyreshare_get_component_slug() .'/' ),
+						esc_attr__( 'Activities I reshared.', 'bp-reshare' ),
+						esc_html__( 'My Reshares', 'bp-reshares' ),
+						'<span>%c</span>'
+					),
+				),
 				'strings'  => array(
 					'addReshare'    => __( 'Reshare this activity', 'bp-reshare' ),
 					'removeReshare' => __( 'Remove the Reshare of this activity', 'bp-reshare' ),
