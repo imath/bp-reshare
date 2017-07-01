@@ -32,11 +32,13 @@ window.bpReshare = window.bpReshare || {};
 						}
 					};
 
-					this.dN.setAttribute( 'id', 'wp-admin-bar-notification-reshares' );
 					list.appendChild( this.dN );
+				} else {
+					this.restoreDN = this.dN.cloneNode( true );
 				}
 
 				if ( this.dN.nodeName ) {
+					this.dN.setAttribute( 'id', 'wp-admin-bar-notification-reshares' );
 					var dNlink = this.dN.firstChild;
 
 					dNlink.setAttribute( 'href', '#' );
@@ -102,10 +104,14 @@ window.bpReshare = window.bpReshare || {};
 			}
 
 			if ( this.amount === number ) {
+				if ( this.restoreDN ) {
+					document.querySelector( '#wp-admin-bar-bp-notifications-default' ).appendChild( this.restoreDN );
+				}
+
 				this.dN.remove();
 				this.itemBubble.remove();
 			} else {
-				this.itemBubble.innerHTML = parseInt( this.bubble.innerHTML, 10 ) - number;
+				this.itemBubble.innerHTML = parseInt( this.itemBubble.innerHTML, 10 ) - number;
 
 				if ( 1 === this.amount - number && this.activityID ) {
 					var dNlink = this.dN.firstChild, self = this, remainingItems = this.items.filter( function( a ) {
