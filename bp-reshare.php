@@ -110,6 +110,12 @@ class BuddyReshare {
 			'namespace' => 'bp-reshare',
 			'version'   => 'v1',
 		);
+
+		// Set Cache Global groups.
+		wp_cache_add_global_groups( array(
+			'user_reshares',
+			'reshared_notifications',
+		) );
 	}
 
 	/**

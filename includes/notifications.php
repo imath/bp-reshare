@@ -15,16 +15,23 @@ function buddyreshare_notifications_get_unread_item_ids( $user_id = 0 ) {
 		$user_id = get_current_user_id();
 	}
 
-	global $wpdb;
+	$reshared_updates = wp_cache_get( $user_id, 'reshared_notifications' );
 
-	$table = buddypress()->notifications->table_name;
+	if ( empty( $reshared_updates ) ) {
+		global $wpdb;
+		$table = buddypress()->notifications->table_name;
 
-	return $wpdb->get_col( $wpdb->prepare(
-		"SELECT DISTINCT item_id FROM {$table} WHERE user_id = %d AND component_name = %s AND component_action = %s AND is_new = 1",
-		$user_id,
-		buddyreshare_get_component_id(),
-		'new_reshare'
-	) );
+		$reshared_updates = $wpdb->get_col( $wpdb->prepare(
+			"SELECT DISTINCT item_id FROM {$table} WHERE user_id = %d AND component_name = %s AND component_action = %s AND is_new = 1",
+			$user_id,
+			buddyreshare_get_component_id(),
+			'new_reshare'
+		) );
+
+		wp_cache_add( $user_id,  $reshared_updates, 'reshared_notifications' );
+	}
+
+	return $reshared_updates;
 }
 
 function buddyreshare_notifications_enqueue_script() {
@@ -44,8 +51,8 @@ function buddyreshare_notifications_enqueue_script() {
 		'userNotifications' => array(
 			'items'   => buddyreshare_notifications_get_unread_item_ids(),
 			'template' => array(
-				'one'  => __( '%n reshared activity', 'bp-reshare' ),
-				'more' => __( '%n reshared activities', 'bp-reshare' ),
+				'one'  => __( 'New reshared activity', 'bp-reshare' ),
+				'more' => __( 'New reshared activities', 'bp-reshare' ),
 			),
 			'link' => array(
 				'one'  => bp_get_root_domain() . '/' . bp_get_activity_root_slug() . '/p/%n/',
@@ -76,6 +83,8 @@ function buddyreshare_notifications_add( $args = array() ) {
 		'date_notified'     => bp_core_current_time(),
 		'is_new'            => 1,
 	) );
+
+	do_action( 'buddyreshare_notifications_added', $author_id );
 }
 add_action( 'buddyreshare_reshare_added', 'buddyreshare_notifications_add', 10, 1 );
 
@@ -97,13 +106,53 @@ function buddyreshare_notifications_remove( $args = array() ) {
 		'new_reshare',
 		$args['user_id']
 	);
+
+	do_action( 'buddyreshare_notifications_removed', $author_id );
 }
 add_action( 'buddyreshare_reshare_deleted', 'buddyreshare_notifications_remove', 10, 1 );
 
-function buddyreshare_notifications_read() {
+function buddyreshare_notifications_read( $activity = null ) {
+	$unread = array();
+
+	if ( ! empty( $activity->id ) && bp_is_single_activity() ) {
+		$unread[] = $activity->id;
+		$user_id = $activity->user_id;
+
+	} elseif ( bp_is_my_profile() ) {
+		$user_id = get_current_user_id();
+		$unread  = buddyreshare_notifications_get_unread_item_ids( $user_id );
+	}
+
 	/**
-	 * @todo
+	 * BP_Notifications_Notification::update() doesn't allow to pass an array of
+	 * item IDs, so I need to create a specific update logic.
 	 */
-	return;
+	if ( ! empty( $unread ) ) {
+		global $wpdb;
+		$table = buddypress()->notifications->table_name;
+		$in    = join( ',', wp_parse_id_list( $unread ) );
+
+		$wpdb->query( $wpdb->prepare( "UPDATE {$table} SET is_new = %d
+			WHERE user_id = %d AND item_id IN ( {$in} ) AND component_name = %s AND component_action = %s",
+			false,
+			$user_id,
+			buddyreshare_get_component_id(),
+			'new_reshare'
+		) );
+
+		do_action( 'buddyreshare_notifications_marked_read', $user_id );
+	}
 }
-add_action( 'buddyreshare_users_reshared_screen', 'buddyreshare_notifications_read' );
+add_action( 'buddyreshare_users_reshared_screen',           'buddyreshare_notifications_read', 10, 1 );
+add_action( 'bp_activity_screen_single_activity_permalink', 'buddyreshare_notifications_read', 10, 1 );
+
+function buddyreshare_notifications_clean_cache( $user_id = 0 ) {
+	if ( ! $user_id ) {
+		return;
+	}
+
+	wp_cache_delete( $user_id, 'reshared_notifications' );
+}
+add_action( 'buddyreshare_notifications_added',       'buddyreshare_notifications_clean_cache', 10, 1 );
+add_action( 'buddyreshare_notifications_removed',     'buddyreshare_notifications_clean_cache', 10, 1 );
+add_action( 'buddyreshare_notifications_marked_read', 'buddyreshare_notifications_clean_cache', 10, 1 );
