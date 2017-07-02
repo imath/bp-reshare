@@ -74,13 +74,73 @@ function buddyreshare_users_admin_menu() {
 }
 add_action( 'bp_activity_setup_admin_bar', 'buddyreshare_users_admin_menu' );
 
-function buddyreshare_users_clean_cache( $args = array() ) {
-	if ( empty( $args['user_id'] ) ) {
+function buddyreshare_users_get_favorites( $activity_id = 0 ) {
+	$user_favorites = array();
+
+	if ( ! $activity_id ) {
+		return $user_favorites;
+	}
+
+	$user_favorites = wp_cache_get( $activity_id, 'user_favorites' );
+
+	if ( ! $user_favorites ) {
+		global $wpdb;
+
+		$favorite       = serialize( (string) $activity_id );
+		$user_favorites = $wpdb->get_col( $wpdb->prepare( "SELECT user_id FROM {$wpdb->usermeta}
+			WHERE meta_key = 'bp_favorite_activities' AND meta_value LIKE %s",
+			'%' . $favorite . '%'
+		) );
+
+		wp_cache_add( $activity_id, $user_favorites, 'user_favorites' );
+	}
+
+	return $user_favorites;
+}
+
+function buddyreshare_users_get_reshares( $activity_id = 0 ) {
+	$user_reshares = array();
+
+	if ( ! $activity_id ) {
+		return $user_reshares;
+	}
+
+	$user_reshares = wp_cache_get( $activity_id, 'user_reshares' );
+
+	if ( ! $user_reshares ) {
+		global $wpdb;
+
+		$table         = bp_core_get_table_prefix() . 'bp_activity_user_reshares';
+		$user_reshares = $wpdb->get_col( $wpdb->prepare( "SELECT user_id FROM {$table}
+			WHERE activity_id = %d",
+			$activity_id
+		) );
+
+		wp_cache_add( $activity_id, $user_reshares, 'user_reshares' );
+	}
+
+	return $user_reshares;
+}
+
+function buddyreshare_users_clean_reshares_cache( $args = array() ) {
+	if ( empty( $args['user_id'] ) || empty( $args['activity_id'] ) ) {
 		return;
 	}
 
-	$user_id = (int) $args['user_id'];
+	$user_id     = (int) $args['user_id'];
+	$activity_id = (int) $args['activity_id'];
 	wp_cache_delete( $user_id, 'reshares_count' );
+	wp_cache_delete( $activity_id, 'user_reshares' );
 }
-add_action( 'buddyreshare_reshare_added',   'buddyreshare_users_clean_cache', 12, 1 );
-add_action( 'buddyreshare_reshare_deleted', 'buddyreshare_users_clean_cache', 12, 1 );
+add_action( 'buddyreshare_reshare_added',   'buddyreshare_users_clean_reshares_cache', 12, 1 );
+add_action( 'buddyreshare_reshare_deleted', 'buddyreshare_users_clean_reshares_cache', 12, 1 );
+
+function buddyreshare_users_clean_favorites_cache( $activity_id = 0 ) {
+	if ( ! $activity_id ) {
+		return;
+	}
+
+	wp_cache_delete( $activity_id, 'user_favorites' );
+}
+add_action( 'bp_activity_add_user_favorite',    'buddyreshare_users_clean_favorites_cache', 12, 1 );
+add_action( 'bp_activity_remove_user_favorite', 'buddyreshare_users_clean_favorites_cache', 12, 1 );

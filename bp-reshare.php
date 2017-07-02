@@ -114,6 +114,7 @@ class BuddyReshare {
 		// Set Cache Global groups.
 		wp_cache_add_global_groups( array(
 			'user_reshares',
+			'user_favorites',
 			'reshares_count',
 			'reshared_notifications',
 		) );
@@ -211,6 +212,22 @@ class BuddyReshare {
 			true
 		);
 
+		wp_register_script(
+			'bp-reshare',
+			$this->js_url . 'script.js',
+			array( 'bp-reshare-request', 'jquery' ),
+			$this->version,
+			true
+		);
+
+		wp_register_script(
+			'bp-reshare-activity',
+			$this->js_url . 'single-activity.js',
+			array( 'bp-reshare' ),
+			$this->version,
+			true
+		);
+
 		wp_register_style(
 			'bp-reshare-style',
 			$this->css_url . 'style.css',
@@ -228,13 +245,48 @@ class BuddyReshare {
 		);
 
 		if ( bp_is_activity_component() || bp_is_group_activity() ) {
-			wp_enqueue_script(
-				'bp-reshare',
-				$this->js_url . 'script.js',
-				array( 'bp-reshare-request', 'jquery' ),
-				$this->version,
-				true
-			);
+
+			if ( bp_is_single_activity() ) {
+				wp_enqueue_script( 'bp-reshare-activity' );
+
+				if ( ! empty( $script_data['params']['u'] ) ) {
+					$activity_nav = array(
+						'comments' => array(
+							'singular' => __( 'Comment', 'bp-reshare' ),
+							'plural'   => __( 'Comments', 'bp-reshare' ),
+							'position' => 0,
+							'users'    => array(),
+							'no_item'  => __( 'This activity has no comments yet, add yours!', 'bp-reshare' ),
+						),
+						'reshares' => array(
+							'singular' => __( 'User who Reshared', 'bp-reshare' ),
+							'plural'   => __( 'Users who Reshared', 'bp-reshare' ),
+							'position' => 1,
+							'users'    => buddyreshare_users_get_reshares( bp_current_action() ),
+							'no_item'  => __( 'This activity has no reshares yet, reshare it!', 'bp-reshare' ),
+						),
+					);
+
+					if ( bp_activity_can_favorite() ) {
+						$activity_nav['favorites'] = array(
+							'singular' => __( 'User who Favorited', 'bp-reshare' ),
+							'plural'   => __( 'Users who Favorited', 'bp-reshare' ),
+							'position' => 2,
+							'users'    => buddyreshare_users_get_favorites( bp_current_action() ),
+							'no_item'  => __( 'This activity is not favorited yet, add it to your favorites!', 'bp-reshare' ),
+						);
+					}
+
+					$script_data = array_merge( $script_data, array(
+						'activity'  => array(
+							'nav' => $activity_nav,
+							'id'  => (int) bp_current_action(),
+						),
+					) );
+				}
+			} else {
+				wp_enqueue_script( 'bp-reshare' );
+			}
 
 			wp_enqueue_style( 'bp-reshare-style' );
 

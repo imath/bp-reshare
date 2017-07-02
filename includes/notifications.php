@@ -28,7 +28,7 @@ function buddyreshare_notifications_get_unread_item_ids( $user_id = 0 ) {
 			'new_reshare'
 		) );
 
-		wp_cache_add( $user_id,  $reshared_updates, 'reshared_notifications' );
+		wp_cache_add( $user_id, $reshared_updates, 'reshared_notifications' );
 	}
 
 	return $reshared_updates;
