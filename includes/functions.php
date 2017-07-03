@@ -474,7 +474,7 @@ function buddyreshare_rest_routes() {
 				),
 				'per_page' => array(
 					'type'        => 'integer',
-					'default'     => 1,
+					'default'     => 5,
 					'description' => __( 'The number of resultes to fetch.', 'bp-reshare' ),
 				),
 				'include' => array(

@@ -180,7 +180,44 @@ window.bpReshare = window.bpReshare || {};
 		bpReshare.getUsers( content, navItemName, page );
 	} );
 
+	bpReshare.refreshCounts = function( navItemName, user, number ) {
+		if ( navItemName && 'comments' !== navItemName ) {
+			if ( '-1' === number ) {
+				bpReshare.activity.nav[ navItemName ].users.splice( bpReshare.activity.nav[ navItemName ].users.indexOf( user.toString() ) );
+			} else if ( 1 === number ) {
+				bpReshare.activity.nav[ navItemName ].users.push( user.toString() );
+			}
+		}
+
+		$( '#display-comments' ).trigger( 'click' );
+
+		return bpReshare.activity.nav[ navItemName ].users.length;
+	}
+
+	$( document ).ajaxSuccess( function( event, xhr, settings ) {
+		var requestData = decodeURIComponent( settings.data ), number = 1;
+		    action      = bpReshare.getURLparams( '?' + requestData, 'action' );
+
+		if ( 'activity_mark_fav' === action || 'activity_mark_unfav' === action ) {
+			if ( 'activity_mark_unfav' === action ) {
+				number = '-1';
+			}
+
+			bpReshare.activity.nav.favorites.count = bpReshare.refreshCounts( 'favorites', bpReshare.params.u, number );
+
+			window.setTimeout( function() {
+				$( '#activity-' + bpReshare.activity.id + ' .activity-meta' ).find( '.fav, .unfav' ).html(
+					$( '<span></span>' ).addClass( 'count' )
+				                      .html( bpReshare.activity.nav.favorites.count )
+				                      .get( 0 ).outerHTML
+													    + '&nbsp;' + xhr.responseText
+				)
+			}, 500 );
+		}
+	} );
+
 	$( document ).ready( function() {
 		bpReshare.activityNav();
 	} );
+
 } )( window.bpReshare, jQuery );
