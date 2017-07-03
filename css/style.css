@@ -116,3 +116,22 @@ body.activity-permalink #buddypress #activity-stream div.buddyreshare-nav-conten
 body.activity-permalink #buddypress div.buddyreshare-nav-content #message {
 	margin-top: 15px;
 }
+
+body.activity-permalink #buddypress .buddyreshare-nav-content .load-more-users:not(.loading) {
+	background: #f7f7f7;
+	border: 1px solid transparent;
+	padding: 10px;
+	font-size: 110%;
+	margin: 15px 0;
+	text-align: center;
+}
+
+body.activity-permalink #buddypress .buddyreshare-nav-content .load-more-users:not(.loading):hover {
+	background: #f4f4f4;
+	border: 1px solid rgba(159, 209, 226, 0.3);
+	font-style: italic;
+}
+
+body.activity-permalink #buddypress .buddyreshare-nav-content .load-more-users:not(.loading) {
+	display: block;
+}

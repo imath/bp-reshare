@@ -291,28 +291,80 @@ function buddyreshare_rest_get_all_items_permissions_check( WP_REST_Request $req
 }
 
 function buddyreshare_rest_get_items( WP_REST_Request $request ) {
-	$activity_id = (int) $request->get_param( 'id' );
-	$user_id     = (int) $request->get_param( 'user_id' );
+	$args = $request->get_params();
 
-	$reshares = bp_activity_get_meta( $activity_id, 'reshared_by' );
-	if ( ! is_array( $reshares ) && '' === $reshares ) {
-		$reshares = array();
+	if ( isset( $args['id'] ) ) {
+		$args['activity_id'] = (int) $args['id'];
 	}
 
-	$count = count( $reshares );
+	$r = array_intersect_key( $args, array(
+		'activity_id' => true,
+		'type'        => true,
+		'page'        => true,
+		'per_page'    => true,
+		'include'     => true,
+	) );
 
-	if ( empty( $reshares ) || ! in_array( $user_id, $reshares, true ) ) {
-		$result = array(
-			'link'  => 'addLink',
-			'text'  => 'addReshare',
-			'count' => $count,
-		);
+	if ( empty( $r['activity_id'] ) && empty( $r['include'] ) ) {
+		return new WP_Error( 'bp_reshare_missing_argument', __( 'Missing argument' ), array( 'status' => 500 ) );
+	}
+
+	$type = sanitize_key( $r['type'] );
+	unset( $r['type'] );
+
+	if ( empty( $r['include'] ) ) {
+
+		if ( ! function_exists( 'buddyreshare_users_get_' . $type  ) ) {
+			return new WP_Error( 'bp_reshare_unknown_callback', __( 'Missing callback' ), array( 'status' => 500 ) );
+		}
+
+		$include = call_user_func( 'buddyreshare_users_get_' . $type, $r['activity_id'] );
 	} else {
-		$result = array(
-			'link'  => 'removeLink',
-			'text'  => 'removeReshare',
-			'count' => $count,
-		);
+		$include = wp_parse_id_list( $r['include'] );
+	}
+
+	if ( ! is_array( $include ) || ! count( $include ) ) {
+		return array();
+	}
+
+	$result = array();
+	if ( bp_has_members( $r ) ) {
+		while ( bp_members() ) : bp_the_member();
+			// Get User actions.
+			ob_start();
+			do_action( 'bp_directory_members_actions' );
+			$user_actions = ob_get_clean();
+
+			$user_id = bp_get_member_user_id();
+
+			$result['users'][ $user_id ] = sprintf( '<li %1$s>
+					<div class="item-avatar">
+						<a href="%2$s">%3$s</a>
+					</div>
+					<div class="item">
+						<div class="item-title">
+							<a href="%2$s">%4$s</a>
+						</div>
+						<div class="item-meta"><span class="activity" data-livestamp="%5$s">%6$s</span></div>
+					</div>
+					<div class="action">%7$s</div>
+					<div class="clear"></div>
+				</li>',
+				bp_get_member_class(),
+				esc_url( bp_get_member_permalink() ),
+				bp_get_member_avatar(),
+				esc_html( bp_get_member_name() ),
+				esc_attr( bp_core_get_iso8601_date( bp_get_member_last_active( array( 'relative' => false ) ) ) ),
+				bp_get_member_last_active(),
+				$user_actions
+			);
+
+		endwhile;
+
+		$result['has_more'] = false;
+		if ( ! empty( $GLOBALS['members_template']->total_member_count ) ) {
+			$result['has_more'] = ( $r['page'] * $r['per_page'] ) < $GLOBALS['members_template']->total_member_count;
+		}
 	}
 
 	return rest_ensure_response( $result );
@@ -403,8 +455,8 @@ function buddyreshare_rest_routes() {
 	register_rest_route( $namespace, '/(?P<id>[\d]+)', array(
 		'args' => array(
 			'id' => array(
-				'description' => __( 'Unique identifier for the object.', 'bp-reshare' ),
-				'type'        => 'integer',
+				'description'       => __( 'Unique identifier for the object.', 'bp-reshare' ),
+				'type'              => 'integer',
 				'validate_callback' => function( $param, $request, $key ) {
 					return is_numeric( $param );
 				}
@@ -415,10 +467,25 @@ function buddyreshare_rest_routes() {
 			'callback' => 'buddyreshare_rest_get_items',
 			'permission_callback' => 'buddyreshare_rest_get_items_permissions_check',
 			'args'     => array(
-				'count' => array(
-					'type' => 'boolean',
-					'default' => false,
-					'description' => __( 'Whether to get only the count or not', 'bp-reshare' ),
+				'page' => array(
+					'type'        => 'integer',
+					'default'     => 1,
+					'description' => __( 'The page number to fetch', 'bp-reshare' ),
+				),
+				'per_page' => array(
+					'type'        => 'integer',
+					'default'     => 1,
+					'description' => __( 'The number of resultes to fetch.', 'bp-reshare' ),
+				),
+				'include' => array(
+					'type'        => 'string',
+					'default'     => '',
+					'description' => __( 'A comma separated user id list to limit the results to fetch.', 'bp-reshare' ),
+				),
+				'type' => array(
+					'type'        => 'string',
+					'default'     => 'reshares',
+					'description' => __( 'The type of user action to fetch.', 'bp-reshare' ),
 				),
 			),
 		),

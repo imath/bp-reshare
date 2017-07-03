@@ -279,8 +279,9 @@ class BuddyReshare {
 
 					$script_data = array_merge( $script_data, array(
 						'activity'  => array(
-							'nav' => $activity_nav,
-							'id'  => (int) bp_current_action(),
+							'nav'    => $activity_nav,
+							'id'     => (int) bp_current_action(),
+							'loader' => esc_url_raw( admin_url( 'images/spinner-2x.gif' ) ),
 						),
 					) );
 				}

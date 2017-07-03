@@ -16,9 +16,62 @@ window.bpReshare = window.bpReshare || {};
 
 		$( parent ).prepend(
 			$( '<div></div>' ).prop( 'id', 'message' )
-							  .addClass( 'info' )
-							  .html( '<p>' + bpReshare.activity.nav[ navItemName ].no_item + '</p>' )
+			                  .addClass( 'info' )
+			                  .html( '<p>' + bpReshare.activity.nav[ navItemName ].no_item + '</p>' )
 		);
+	};
+
+	bpReshare.getLoading = function( container ) {
+		$( container ).html(
+			$( '<div></div>' ).css( {
+				background: 'url( ' + bpReshare.activity.loader +' ) no-repeat',
+				width: '100%',
+				height: '40px',
+				'background-position': '50% 50%',
+			} )
+		);
+	};
+
+	bpReshare.getUsers = function( content, navItemName, page ) {
+		if ( ! page ) {
+			page = 1;
+		}
+
+		// Add a loading gif
+		if ( 1 === page ) {
+			bpReshare.getLoading( content );
+		}
+
+		var getData = {
+			type:    navItemName,
+			include: bpReshare.activity.nav[ navItemName ].users.join( ',' ),
+			page:    page
+		}
+
+		bpReshare.Ajax.get( bpReshare.activity.id, getData, function( status, response ) {
+			if ( 200 === status && response.users ) {
+				bpReshare.activity.nav[ navItemName ].usersDetail = response.users;
+
+				if ( response.has_more ) {
+					bpReshare.activity.nav[ navItemName ].nextPage = page + 1;
+					response.users.loadmore = '<li class="load-more-users"><a href="#" data-next-page="' + bpReshare.activity.nav[ navItemName ].nextPage + '">Load More</a></li>';
+				}
+
+				if ( 1 === page || ! $( '#' + navItemName + '-users' ).length ) {
+					$( content ).html(
+						$( '<ul></ul>' ).prop( { id: navItemName + '-users', class: 'item-list', 'aria-live': 'assertive', 'aria-relevant' : 'all' } )
+					);
+				} else if ( $( content ).find( '.loading' ).length ) {
+					$( content ).find( '.loading' ).remove();
+				}
+
+				$.each( response.users, function( i, user ) {
+						$( '#' + navItemName + '-users' ).append( user );
+				} );
+			} else {
+				console.log( status );
+			}
+		} );
 	};
 
 	bpReshare.activityNav = function() {
@@ -56,13 +109,16 @@ window.bpReshare = window.bpReshare || {};
 		).addClass( 'buddyreshare-nav-content' );
 
 		$( '#display-comments' ).parent().addClass( 'selected' );
-		bpReshare.outputNoItem( '#activity-' + bpReshare.activity.id + ' .activity-comments', 'comments' );
+
+		if ( 0 === bpReshare.activity.nav.comments.count ) {
+			bpReshare.outputNoItem( '#activity-' + bpReshare.activity.id + ' .activity-comments', 'comments' );
+		}
 
 		if ( bpReshare.activity.nav.favorites && bpReshare.activity.nav.favorites.count ) {
 			$( '#activity-' + bpReshare.activity.id + ' .activity-meta' ).find( '.fav, .unfav' )
 			                                                             .prepend( '&nbsp;' )
-				                                                         .prepend( $( '<span></span>' ).addClass( 'count' )
-																		                               .html( bpReshare.activity.nav.favorites.count ) );
+			                                                             .prepend( $( '<span></span>' ).addClass( 'count' )
+			                                                             .html( bpReshare.activity.nav.favorites.count ) );
 		}
 	}
 
@@ -87,6 +143,8 @@ window.bpReshare = window.bpReshare || {};
 		}
 
 		$.each( $( '.buddyreshare-nav-content' ), function( c, content ) {
+			var output;
+
 			if ( $( content ).hasClass( contentItem ) ) {
 				$( content ).show();
 
@@ -95,12 +153,31 @@ window.bpReshare = window.bpReshare || {};
 
 				} else {
 					$( content ).find( '#message' ).remove();
+
+					// Here is populating
+					if ( ! $( content ).hasClass( 'activity-comments' ) ) {
+						bpReshare.getUsers( content, navItemName );
+					}
 				}
 
 			} else {
 				$( content ).hide();
 			}
 		} );
+	} );
+
+	$( '#buddypress' ).on( 'click', '.buddyreshare-nav-content .load-more-users a',  function( event ) {
+		event.preventDefault();
+
+		var page = $( event.currentTarget ).data( 'next-page' );
+		    content = $( event.currentTarget ).closest( '.buddyreshare-nav-content' );
+		    navItemName = $( content ).prop( 'class' ).split( ' ' )[0].replace( 'activity-', '' );
+
+		$( event.currentTarget ).parent().addClass( 'loading' ).html(
+			bpReshare.getLoading( $(this) )
+		);
+
+		bpReshare.getUsers( content, navItemName, page );
 	} );
 
 	$( document ).ready( function() {
