@@ -475,7 +475,7 @@ function buddyreshare_rest_routes() {
 				'per_page' => array(
 					'type'        => 'integer',
 					'default'     => 5,
-					'description' => __( 'The number of resultes to fetch.', 'bp-reshare' ),
+					'description' => __( 'The number of results to fetch.', 'bp-reshare' ),
 				),
 				'include' => array(
 					'type'        => 'string',
@@ -535,16 +535,6 @@ function buddyreshare_rest_routes() {
 					'type' => 'string',
 					'default' => '',
 					'description' => __( 'comma separated list of activity ids to fetch', 'bp-reshare' ),
-				),
-				'page' => array(
-					'type' => 'integer',
-					'default' => 1,
-					'description' => __( 'The number of the page to fetch', 'bp-reshare' ),
-				),
-				'per_page' => array(
-					'type' => 'integer',
-					'default' => 20,
-					'description' => __( 'The amount of reshares per page to fetch', 'bp-reshare' ),
 				),
 			),
 		) ) );

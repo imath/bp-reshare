@@ -14,6 +14,11 @@ window.bpReshare = window.bpReshare || {};
 			return;
 		}
 
+		// Empty remaining users.
+		if ( 'comments' !== navItemName ) {
+			$( parent ).html( '' );
+		}
+
 		$( parent ).prepend(
 			$( '<div></div>' ).prop( 'id', 'message' )
 			                  .addClass( 'info' )
@@ -66,7 +71,7 @@ window.bpReshare = window.bpReshare || {};
 				}
 
 				$.each( response.users, function( i, user ) {
-						$( '#' + navItemName + '-users' ).append( user );
+					$( '#' + navItemName + '-users' ).append( user );
 				} );
 			} else {
 				console.log( status );
@@ -166,7 +171,7 @@ window.bpReshare = window.bpReshare || {};
 		} );
 	} );
 
-	$( '#buddypress' ).on( 'click', '.buddyreshare-nav-content .load-more-users a',  function( event ) {
+	$( '#buddypress' ).on( 'click', '.buddyreshare-nav-content .load-more-users a', function( event ) {
 		event.preventDefault();
 
 		var page = $( event.currentTarget ).data( 'next-page' );
@@ -181,23 +186,64 @@ window.bpReshare = window.bpReshare || {};
 	} );
 
 	bpReshare.refreshCounts = function( navItemName, user, number ) {
-		if ( navItemName && 'comments' !== navItemName ) {
+		var count = 0;
+
+		// Update users for reshares and favorites count.
+		if ( 'comments' !== navItemName ) {
 			if ( '-1' === number ) {
-				bpReshare.activity.nav[ navItemName ].users.splice( bpReshare.activity.nav[ navItemName ].users.indexOf( user.toString() ) );
+				bpReshare.activity.nav[ navItemName ].users.splice( bpReshare.activity.nav[ navItemName ].users.indexOf( user.toString() ), 1 );
 			} else if ( 1 === number ) {
 				bpReshare.activity.nav[ navItemName ].users.push( user.toString() );
 			}
+
+			count = bpReshare.activity.nav[ navItemName ].users.length;
+
+			/**
+			 * Make sure to default to Comment(s) content so That
+			 * the user needs to refresh the users who favorited
+			 * or reshared.
+			 */
+			$( '#display-comments' ).trigger( 'click' );
+
+		// For the comments, we simply need to make sur the Nav label is consistent.
+		} else {
+			count = number;
+			$( '.activity-comments' ).find( '#message.info' ).remove();
 		}
 
-		$( '#display-comments' ).trigger( 'click' );
+		if ( count <= 1 ) {
+			$( '#display-' + navItemName ).html( bpReshare.activity.nav[ navItemName ].singular );
+		} else {
+			$( '#display-' + navItemName ).html( bpReshare.activity.nav[ navItemName ].plural );
+		}
 
-		return bpReshare.activity.nav[ navItemName ].users.length;
+		return count;
 	}
+
+	$( '#buddypress .activity-meta' ).on( 'click', 'a', function( event ) {
+		var number = 0;
+
+		// Make sure the comments are displayed.
+		if ( $( event.currentTarget ).hasClass( 'acomment-reply' ) ) {
+			$( '#display-comments' ).trigger( 'click' );
+
+		// Update Reshares nav and count.
+		} else if ( $( event.currentTarget ).hasClass( 'bp-reshare' ) ) {
+			if ( $( event.currentTarget ).hasClass( 'add-reshare' ) ) {
+				number = 1;
+			} else if ( $( event.currentTarget ).hasClass( 'remove-reshare' ) ) {
+				number = '-1';
+			}
+
+			bpReshare.activity.nav.reshares.count = bpReshare.refreshCounts( 'reshares', bpReshare.params.u, number );
+		}
+	} );
 
 	$( document ).ajaxSuccess( function( event, xhr, settings ) {
 		var requestData = decodeURIComponent( settings.data ), number = 1;
 		    action      = bpReshare.getURLparams( '?' + requestData, 'action' );
 
+		// Update the favorites nav label and the favorites count.
 		if ( 'activity_mark_fav' === action || 'activity_mark_unfav' === action ) {
 			if ( 'activity_mark_unfav' === action ) {
 				number = '-1';
@@ -210,9 +256,19 @@ window.bpReshare = window.bpReshare || {};
 					$( '<span></span>' ).addClass( 'count' )
 				                      .html( bpReshare.activity.nav.favorites.count )
 				                      .get( 0 ).outerHTML
-													    + '&nbsp;' + xhr.responseText
+					                  + '&nbsp;' + xhr.responseText
 				)
 			}, 500 );
+
+		// Update the comments nav label.
+		} else if ( 'delete_activity_comment' === action || 'new_activity_comment' === action ) {
+			if ( 'delete_activity_comment' === action ) {
+				bpReshare.activity.nav.comments.count -= 1;
+			} else {
+				bpReshare.activity.nav.comments.count += 1;
+			}
+
+			bpReshare.refreshCounts( 'comments', false, bpReshare.activity.nav.comments.count );
 		}
 	} );
 

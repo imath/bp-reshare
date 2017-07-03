@@ -144,3 +144,22 @@ function buddyreshare_users_clean_favorites_cache( $activity_id = 0 ) {
 }
 add_action( 'bp_activity_add_user_favorite',    'buddyreshare_users_clean_favorites_cache', 12, 1 );
 add_action( 'bp_activity_remove_user_favorite', 'buddyreshare_users_clean_favorites_cache', 12, 1 );
+
+/**
+ * Sanitize user favorites so that each Activity IDs are interpreted as string before serialization.
+ *
+ * When updating the favorites BuddyPress is changing the type of each favorited activities.
+ * When adding a favorite, it's a string, after updating it's an int. We need it to be a string.
+ * That's the reason why we're sanitizing it this way.
+ *
+ * @since 2.0.0
+ *
+ * @param  array  $value The list of the activity ids the user favorited.
+ * @return array         The sanitized list for BP Reshare's use.
+ */
+function buddyreshare_sanitize_user_favorites( $value = array() ) {
+	$value = (array) $value;
+
+	return array_map( 'strval', $value );
+}
+add_filter( 'sanitize_user_meta_bp_favorite_activities', 'buddyreshare_sanitize_user_favorites', 10, 1 );
