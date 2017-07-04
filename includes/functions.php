@@ -70,7 +70,7 @@ function buddyreshare_get_css_url() {
 /**
  * Get the JS/CSS minified suffix.
  *
- * @since  2.0.0
+ * @since 2.0.0
  *
  * @return string the JS/CSS minified suffix.
  */
@@ -84,7 +84,7 @@ function buddyreshare_min_suffix() {
 	/**
 	 * Filter here to edit the minified suffix.
 	 *
-	 * @since  1.0.0
+	 * @since 2.0.0
 	 *
 	 * @param  string $min The minified suffix.
 	 */
@@ -94,7 +94,7 @@ function buddyreshare_min_suffix() {
 /**
  * Returns plugin's component id
  *
- * @since    1.0
+ * @since 1.0
  *
  * @return string plugin's component id
  */
@@ -105,7 +105,7 @@ function buddyreshare_get_component_id() {
 /**
  * Returns plugin's component slug
  *
- * @since    1.0
+ * @since 1.0
  *
  * @return string plugin's component slug
  */
@@ -116,7 +116,7 @@ function buddyreshare_get_component_slug() {
 /**
  * Displays the component name
  *
- * @since    1.0
+ * @since 1.0
  */
 function buddyreshare_component_name() {
 	echo buddyreshare_get_component_name();
@@ -125,7 +125,7 @@ function buddyreshare_component_name() {
 /**
  * Returns plugin's component name
  *
- * @since    1.0
+ * @since 1.0
  *
  * @return string plugin's component name
  */
@@ -141,14 +141,14 @@ function buddyreshare_get_component_name() {
  * @return boolean True to send emails, False otherwise.
  */
 function buddyreshare_are_emails_active() {
-	return apply_filters( 'buddyreshare_are_emails_active', false );
+	return (bool) apply_filters( 'buddyreshare_are_emails_active', bp_get_option( 'buddyreshare-emails', false ) );
 }
 
 /**
  * Are we on a the current user's profile reshare tab
  *
- * @since    1.0
- * @since    2.0.0 Code clean up.
+ * @since 1.0
+ * @since 2.0.0 Code clean up.
  *
  * @return  boolean true|false
  */
@@ -163,69 +163,49 @@ function buddyreshare_is_user_profile_reshares() {
 }
 
 /**
- * Builds an array of the reshare activity actions
+ * Returns the disabled activity actions
  *
- * @package BP Reshare
- * @since    1.0
+ * @since 2.0.0
  *
- * @uses buddypress() to get BuddyPress main instance
- * @uses buddyreshare_get_component_id() to get plugin's id
+ * @return array the disabled activity actions.
  */
-function buddyreshare_reshare_types() {
-	$activity_types = buddypress()->activity->actions;
+function buddyreshare_get_disabled_activity_types() {
+	$disabled_types = explode( ',', trim( bp_get_option( 'buddyreshare-disabled-activity-types', array() ), ' ' ) );
 
-	$reshare_types = array();
-
-	if( !empty( $activity_types->{buddyreshare_get_component_id()} ) )
-		$reshare_types = array_values( (array) $activity_types->{buddyreshare_get_component_id()} );
-
-	return $reshare_types;
+	return (array) apply_filters( 'buddyreshare_get_disabled_activity_types', array_filter( $disabled_types ) );
 }
 
-/**
- * Returns the allowed activity actions
- *
- * @since    1.0
- *
- * @return array the allowed activity actions.
- */
-function buddyreshare_activity_types() {
-	$allowed_types = bp_get_option( 'buddyreshare-allowed-types', array( 'activity_update' ) );
-
-	return apply_filters( 'buddyreshare_activity_types', $allowed_types );
+function buddyreshare_get_activity_order_preference() {
+	return bp_get_option( 'buddyreshare-activity-order-preferences', 'reshares' );
 }
 
-/**
- * Can this activity be reshared
- *
- * @package BP Reshare
- * @since    1.0
- *
- * @param  BP_Activity_Activity $activity the activity object
- * @uses   is_user_logged_in() to check we have a logged in user
- * @uses   buddyreshare_activity_types() to get the "resharable" activities
- * @uses   buddyreshare_is_user_profile_reshares() to check for the user reshare tab of his profile
- * @uses   bp_is_my_profile() to check if the displayed profile is the one of the loggedin user
- * @return boolean true|false
- */
-function buddyreshare_can_reshare( $activity = null ) {
-	if( empty( $activity ) )
-		return false;
+function buddyreshare_sort_activities_by_reshared_date( $sql = '', $args = array() ) {
+	$order_preference = buddyreshare_get_activity_order_preference();
 
-	if( ! is_user_logged_in() )
-		return false;
+	if ( false === apply_filters( 'buddyreshare_sort_activities_by_reshared', 'reshares' === $order_preference ) || ! is_user_logged_in() ) {
+		return $sql;
+	}
 
-	if ( ! empty( $activity->hide_sitewide ) )
-		return false;
+	$and = '';
 
-	if( ! in_array( $activity->type, buddyreshare_activity_types() ) )
-		return false;
+	if ( buddyreshare_is_user_profile_reshares() ) {
+		$and = ' AND r.date_reshared IS NOT NULL ';
+	} elseif ( isset( $args['scope'] ) && 'reshares' === $args['scope'] ) {
+		$and = sprintf( ' AND r.user_id = %d ', get_current_user_id() );
+	}
 
-	if( buddyreshare_is_user_profile_reshares() && ! bp_is_my_profile() )
-		return false;
-
-	return true;
+	return str_replace( array(
+			'WHERE',
+			'ORDER BY a.date_recorded DESC'
+		),
+		array(
+			sprintf( 'LEFT JOIN ( SELECT activity_id, user_id, date_reshared FROM %sbp_activity_user_reshares ORDER BY id DESC ) r ON ( a.id = r.activity_id ) WHERE', bp_core_get_table_prefix() ),
+			sprintf( '%sORDER BY IF( r.date_reshared > a.date_recorded, r.date_reshared, a.date_recorded ) DESC', $and ),
+		),
+		$sql
+	);
 }
+add_filter( 'bp_activity_paged_activities_sql', 'buddyreshare_sort_activities_by_reshared_date', 20, 2 );
 
 function buddyreshare_get_l10n_time_since() {
 	return array(
