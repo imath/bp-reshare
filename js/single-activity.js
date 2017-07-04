@@ -221,6 +221,10 @@ window.bpReshare = window.bpReshare || {};
 	}
 
 	$( '#buddypress .activity-meta' ).on( 'click', 'a', function( event ) {
+		if ( bpReshare.isTypeDisabled( bpReshare.activity.id ) ) {
+			return;
+		}
+		
 		var number = 0;
 
 		// Make sure the comments are displayed.
@@ -240,6 +244,10 @@ window.bpReshare = window.bpReshare || {};
 	} );
 
 	$( document ).ajaxSuccess( function( event, xhr, settings ) {
+		if ( bpReshare.isTypeDisabled( bpReshare.activity.id ) ) {
+			return;
+		}
+
 		var requestData = decodeURIComponent( settings.data ), number = 1;
 		    action      = bpReshare.getURLparams( '?' + requestData, 'action' );
 
@@ -273,6 +281,10 @@ window.bpReshare = window.bpReshare || {};
 	} );
 
 	$( document ).ready( function() {
+		if ( bpReshare.isTypeDisabled( bpReshare.activity.id ) ) {
+			return;
+		}
+
 		bpReshare.activityNav();
 	} );
 

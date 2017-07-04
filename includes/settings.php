@@ -48,7 +48,7 @@ function buddyreshare_settings_display_activity_types() {
 					?>
 					<li>
 						<label for="bp-reshare-activity-type-<?php echo esc_attr( $activity_type['key'] ); ?>">
-							<input id="bp-reshare-activity-type-<?php echo esc_attr( $activity_type['key'] ); ?>" type="checkbox" name="buddyreshare-disabled-activity-types[]" value="<?php echo esc_attr( $activity_type['key'] );?>" <?php checked( true, in_array( $activity_type['key'], $disabled, true ) );?>> <?php echo esc_html( $activity_type['label'] ) ;?>
+							<input id="bp-reshare-activity-type-<?php echo esc_attr( $activity_type['key'] ); ?>" type="checkbox" name="buddyreshare-disabled-activity-types[]" value="<?php echo esc_attr( $activity_type['key'] );?>" data-component-id="<?php echo esc_attr( $component ); ?>" <?php checked( true, in_array( $activity_type['key'], $disabled, true ) );?>> <?php echo esc_html( $activity_type['label'] ) ;?>
 						</label>
 					</li>
 					<?php
@@ -145,3 +145,22 @@ function buddyreshare_settings_register_fields() {
 	}
 }
 add_action( 'bp_register_admin_settings', 'buddyreshare_settings_register_fields', 421 );
+
+function buddyreshare_settings_enqueue_scripts() {
+	if ( false === strpos( get_current_screen()->id, 'bp-settings' ) ) {
+		return false;
+	}
+
+	wp_add_inline_script( 'common', '( function($) {
+		$( \'.bp-reshare-selectall\' ).on( \'click\', function( e ) {
+			$.each( $( \'[data-component-id="\' + $( e.currentTarget ).data( \'component-id\') + \'"]\' ), function( i, cb ) {
+				if ( 0 === i ) {
+					return;
+				}
+
+				$( cb ).prop( \'checked\', $( e.currentTarget ).prop( \'checked\' ) );
+			} );
+		} );
+	} )( jQuery );' );
+}
+add_action( 'bp_admin_enqueue_scripts', 'buddyreshare_settings_enqueue_scripts' );

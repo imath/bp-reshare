@@ -11,6 +11,7 @@ window.bpReshare = window.bpReshare || {};
 	}
 
 	bpReshare.activities = [];
+	bpReshare.disabledActivities = {};
 
 	bpReshare.getURLparams = function( url, param ) {
 		var qs;
@@ -35,6 +36,39 @@ window.bpReshare = window.bpReshare || {};
 
 		return params;
 	};
+
+	bpReshare.isTypeDisabled = function( activityID, type ) {
+		if ( ! activityID ) {
+			return true;
+		}
+
+		// Defaults to enabled.
+		var isDisabled = false;
+
+		if ( type ) {
+			isDisabled = bpReshare.params.disabled_types && -1 !== $.inArray( type, bpReshare.params.disabled_types );
+
+		// Check the entry classes.
+		} else {
+			if ( 'undefined' === typeof bpReshare.disabledActivities[ activityID ] ) {
+				var classes = $( '#activity-' + activityID ).prop( 'class' ).split( ' ' );
+
+				if ( bpReshare.params.disabled_types ) {
+					$.each( bpReshare.params.disabled_types, function( t, action ) {
+						if ( -1 !== $.inArray( action, classes ) ) {
+							isDisabled = true;
+						}
+					} );
+
+					bpReshare.disabledActivities[ activityID ] = isDisabled;
+				}
+			} else {
+				isDisabled = bpReshare.disabledActivities[ activityID ];
+			}
+		}
+
+		return isDisabled;
+	}
 
 	bpReshare.IndexOf = function( id, list ) {
 		var r = -1;
@@ -188,6 +222,8 @@ window.bpReshare = window.bpReshare || {};
 		$.each( bpReshare.activities, function( i, activity ) {
 			if ( true === bpReshare.activities[i].isChecked ) {
 				bpReshare.refreshActivity( activity );
+			} else if ( bpReshare.isTypeDisabled( activity.id ) ) {
+				return;
 			} else {
 				unchecked.push( activity.id );
 				bpReshare.activities[i].isChecked = true;
@@ -232,7 +268,7 @@ window.bpReshare = window.bpReshare || {};
 		$.each( $( stream ).children(), function( i, selector ) {
 			var id = parseInt( $( selector ).prop( 'id' ).replace( 'activity-', '' ), 10 );
 
-			if ( ! id ) {
+			if ( ! id || bpReshare.isTypeDisabled( id ) ) {
 				return;
 			}
 
@@ -253,7 +289,7 @@ window.bpReshare = window.bpReshare || {};
 			var selector   = $( '#activity-' + activity.id ),
 			    authorLink = $( selector ).find( '.activity-header a' ).first().prop( 'href' );
 
-			if ( ! selector.length || $( selector ).find( 'a.bp-reshare' ).length ) {
+			if ( ! selector.length || $( selector ).find( 'a.bp-reshare' ).length || bpReshare.isTypeDisabled( activity.id ) ) {
 				return;
 			}
 

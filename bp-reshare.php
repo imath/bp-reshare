@@ -238,9 +238,10 @@ class BuddyReshare {
 
 		$script_data = array(
 			'params' => array(
-				'root_url' => esc_url_raw( rest_url( trailingslashit( $this->rest->namespace . '/' . $this->rest->version ) ) ),
-				'nonce'    => wp_create_nonce( 'wp_rest' ),
-				'u'        => get_current_user_id(),
+				'root_url'       => esc_url_raw( rest_url( trailingslashit( $this->rest->namespace . '/' . $this->rest->version ) ) ),
+				'nonce'          => wp_create_nonce( 'wp_rest' ),
+				'u'              => get_current_user_id(),
+				'disabled_types' => buddyreshare_get_disabled_activity_types(),
 			),
 		);
 
