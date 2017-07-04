@@ -170,7 +170,7 @@ function buddyreshare_is_user_profile_reshares() {
  * @return array the disabled activity actions.
  */
 function buddyreshare_get_disabled_activity_types() {
-	$disabled_types = explode( ',', trim( bp_get_option( 'buddyreshare-disabled-activity-types', array() ), ' ' ) );
+	$disabled_types = explode( ',', trim( bp_get_option( 'buddyreshare-disabled-activity-types', '' ), ' ' ) );
 
 	return (array) apply_filters( 'buddyreshare_get_disabled_activity_types', array_filter( $disabled_types ) );
 }
@@ -179,19 +179,62 @@ function buddyreshare_get_activity_order_preference() {
 	return bp_get_option( 'buddyreshare-activity-order-preferences', 'reshares' );
 }
 
-function buddyreshare_sort_activities_by_reshared_date( $sql = '', $args = array() ) {
-	$order_preference = buddyreshare_get_activity_order_preference();
-
-	if ( false === apply_filters( 'buddyreshare_sort_activities_by_reshared', 'reshares' === $order_preference ) || ! is_user_logged_in() ) {
-		return $sql;
+function buddyreshare_filter_scope( $retval = array(), $filter = array() ) {
+	if ( true === apply_filters( 'buddyreshare_sort_activities_by_reshared', 'reshares' === buddyreshare_get_activity_order_preference() ) && is_user_logged_in() ) {
+		return $retval;
 	}
 
+	// Get the reshares.
+	$reshared = buddyreshare_users_get_reshared( get_current_user_id() );
+	if ( empty( $reshared ) ) {
+		$reshared = array( 0 );
+	}
+
+	$retval = array(
+		'relation' => 'AND',
+		array(
+			'column'  => 'id',
+			'compare' => 'IN',
+			'value'   => (array) $reshared,
+		),
+		array(),
+
+		// Overrides.
+		'override' => array(
+			'display_comments' => true,
+			'filter'           => array( 'user_id' => 0 ),
+			'show_hidden'      => true,
+		),
+	);
+
+	return $retval;
+}
+add_filter( 'bp_activity_set_reshares_scope_args', 'buddyreshare_filter_scope', 10, 2 );
+
+function buddyreshare_sort_activities_by_reshared_date( $sql = '', $args = array() ) {
 	$and = '';
 
 	if ( buddyreshare_is_user_profile_reshares() ) {
 		$and = ' AND r.date_reshared IS NOT NULL ';
 	} elseif ( isset( $args['scope'] ) && 'reshares' === $args['scope'] ) {
 		$and = sprintf( ' AND r.user_id = %d ', get_current_user_id() );
+	}
+
+	if ( false === apply_filters( 'buddyreshare_sort_activities_by_reshared', 'reshares' === buddyreshare_get_activity_order_preference() ) || ! is_user_logged_in() ) {
+		if ( buddyreshare_is_user_profile_reshares() ) {
+			$sql = str_replace( array(
+					'WHERE',
+					'ORDER BY'
+				),
+				array(
+					sprintf( 'LEFT JOIN %sbp_activity_user_reshares r ON ( a.id = r.activity_id ) WHERE', bp_core_get_table_prefix() ),
+					sprintf( '%sORDER BY', $and ),
+				),
+				$sql
+			);
+		}
+
+		return $sql;
 	}
 
 	return str_replace( array(

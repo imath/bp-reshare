@@ -26,7 +26,10 @@ function buddyreshare_settings_display_activity_types() {
 	foreach( $activity_actions->xprofile as $k => $v ) {
 		$activity_actions->profile->{$k} = $v;
 	}
+
+	// Remove some noisy types.
 	unset( $activity_actions->xprofile );
+	unset( $activity_actions->friends->friends_register_activity_action );
 
 	foreach ( $activity_actions as $component => $activity_types ) {
 		$component_label = ucfirst( $component );
@@ -45,13 +48,13 @@ function buddyreshare_settings_display_activity_types() {
 			<ul style="margin: 1em 2em 1em;">
 
 			<?php foreach ( $activity_types as $activity_type ) {
-					?>
+				?>
 					<li>
 						<label for="bp-reshare-activity-type-<?php echo esc_attr( $activity_type['key'] ); ?>">
-							<input id="bp-reshare-activity-type-<?php echo esc_attr( $activity_type['key'] ); ?>" type="checkbox" name="buddyreshare-disabled-activity-types[]" value="<?php echo esc_attr( $activity_type['key'] );?>" data-component-id="<?php echo esc_attr( $component ); ?>" <?php checked( true, in_array( $activity_type['key'], $disabled, true ) );?>> <?php echo esc_html( $activity_type['label'] ) ;?>
+							<input id="bp-reshare-activity-type-<?php echo esc_attr( $activity_type['key'] ); ?>" type="checkbox" name="buddyreshare-disabled-activity-types[]" value="<?php echo esc_attr( $activity_type['key'] );?>" data-component-id="<?php echo esc_attr( $component ); ?>" <?php checked( true, in_array( $activity_type['key'], $disabled, true ) );?>> <?php echo esc_html( $activity_type['value'] ) ;?>
 						</label>
 					</li>
-					<?php
+				<?php
 			} ?>
 
 		</fieldset>

@@ -114,6 +114,7 @@ class BuddyReshare {
 		// Set Cache Global groups.
 		wp_cache_add_global_groups( array(
 			'user_reshares',
+			'user_reshared',
 			'user_favorites',
 			'reshares_count',
 			'reshared_notifications',
