@@ -294,7 +294,8 @@ window.bpReshare = window.bpReshare || {};
 			}
 
 			if ( false === activity.markUp ) {
-				var authorName = authorLink.replace( bpReshare.params.root_members, '' ).replace( '/', '' ), className = 'add-reshare';
+				var authorName = $.trim( authorLink.replace( bpReshare.params.root_members, '' ), '/' ).split( '/' )[0], className = 'add-reshare';
+
 				if ( authorName === bpReshare.params.u_nicename ) {
 					className = 'disabled';
 				}
