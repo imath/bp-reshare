@@ -127,6 +127,10 @@ class BuddyReshare {
 				require( $this->includes_dir . 'notifications.php' );
 			}
 
+			if ( bp_is_active( 'blogs' ) ) {
+				require( $this->includes_dir . 'posts.php' );
+			}
+
 			if ( defined( 'WP_DEBUG' ) && true === WP_DEBUG ) {
 				require( $this->includes_dir . 'deprecated.php' );
 			}

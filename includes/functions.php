@@ -224,40 +224,38 @@ function buddyreshare_get_common_script_data() {
 	) );
 }
 
-function buddyreshare_register_scripts() {
-	wp_register_script(
-		'bp-reshare-request',
-		buddyreshare_get_js_url() . 'request.js',
-		array(),
-		buddyreshare_get_plugin_version(),
-		true
+function buddyreshare_register_assets() {
+	$min     = buddyreshare_min_suffix();
+	$version = buddyreshare_get_plugin_version();
+	$assets  = array(
+		array( 'type' => 'js', 'handle' => 'bp-reshare-request', 'src' => "request{$min}.js", 'deps' => array() ),
+		array( 'type' => 'js', 'handle' => 'bp-reshare', 'src' => "script{$min}.js", 'deps' => array( 'bp-reshare-request', 'jquery' ) ),
+		array( 'type' => 'js', 'handle' => 'bp-reshare-activity', 'src' => "single-activity{$min}.js", 'deps' => array( 'bp-reshare' ) ),
+		array( 'type' => 'js', 'handle' => 'bp-reshare-posts', 'src' => "posts{$min}.js", 'deps' => array( 'bp-reshare-request' ) ),
+		array( 'type' => 'css', 'handle' => 'bp-reshare-style', 'src' => "style{$min}.css", 'deps' => array() ),
 	);
 
-	wp_register_script(
-		'bp-reshare',
-		buddyreshare_get_js_url() . 'script.js',
-		array( 'bp-reshare-request', 'jquery' ),
-		buddyreshare_get_plugin_version(),
-		true
-	);
-
-	wp_register_script(
-		'bp-reshare-activity',
-		buddyreshare_get_js_url() . 'single-activity.js',
-		array( 'bp-reshare' ),
-		buddyreshare_get_plugin_version(),
-		true
-	);
-
-	wp_register_style(
-		'bp-reshare-style',
-		buddyreshare_get_css_url() . 'style.css',
-		array(),
-		buddyreshare_get_plugin_version(),
-		'all'
-	);
+	foreach ( $assets as $asset ) {
+		if ( 'js' === $asset['type'] ) {
+			wp_register_script(
+				$asset['handle'],
+				buddyreshare_get_js_url() . $asset['src'],
+				$asset['deps'],
+				$version,
+				true
+			);
+		} elseif ( 'css' === $asset['type'] ) {
+			wp_register_style(
+				$asset['handle'],
+				buddyreshare_get_css_url() . $asset['src'],
+				array(),
+				$version,
+				'all'
+			);
+		}
+	}
 }
-add_action( 'bp_init', 'buddyreshare_register_scripts' );
+add_action( 'bp_init', 'buddyreshare_register_assets' );
 
 function buddyreshare_load_textdomain() {
 	$buddyreshare = buddyreshare();

@@ -34,7 +34,7 @@ function buddyreshare_notifications_get_unread_item_ids( $user_id = 0 ) {
 	return $reshared_updates;
 }
 
-function buddyreshare_notifications_enqueue_script() {
+function buddyreshare_notifications_enqueue_assets() {
 	if ( ! is_user_logged_in() ) {
 		return;
 	}
@@ -61,7 +61,7 @@ function buddyreshare_notifications_enqueue_script() {
 		),
 	) );
 }
-add_action( 'admin_bar_init', 'buddyreshare_notifications_enqueue_script' );
+add_action( 'admin_bar_init', 'buddyreshare_notifications_enqueue_assets' );
 
 function buddyreshare_notifications_add( $args = array() ) {
 	if ( empty( $args['author_slug'] ) || empty( $args['activity_id'] ) || empty( $args['user_id'] ) ) {

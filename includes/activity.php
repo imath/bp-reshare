@@ -10,7 +10,76 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-function buddyreshare_activity_scripts() {
+function buddyreshare_activity_get_templates( $template = 'all' ) {
+	$reshare_url = trailingslashit( bp_get_root_domain() ) .  bp_get_activity_root_slug() . '/' . buddyreshare_get_component_slug();
+
+	$templates = array(
+		'reshareButton' => '<a href="%l" class="bp-reshare button bp-secondary-action %r" data-activity-id="%a" data-author-name="%u">
+			<span class="bp-reshare-icon"></span>
+			<span class="bp-screen-reader-text">%t</span>
+			<span class="count">%c</span>
+		</a>',
+		'directoryTab' => sprintf( '<li id="activity-reshares">
+				<a href="%1$s" aria-label="%2$s">%3$s %4$s</a>
+			</li>',
+			esc_url_raw( bp_loggedin_user_domain() . bp_get_activity_slug() . '/'. buddyreshare_get_component_slug() .'/' ),
+			esc_attr__( 'Activities I reshared.', 'bp-reshare' ),
+			esc_html__( 'My Reshares', 'bp-reshares' ),
+			'<span>%c</span>'
+		),
+	);
+
+	if ( 'all' !== $template && isset( $templates[ $template ] ) ) {
+		$templates = array_intersect_key( $templates, array( $template => true ) );
+	}
+
+	return array(
+		'templates' => $templates,
+		'strings'   => array(
+			'addReshare'    => __( 'Reshare this activity', 'bp-reshare' ),
+			'removeReshare' => __( 'Remove the Reshare of this activity', 'bp-reshare' ),
+			'removeLink'    => esc_url_raw( wp_nonce_url( $reshare_url . '/delete/%i/' , 'buddyreshare_delete' ) ),
+			'addLink'       => esc_url_raw( wp_nonce_url( $reshare_url . '/add/%i/' , 'buddyreshare_update' ) ),
+		),
+	);
+}
+
+function buddyreshare_activity_get_single_nav( $activity_id = 0 ) {
+	if ( ! $activity_id ) {
+		return array();
+	}
+
+	$single_nav = array(
+		'comments' => array(
+			'singular' => __( 'Comment', 'bp-reshare' ),
+			'plural'   => __( 'Comments', 'bp-reshare' ),
+			'position' => 0,
+			'users'    => array(),
+			'no_item'  => __( 'This activity has no comments yet, add yours!', 'bp-reshare' ),
+		),
+		'reshares' => array(
+			'singular' => __( 'User who Reshared', 'bp-reshare' ),
+			'plural'   => __( 'Users who Reshared', 'bp-reshare' ),
+			'position' => 1,
+			'users'    => buddyreshare_users_get_reshares( $activity_id ),
+			'no_item'  => __( 'This activity has no reshares yet, reshare it!', 'bp-reshare' ),
+		),
+	);
+
+	if ( bp_activity_can_favorite() ) {
+		$single_nav['favorites'] = array(
+			'singular' => __( 'User who Favorited', 'bp-reshare' ),
+			'plural'   => __( 'Users who Favorited', 'bp-reshare' ),
+			'position' => 2,
+			'users'    => buddyreshare_users_get_favorites( $activity_id ),
+			'no_item'  => __( 'This activity is not favorited yet, add it to your favorites!', 'bp-reshare' ),
+		);
+	}
+
+	return apply_filters( 'buddyreshare_activity_get_single_nav', $single_nav );
+}
+
+function buddyreshare_activity_enqueue_assets() {
 	$script_data = buddyreshare_get_common_script_data();
 
 	if ( bp_is_activity_component() || bp_is_group_activity() ) {
@@ -19,36 +88,9 @@ function buddyreshare_activity_scripts() {
 			wp_enqueue_script( 'bp-reshare-activity' );
 
 			if ( ! empty( $script_data['params']['u'] ) ) {
-				$activity_nav = array(
-					'comments' => array(
-						'singular' => __( 'Comment', 'bp-reshare' ),
-						'plural'   => __( 'Comments', 'bp-reshare' ),
-						'position' => 0,
-						'users'    => array(),
-						'no_item'  => __( 'This activity has no comments yet, add yours!', 'bp-reshare' ),
-					),
-					'reshares' => array(
-						'singular' => __( 'User who Reshared', 'bp-reshare' ),
-						'plural'   => __( 'Users who Reshared', 'bp-reshare' ),
-						'position' => 1,
-						'users'    => buddyreshare_users_get_reshares( bp_current_action() ),
-						'no_item'  => __( 'This activity has no reshares yet, reshare it!', 'bp-reshare' ),
-					),
-				);
-
-				if ( bp_activity_can_favorite() ) {
-					$activity_nav['favorites'] = array(
-						'singular' => __( 'User who Favorited', 'bp-reshare' ),
-						'plural'   => __( 'Users who Favorited', 'bp-reshare' ),
-						'position' => 2,
-						'users'    => buddyreshare_users_get_favorites( bp_current_action() ),
-						'no_item'  => __( 'This activity is not favorited yet, add it to your favorites!', 'bp-reshare' ),
-					);
-				}
-
 				$script_data = array_merge( $script_data, array(
 					'activity'  => array(
-						'nav'    => $activity_nav,
+						'nav'    => buddyreshare_activity_get_single_nav( bp_current_action() ),
 						'id'     => (int) bp_current_action(),
 						'loader' => esc_url_raw( admin_url( 'images/spinner-2x.gif' ) ),
 					),
@@ -77,34 +119,12 @@ function buddyreshare_activity_scripts() {
 
 		$reshare_url = trailingslashit( bp_get_root_domain() ) .  bp_get_activity_root_slug() . '/' . buddyreshare_get_component_slug();
 
-		$script_data = array_merge( $script_data, array(
-			'templates' => array(
-				'reshareButton' => '<a href="%l" class="bp-reshare button bp-secondary-action %r" data-activity-id="%a" data-author-name="%u">
-					<span class="bp-reshare-icon"></span>
-					<span class="bp-screen-reader-text">%t</span>
-					<span class="count">%c</span>
-				</a>',
-				'directoryTab' => sprintf( '<li id="activity-reshares">
-						<a href="%1$s" aria-label="%2$s">%3$s %4$s</a>
-					</li>',
-					esc_url_raw( bp_loggedin_user_domain() . bp_get_activity_slug() . '/'. buddyreshare_get_component_slug() .'/' ),
-					esc_attr__( 'Activities I reshared.', 'bp-reshare' ),
-					esc_html__( 'My Reshares', 'bp-reshares' ),
-					'<span>%c</span>'
-				),
-			),
-			'strings'  => array(
-				'addReshare'    => __( 'Reshare this activity', 'bp-reshare' ),
-				'removeReshare' => __( 'Remove the Reshare of this activity', 'bp-reshare' ),
-				'removeLink'    => esc_url_raw( wp_nonce_url( $reshare_url . '/delete/%i/' , 'buddyreshare_delete' ) ),
-				'addLink'       => esc_url_raw( wp_nonce_url( $reshare_url . '/add/%i/' , 'buddyreshare_update' ) ),
-			),
-		) );
+		$script_data = array_merge( $script_data, buddyreshare_activity_get_templates() );
 	}
 
 	wp_localize_script( 'bp-reshare-request', 'bpReshare', $script_data );
 }
-add_action( 'bp_enqueue_scripts', 'buddyreshare_activity_scripts' );
+add_action( 'bp_enqueue_scripts', 'buddyreshare_activity_enqueue_assets' );
 
 function buddyreshare_activity_filter_scope( $retval = array(), $filter = array() ) {
 	if ( true === apply_filters( 'buddyreshare_activity_sort_by_reshared_date', 'reshares' === buddyreshare_get_activity_order_preference() ) ) {
