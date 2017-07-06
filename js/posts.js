@@ -82,7 +82,50 @@ window.bpReshare = window.bpReshare || {};
 		reshareActivity: function( event ) {
 			event.preventDefault();
 
-			console.log( event );
+			var button = event.currentTarget, classes = button.getAttribute( 'class' ).split( ' ' ),
+			    spans  = button.childNodes;
+
+			if ( -1 !== classes.indexOf( 'add-reshare' ) ) {
+				bpReshare.Ajax.post( bpReshare.activity.id, { 'user_id': bpReshare.params.u, 'author_slug': bpReshare.activity.author }, function( status, response ) {
+					if ( 200 === status && response.reshared ) {
+
+						// Update the link for a remove reshare one
+						button.setAttribute( 'class', button.getAttribute( 'class' ).replace( 'add-reshare', 'remove-reshare' ) );
+						button.setAttribute( 'href', bpReshare.strings.removeLink.replace( '%i', bpReshare.activity.id ) );
+
+						bpReshare.activity.reshares.push( bpReshare.params.u );
+
+						for( span in button.childNodes ) {
+							if ( 'SPAN' === button.childNodes[ span ].nodeName && 'count' === button.childNodes[ span ].getAttribute( 'class' ) ) {
+								button.childNodes[ span ].innerHTML = parseInt( button.childNodes[ span ].innerHTML, 10 ) + 1;
+							}
+						}
+					} else {
+						console.log( status );
+					}
+				} );
+
+			// If the user is in the users who reshared: can remove reshare.
+			} else if ( -1 !== classes.indexOf( 'remove-reshare' ) ) {
+				bpReshare.Ajax.delete( bpReshare.activity.id, { 'user_id': bpReshare.params.u, 'author_slug': bpReshare.activity.author }, function( status, response ) {
+					if ( 200 === status ) {
+
+						// Update the link for a remove reshare one
+						button.setAttribute( 'class', button.getAttribute( 'class' ).replace( 'remove-reshare','add-reshare' ) )
+						button.setAttribute( 'href', bpReshare.strings.addLink.replace( '%i', bpReshare.activity.id ) );
+
+						bpReshare.activity.reshares.splice( bpReshare.activity.reshares.indexOf( bpReshare.params.u.toString() ), 1 );
+
+						for( span in button.childNodes ) {
+							if ( 'SPAN' === button.childNodes[ span ].nodeName && 'count' === button.childNodes[ span ].getAttribute( 'class' ) ) {
+								button.childNodes[ span ].innerHTML = parseInt( button.childNodes[ span ].innerHTML, 10 ) - 1;
+							}
+						}
+					} else {
+						console.log( status );
+					}
+				} );
+			}
 		}
 	};
 
