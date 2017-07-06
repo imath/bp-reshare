@@ -40,6 +40,7 @@ function buddyreshare_activity_get_templates( $template = 'all' ) {
 			'removeReshare' => __( 'Remove the Reshare of this activity', 'bp-reshare' ),
 			'removeLink'    => esc_url_raw( wp_nonce_url( $reshare_url . '/delete/%i/' , 'buddyreshare_delete' ) ),
 			'addLink'       => esc_url_raw( wp_nonce_url( $reshare_url . '/add/%i/' , 'buddyreshare_update' ) ),
+			'genericError'  => __( 'Unknown error, please try again later.', 'bp-reshare' ),
 		),
 	);
 }

@@ -82,6 +82,35 @@ window.bpReshare = window.bpReshare || {};
 
 		delete: function( endpoint, data, response ) {
 			return this.request( endpoint, data, 'DELETE', response );
+		},
+
+		feedback: function( container, message, type ) {
+			var notice;
+
+			// Remove all previous notices.
+			if ( 'DIV' === container.childNodes[0].nodeName && 'template-notices' === container.childNodes[0].getAttribute( 'id' ) ) {
+				container.childNodes[0].remove();
+			}
+
+			if ( ! message || ! type ) {
+				return;
+			}
+
+			if ( 'full' === type ) {
+				container.innerHTML = bpReshare.templates.notice + container.innerHTML;
+			} else {
+				notice = document.createElement( 'DIV' );
+				notice.setAttribute( 'id', 'template-notices' );
+				notice.setAttribute( 'role', 'alert' );
+				notice.setAttribute( 'aria-atomic', 'true' );
+				notice.innerHTML = '<div id="message" class="' + type + '"><p>' + message + '</p></div>';
+
+				container.insertBefore( notice, container.childNodes[0] );
+			}
+
+			window.setTimeout( function() {
+				container.childNodes[0].remove();
+			}, 4000 );
 		}
 	};
 

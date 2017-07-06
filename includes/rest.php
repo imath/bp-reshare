@@ -10,6 +10,15 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
+
+function buddyreshare_rest_read_permissions_check( WP_REST_Request $request ) {
+	if ( is_user_logged_in() ) {
+		return true;
+	}
+
+	return false;
+}
+
 function buddyreshare_rest_get_all_items( WP_REST_Request $request ) {
 	global $wpdb;
 
@@ -35,10 +44,6 @@ function buddyreshare_rest_get_all_items( WP_REST_Request $request ) {
 	}
 
 	return rest_ensure_response( array_values( $result ) );
-}
-
-function buddyreshare_rest_get_all_items_permissions_check( WP_REST_Request $request ) {
-	return true;
 }
 
 function buddyreshare_rest_get_items( WP_REST_Request $request ) {
@@ -121,8 +126,14 @@ function buddyreshare_rest_get_items( WP_REST_Request $request ) {
 	return rest_ensure_response( $result );
 }
 
-function buddyreshare_rest_get_items_permissions_check( WP_REST_Request $request ) {
-	return true;
+function buddyreshare_rest_edit_permissions_check( WP_REST_Request $request ) {
+	$user_id = $request->get_param( 'user_id' );
+
+	if ( (int) $user_id === (int) get_current_user_id() || current_user_can( 'edit_users' ) ) {
+		return true;
+	}
+
+	return false;
 }
 
 function buddyreshare_rest_update_item( WP_REST_Request $request ) {
@@ -158,10 +169,6 @@ function buddyreshare_rest_update_item( WP_REST_Request $request ) {
 	return rest_ensure_response( $result );
 }
 
-function buddyreshare_rest_update_item_permissions_check( WP_REST_Request $request ) {
-	return true;
-}
-
 function buddyreshare_rest_delete_item( WP_REST_Request $request ) {
 	global $wpdb;
 
@@ -194,10 +201,6 @@ function buddyreshare_rest_delete_item( WP_REST_Request $request ) {
 	return rest_ensure_response( array( 'deleted' => (bool) $deleted ) );
 }
 
-function buddyreshare_rest_delete_item_permissions_check( WP_REST_Request $request ) {
-	return true;
-}
-
 function buddyreshare_rest_routes() {
 	$buddyreshare = buddyreshare();
 
@@ -216,7 +219,7 @@ function buddyreshare_rest_routes() {
 		array(
 			'methods'  => WP_REST_Server::READABLE,
 			'callback' => 'buddyreshare_rest_get_items',
-			'permission_callback' => 'buddyreshare_rest_get_items_permissions_check',
+			'permission_callback' => 'buddyreshare_rest_read_permissions_check',
 			'args'     => array(
 				'page' => array(
 					'type'        => 'integer',
@@ -243,7 +246,7 @@ function buddyreshare_rest_routes() {
 		array(
 			'methods'  => WP_REST_Server::EDITABLE,
 			'callback' => 'buddyreshare_rest_update_item',
-			'permission_callback' => 'buddyreshare_rest_update_item_permissions_check',
+			'permission_callback' => 'buddyreshare_rest_edit_permissions_check',
 			'args'     => array(
 				'user_id' => array(
 					'type'        => 'integer',
@@ -260,7 +263,7 @@ function buddyreshare_rest_routes() {
 		array(
 			'methods'  => WP_REST_Server::DELETABLE,
 			'callback' => 'buddyreshare_rest_delete_item',
-			'permission_callback' => 'buddyreshare_rest_delete_item_permissions_check',
+			'permission_callback' => 'buddyreshare_rest_edit_permissions_check',
 			'args'     => array(
 				'user_id' => array(
 					'type'        => 'integer',
@@ -279,7 +282,7 @@ function buddyreshare_rest_routes() {
 	register_rest_route( $namespace, '/all', array(
 			'methods'  => WP_REST_Server::READABLE,
 			'callback' => 'buddyreshare_rest_get_all_items',
-			'permission_callback' => 'buddyreshare_rest_get_all_items_permissions_check',
+			'permission_callback' => 'buddyreshare_rest_read_permissions_check',
 			'args'     => array(
 				'activities' => array(
 					'page' => array(

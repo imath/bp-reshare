@@ -247,8 +247,6 @@ window.bpReshare = window.bpReshare || {};
 							bpReshare.refreshActivity( activityId );
 						}
 					} );
-				} else {
-					console.log( status );
 				}
 			} );
 		}
@@ -484,7 +482,12 @@ window.bpReshare = window.bpReshare || {};
 
 					bpReshare.activityTab( 1 );
 				} else {
-					console.log( status );
+					var error = bpReshare.strings.genericError;
+					if ( response.message ) {
+						error = response.message;
+					}
+
+					bpReshare.Ajax.feedback( $( link ).closest( '.activity-meta' ).get( 0 ), error, 'error' );
 				}
 			} );
 
@@ -509,7 +512,12 @@ window.bpReshare = window.bpReshare || {};
 						$( '#activity-' + id ).remove();
 					}
 				} else {
-					console.log( status );
+					var error = bpReshare.strings.genericError;
+					if ( response.message ) {
+						error = response.message;
+					}
+
+					bpReshare.Ajax.feedback( $( link ).closest( '.activity-meta' ).get( 0 ), error, 'error' );
 				}
 			} );
 		}

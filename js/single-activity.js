@@ -74,7 +74,16 @@ window.bpReshare = window.bpReshare || {};
 					$( '#' + navItemName + '-users' ).append( user );
 				} );
 			} else {
-				console.log( status );
+				var error = bpReshare.strings.genericError;
+				if ( response.message ) {
+					error = response.message;
+				}
+
+				$( content ).find( 'div' ).first().css( {
+					background: 'none'
+				} );
+				
+				bpReshare.Ajax.feedback( $( content ).get( 0 ), error, 'error' );
 			}
 		} );
 	};
@@ -224,7 +233,7 @@ window.bpReshare = window.bpReshare || {};
 		if ( bpReshare.isTypeDisabled( bpReshare.activity.id ) ) {
 			return;
 		}
-		
+
 		var number = 0;
 
 		// Make sure the comments are displayed.

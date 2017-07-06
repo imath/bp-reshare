@@ -20,7 +20,7 @@ window.bpReshare = window.bpReshare || {};
 
 			document.querySelector( '#buddypress .bp-reshare' ).addEventListener(
 				'click',
-				this.reshareActivity
+				this.reshareAction
 			);
 		},
 
@@ -68,7 +68,9 @@ window.bpReshare = window.bpReshare || {};
 			this.container.innerHTML += bpReshare.templates.favoritesButton;
 			article.appendChild( this.container );
 
-			this.displayFeedback( this.container );
+			if ( bpReshare.templates.notice ) {
+				bpReshare.Ajax.feedback( this.container, bpReshare.templates.notice, 'full' );
+			}
 		},
 
 		scrollToBuddyPress: function() {
@@ -79,11 +81,11 @@ window.bpReshare = window.bpReshare || {};
 			location.href = '#buddypress';
 		},
 
-		reshareActivity: function( event ) {
+		reshareAction: function( event ) {
 			event.preventDefault();
 
 			var button = event.currentTarget, classes = button.getAttribute( 'class' ).split( ' ' ),
-			    spans  = button.childNodes;
+			    spans  = button.childNodes, container = document.getElementById( 'buddypress' );
 
 			if ( -1 !== classes.indexOf( 'add-reshare' ) ) {
 				bpReshare.Ajax.post( bpReshare.activity.id, { 'user_id': bpReshare.params.u, 'author_slug': bpReshare.activity.author }, function( status, response ) {
@@ -101,7 +103,12 @@ window.bpReshare = window.bpReshare || {};
 							}
 						}
 					} else {
-						console.log( status );
+						var error = bpReshare.strings.genericError;
+						if ( response.message ) {
+							error = response.message;
+						}
+
+						bpReshare.Ajax.feedback( container, error, 'error' );
 					}
 				} );
 
@@ -122,7 +129,12 @@ window.bpReshare = window.bpReshare || {};
 							}
 						}
 					} else {
-						console.log( status );
+						var error = bpReshare.strings.genericError;
+						if ( response.message ) {
+							error = response.message;
+						}
+
+						bpReshare.Ajax.feedback( container, error, 'error' );
 					}
 				} );
 			}
