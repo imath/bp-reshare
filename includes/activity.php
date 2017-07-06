@@ -52,11 +52,12 @@ function buddyreshare_activity_get_single_nav( $activity_id = 0 ) {
 
 	$single_nav = array(
 		'comments' => array(
-			'singular' => __( 'Comment', 'bp-reshare' ),
-			'plural'   => __( 'Comments', 'bp-reshare' ),
-			'position' => 0,
-			'users'    => array(),
-			'no_item'  => __( 'This activity has no comments yet, add yours!', 'bp-reshare' ),
+			'singular'    => __( 'Comment', 'bp-reshare' ),
+			'plural'      => __( 'Comments', 'bp-reshare' ),
+			'position'    => 0,
+			'users'       => array(),
+			'no_item'     => __( 'This activity has no comments yet, add yours!', 'bp-reshare' ),
+			'no_comments' => __( 'Activity comments are closed.', 'bp-reshare' ),
 		),
 		'reshares' => array(
 			'singular' => __( 'User who Reshared', 'bp-reshare' ),

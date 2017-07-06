@@ -9,9 +9,17 @@ window.bpReshare = window.bpReshare || {};
 		return;
 	}
 
-	bpReshare.outputNoItem = function( parent, navItemName ) {
+	bpReshare.outputNoItem = function( parent, navItemName, message ) {
 		if ( $( parent ).find( '#message' ).length ) {
 			return;
+		}
+
+		var className = 'info';
+
+		if ( ! message ) {
+			message = bpReshare.activity.nav[ navItemName ].no_item;
+		} else {
+			className += ' keep';
 		}
 
 		// Empty remaining users.
@@ -21,8 +29,8 @@ window.bpReshare = window.bpReshare || {};
 
 		$( parent ).prepend(
 			$( '<div></div>' ).prop( 'id', 'message' )
-			                  .addClass( 'info' )
-			                  .html( '<p>' + bpReshare.activity.nav[ navItemName ].no_item + '</p>' )
+			                  .addClass( className )
+			                  .html( '<p>' + message + '</p>' )
 		);
 	};
 
@@ -82,7 +90,7 @@ window.bpReshare = window.bpReshare || {};
 				$( content ).find( 'div' ).first().css( {
 					background: 'none'
 				} );
-				
+
 				bpReshare.Ajax.feedback( $( content ).get( 0 ), error, 'error' );
 			}
 		} );
@@ -126,6 +134,10 @@ window.bpReshare = window.bpReshare || {};
 
 		if ( 0 === bpReshare.activity.nav.comments.count ) {
 			bpReshare.outputNoItem( '#activity-' + bpReshare.activity.id + ' .activity-comments', 'comments' );
+
+		// This can happen for Blog's activities.
+		} else if ( ! $( '#activity-' + bpReshare.activity.id + ' .activity-comments' ).get( 0 ).children.length ) {
+			bpReshare.outputNoItem( '#activity-' + bpReshare.activity.id + ' .activity-comments', 'comments', bpReshare.activity.nav.comments.no_comments );
 		}
 
 		if ( bpReshare.activity.nav.favorites && bpReshare.activity.nav.favorites.count ) {
@@ -166,7 +178,9 @@ window.bpReshare = window.bpReshare || {};
 					bpReshare.outputNoItem( content, navItemName );
 
 				} else {
-					$( content ).find( '#message' ).remove();
+					if ( ! $( content ).find( '#message' ).hasClass( 'keep' ) ) {
+						$( content ).find( '#message' ).remove();
+					}
 
 					// Here is populating
 					if ( ! $( content ).hasClass( 'activity-comments' ) ) {

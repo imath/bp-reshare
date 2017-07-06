@@ -37,7 +37,7 @@ window.bpReshare = window.bpReshare || {};
 		return params;
 	};
 
-	bpReshare.isTypeDisabled = function( activityID, type ) {
+	bpReshare.isTypeDisabled = function( activityID, type, selector ) {
 		if ( ! activityID ) {
 			return true;
 		}
@@ -51,7 +51,13 @@ window.bpReshare = window.bpReshare || {};
 		// Check the entry classes.
 		} else {
 			if ( 'undefined' === typeof bpReshare.disabledActivities[ activityID ] ) {
-				var classes = $( '#activity-' + activityID ).prop( 'class' ).split( ' ' );
+				var classes = $( '#activity-' + activityID ).prop( 'class' );
+
+				if ( ! classes && selector ) {
+					classes = $( selector ).prop( 'class' );
+				}
+
+				classes = classes.split( ' ' );
 
 				if ( bpReshare.params.disabled_types ) {
 					$.each( bpReshare.params.disabled_types, function( t, action ) {
@@ -266,7 +272,7 @@ window.bpReshare = window.bpReshare || {};
 		$.each( $( stream ).children(), function( i, selector ) {
 			var id = parseInt( $( selector ).prop( 'id' ).replace( 'activity-', '' ), 10 );
 
-			if ( ! id || bpReshare.isTypeDisabled( id ) ) {
+			if ( ! id || bpReshare.isTypeDisabled( id, null, selector ) ) {
 				return;
 			}
 
