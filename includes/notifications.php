@@ -111,6 +111,29 @@ function buddyreshare_notifications_remove( $args = array() ) {
 }
 add_action( 'buddyreshare_reshare_deleted', 'buddyreshare_notifications_remove', 10, 1 );
 
+function buddyreshare_notifications_remove_these( $args = array() ) {
+	if ( empty( $args['activity_ids'] ) || empty( $args['user_ids'] ) ) {
+		return;
+	}
+
+	// Remove notifications.
+	foreach ( $args['activity_ids'] as $activity_id ) {
+		bp_notifications_delete_all_notifications_by_type(
+			$activity_id,
+			buddyreshare_get_component_id(),
+			'new_reshare'
+		);
+	}
+
+	// Clean user's notifications cache.
+	foreach ( $args['user_ids'] as $user_id ) {
+		wp_cache_delete( $user_id, 'reshared_notifications' );
+	}
+
+	do_action( 'buddyreshare_notifications_removed_these', $args );
+}
+add_action( 'buddyreshare_reshares_deleted', 'buddyreshare_notifications_remove_these', 10, 1 );
+
 function buddyreshare_notifications_read( $activity = null ) {
 	$unread = array();
 

@@ -202,8 +202,9 @@ function buddyreshare_activity_reset_cache() {
 	bp_core_reset_incrementor( 'bp_activity' );
 	bp_core_reset_incrementor( 'bp_activity_with_last_activity' );
 }
-add_action( 'buddyreshare_reshare_added',   'buddyreshare_activity_reset_cache' );
-add_action( 'buddyreshare_reshare_deleted', 'buddyreshare_activity_reset_cache' );
+add_action( 'buddyreshare_reshare_added',    'buddyreshare_activity_reset_cache' );
+add_action( 'buddyreshare_reshare_deleted',  'buddyreshare_activity_reset_cache' );
+add_action( 'buddyreshare_reshares_deleted', 'buddyreshare_activity_reset_cache' );
 
 /**
  * Fallback in case JavaScript fails to add a reshare to an activity
@@ -291,10 +292,29 @@ add_action( 'bp_actions', 'buddyreshare_activity_add_reshare' );
  * }
  */
 function buddyreshare_activity_remove_reshare( $args = array() ) {
-	$action = current_action();
+	global $wpdb;
 
-	// Delete the reshare(s)
+	$action = current_action();
+	$table  = bp_core_get_table_prefix() . 'bp_activity_user_reshares';
+
+	// Delete the reshare(s) when one or more activities are deleted.
 	if ( 'bp_activity_deleted_activities' === $action ) {
+		$deleted_activities = array_filter( wp_parse_id_list( $args ) );
+
+		if ( empty( $deleted_activities ) ) {
+			return;
+		}
+
+		// We need to get user ids to properly clean the users reshare cache.
+		$user_ids = $wpdb->get_col( sprintf( "SELECT DISTINCT user_id FROM {$table} WHERE activity_id IN ( %s )", join( ',', $deleted_activities ) ) );
+		$deleted  = $wpdb->query( sprintf( "DELETE FROM {$table} WHERE activity_id IN ( %s )", join( ',', $deleted_activities ) ) );
+
+		if ( ! is_wp_error( $deleted ) ) {
+			do_action( 'buddyreshare_reshares_deleted', array(
+				'user_ids'     => $user_ids,
+				'activity_ids' => $deleted_activities,
+			) );
+		}
 
 	// Stop, it's not
 	} elseif ( 'bp_actions' === $action && ! ( bp_is_activity_component() && bp_is_current_action( buddyreshare_get_component_slug() ) && 'delete' === bp_action_variable() ) ) {
@@ -328,8 +348,6 @@ function buddyreshare_activity_remove_reshare( $args = array() ) {
 	if ( empty( $r['user_id'] ) || empty( $r['activity_id'] ) ) {
 		bp_core_add_message( $error_message, 'error' );
 	} else {
-		global $wpdb;
-		$table   = bp_core_get_table_prefix() . 'bp_activity_user_reshares';
 		$deleted = $wpdb->query( $wpdb->prepare( "DELETE FROM {$table} WHERE user_id = %d AND activity_id = %d", $r['user_id'], $r['activity_id'] ) );
 
 		if ( is_wp_error( $deleted ) ) {

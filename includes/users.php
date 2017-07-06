@@ -166,6 +166,23 @@ function buddyreshare_users_clean_favorites_cache( $activity_id = 0 ) {
 add_action( 'bp_activity_add_user_favorite',    'buddyreshare_users_clean_favorites_cache', 12, 1 );
 add_action( 'bp_activity_remove_user_favorite', 'buddyreshare_users_clean_favorites_cache', 12, 1 );
 
+function buddyreshare_users_clean_reshares_caches( $args = array() ) {
+	if ( ! empty( $args['user_ids'] ) ) {
+		foreach ( (array) $args['user_ids'] as $user_id ) {
+			wp_cache_delete( $user_id, 'reshares_count' );
+			wp_cache_delete( $user_id, 'user_reshared' );
+		}
+	}
+
+	if ( ! empty( $args['activity_ids'] ) ) {
+		foreach ( (array) $args['activity_ids'] as $activity_id ) {
+			wp_cache_delete( $activity_id, 'user_reshares' );
+			wp_cache_delete( $activity_id, 'user_favorites' );
+		}
+	}
+}
+add_action( 'buddyreshare_reshares_deleted', 'buddyreshare_users_clean_reshares_caches', 12, 1 );
+
 /**
  * Sanitize user favorites so that each Activity IDs are interpreted as string before serialization.
  *
