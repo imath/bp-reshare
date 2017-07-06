@@ -40,19 +40,66 @@ function buddyreshare_posts_enqueue_assets() {
 		return;
 	}
 
+	$templates = buddyreshare_activity_get_templates( 'reshareButton' );
+
+	if ( bp_activity_can_favorite() ) {
+		if ( isset( $GLOBALS['activities_template'] ) ) {
+			$reset_activities_template = $GLOBALS['activities_template'];
+		}
+
+		$GLOBALS['activities_template'] = (object) array( 'activity' => $activity );
+		$user_favorites                 = buddyreshare_users_get_favorites( $activity->id );
+
+		if ( in_array( (string) $script_data['params']['u'], $user_favorites, true ) ) {
+			$f_link  = bp_get_activity_unfavorite_link();
+			$f_text  = __( 'Remove Favorite', 'buddypress' );
+			$f_class = 'fav';
+		} else {
+			$f_link  = bp_get_activity_favorite_link();
+			$f_text  = __( 'Favorite', 'buddypress' );
+			$f_class = 'unfav';
+		}
+
+		$templates['templates']['favoritesButton'] = sprintf( '<a href="%1$s" class="button %3$s bp-secondary-action">
+			%4$s
+			<span class="count">%5$s</span>
+		</a>', esc_url_raw( $f_link ), 'activity-' . $activity->id, $f_class, esc_html( $f_text ), count( $user_favorites ) );
+
+		if ( isset( $reset_activities_template ) ) {
+			$GLOBALS['activities_template'] = $reset_activities_template;
+		} else {
+			unset( $GLOBALS['activities_template'] );
+		}
+	}
+
 	$reshare_url = trailingslashit( bp_get_root_domain() ) .  bp_get_activity_root_slug() . '/' . buddyreshare_get_component_slug();
 
 	$script_data = array_merge( $script_data, array(
 		'commentsAreaID' => apply_filters( 'buddyreshare_posts_comments_area_id', '#comments' ),
 		'activity'       => array(
-			'id'     => $activity->id,
-			'author' => bp_core_get_username( $activity->user_id ),
-			'isSelf' => (int) $activity->user_id === (int) $script_data['params']['u'],
+			'id'       => $activity->id,
+			'author'   => bp_core_get_username( $activity->user_id ),
+			'isSelf'   => (int) $activity->user_id === (int) $script_data['params']['u'],
+			'reshares' => buddyreshare_users_get_reshares( $activity->id ),
 		),
-	), buddyreshare_activity_get_templates( 'reshareButton' ) );
+	), $templates );
 
 	wp_enqueue_script( 'bp-reshare-posts' );
 	wp_localize_script( 'bp-reshare-request', 'bpReshare', $script_data );
 	wp_enqueue_style( 'bp-reshare-style' );
+	wp_add_inline_style( 'bp-reshare-style', sprintf( '
+		[data-activity-id="%1$s"] {
+			margin: 1em 0;
+		}
+
+		[data-activity-id="%1$s"] .fav span.count,
+		[data-activity-id="%1$s"] .unfav span.count {
+			background: #767676;
+			color: #fff;
+			font-size: 90%;
+			margin-left: 2px;
+			padding: 0 5px;
+		}
+	', 'activity-' . $activity->id ) );
 }
 add_action( 'bp_enqueue_scripts', 'buddyreshare_posts_enqueue_assets' );

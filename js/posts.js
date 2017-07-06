@@ -15,30 +15,55 @@ window.bpReshare = window.bpReshare || {};
 	bpReshare.Posts = {
 		start: function() {
 			this.printButtons();
+
+			this.scrollToBuddyPress();
+
+			document.querySelector( '#buddypress .bp-reshare' ).addEventListener(
+				'click',
+				this.reshareActivity
+			);
 		},
 
 		printButtons: function() {
 			var article = document.querySelector( bpReshare.commentsAreaID ).previousElementSibling,
-			    className = 'add-reshare';
+			    className = 'add-reshare', link = bpReshare.strings.addLink.replace( '%i', bpReshare.activity.id ),
+			    screenReaderText = bpReshare.strings.addReshare;
 
 			if ( bpReshare.activity.isSelf ) {
 				className = 'disabled';
+			} else if ( -1 !== bpReshare.activity.reshares.indexOf( bpReshare.params.u.toString() ) ) {
+				className = 'remove-reshare';
+				link = bpReshare.strings.removeLink.replace( '%i', bpReshare.activity.id );
+				screenReaderText = bpReshare.strings.removeReshare;
 			}
-
-			console.log( bpReshare.templates );
 
 			this.container = document.createElement( 'DIV' );
 			this.container.setAttribute( 'id', 'buddypress' );
 			this.container.setAttribute( 'class', 'buddyreshare activity' );
-			this.container.style.margin = '1em 0';
-			this.container.innerHTML = bpReshare.templates.reshareButton.replace( '%l', bpReshare.strings.addLink.replace( '%i', bpReshare.activity.id ) )
+			this.container.setAttribute( 'data-activity-id', 'activity-' + bpReshare.activity.id );
+			this.container.innerHTML = bpReshare.templates.reshareButton.replace( '%l', link )
 																		.replace( '%r', className )
 																		.replace( '%a', bpReshare.activity.id )
 																		.replace( '%u', bpReshare.activity.author )
-																		.replace( '%t', bpReshare.strings.addReshare )
-																		.replace( '%c', 0 );
+																		.replace( '%t', screenReaderText )
+																		.replace( '%c', bpReshare.activity.reshares.length );
 
+			this.container.innerHTML += bpReshare.templates.favoritesButton;
 			article.appendChild( this.container );
+		},
+
+		scrollToBuddyPress: function() {
+			if ( '#activity-' + bpReshare.activity.id !== window.location.hash ) {
+				return;
+			}
+
+			window.scroll( 0, this.container.offsetTop  );
+		},
+
+		reshareActivity: function( event ) {
+			event.preventDefault();
+
+			console.log( event );
 		}
 	};
 
