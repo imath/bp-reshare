@@ -586,3 +586,65 @@ endif;
 function buddyreshare_admin() {
 	_deprecated_function( __FUNCTION__, '2.0.0' );
 }
+
+/**
+ * Catches an activity to reshare if js is disabled
+ *
+ * @since    1.0
+ * @deprecated 2.0.0
+ */
+function buddyreshare_add_reshare() {
+	_deprecated_function( __FUNCTION__, '2.0.0', 'buddyreshare_activity_add_reshare()' );
+	return buddyreshare_activity_add_reshare();
+}
+
+/**
+ * Catches a reshare to delete if js is disabled
+ *
+ * @since    1.0
+ * @deprecated 2.0.0
+ */
+function buddyreshare_remove_reshare() {
+	_deprecated_function( __FUNCTION__, '2.0.0', 'buddyreshare_activity_remove_reshare()' );
+	return buddyreshare_activity_remove_reshare();
+}
+
+/**
+ * Increment user's reshare count
+ *
+ * @since    1.0
+ * @deprecated 2.0.0
+ */
+function buddreshare_increment_user_count( $reshare_id = 0, $user_id = 0 ) {
+	_deprecated_function( __FUNCTION__, '2.0.0' );
+}
+
+/**
+ * Decrement user's reshare count
+ *
+ * @since    1.0
+ * @deprecated 2.0.0
+ */
+function buddreshare_decrement_user_count( $reshare_id = 0, $user_id = 0 ) {
+	_deprecated_function( __FUNCTION__, '2.0.0' );
+}
+
+/**
+ * List the users that have reshared an activity
+ *
+ * @since    1.0
+ * @deprecated 2.0.0
+ */
+function buddyreshare_list_user_avatars() {
+	_deprecated_function( __FUNCTION__, '2.0.0' );
+}
+
+/**
+ * Hook to only load the user's list if on a single activity
+ * 
+ * @since    1.0
+ * @deprecated 2.0.0
+ */
+function buddyreshare_reshared_by_list() {
+	_deprecated_function( __FUNCTION__, '2.0.0' );
+}

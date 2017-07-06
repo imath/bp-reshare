@@ -204,3 +204,149 @@ function buddyreshare_activity_reset_cache() {
 }
 add_action( 'buddyreshare_reshare_added',   'buddyreshare_activity_reset_cache' );
 add_action( 'buddyreshare_reshare_deleted', 'buddyreshare_activity_reset_cache' );
+
+/**
+ * Fallback in case JavaScript fails to add a reshare to an activity
+ *
+ * @since 2.0.0
+ *
+ * @param array $args {
+ *  An array of arguments.
+ *  @type int    $activity_id    Pass an activity ID to reshare it.
+ *  @type int    $user_id        Pass a the ID of the user resharing it.
+ *  @type string $date_reshared  Pass a MySql formatted date.
+ *  @type string $author_slug    Optional. The nicename of the author of the activty.
+ * }
+ */
+function buddyreshare_activity_add_reshare( $args = array() ) {
+	if ( 'bp_actions' === current_action() && ! ( bp_is_activity_component() && bp_is_current_action( buddyreshare_get_component_slug() ) && 'add' === bp_action_variable() ) ) {
+		return;
+	}
+
+	$defaults = array(
+		'activity_id'   => 0,
+		'user_id'       => get_current_user_id(),
+		'date_reshared' => bp_core_current_time(),
+	);
+
+	$error_message = __( 'There was an error resharing the activity. Please try again.', 'bp-reshare' );
+
+	// Set the reshare args according to the URL.
+	if ( bp_is_activity_component() && bp_is_current_action( buddyreshare_get_component_slug() ) && 'add' === bp_action_variable() ) {
+		check_admin_referer( 'buddyreshare_update' );
+
+		$activity = new BP_Activity_Activity( bp_action_variable( 1 ) );
+
+		if ( empty( $activity->id ) ) {
+			bp_core_add_message( $error_message, 'error' );
+		}
+
+		$r = wp_parse_args( array(
+			'activity_id' => $activity->id,
+			'author_slug' => bp_core_get_username( $activity->user_id )
+		), $defaults );
+	} else {
+		$r = wp_parse_args( $args, $defaults );
+	}
+
+	if ( empty( $r['activity_id'] ) || empty( $r['user_id'] ) || empty( $r['date_reshared'] ) ) {
+		bp_core_add_message( $error_message, 'error' );
+
+	// Add The reshare
+	} else {
+		global $wpdb;
+		$table    = bp_core_get_table_prefix() . 'bp_activity_user_reshares';
+		$inserted = $wpdb->insert( $table, array_intersect_key( $r, $defaults ) );
+
+		if ( ! $inserted ) {
+			bp_core_add_message( $error_message, 'error' );
+		} else {
+			bp_core_add_message( __( 'Activity reshared.', 'bp-reshare' ) );
+
+			do_action( 'buddyreshare_reshare_added', $r );
+		}
+	}
+
+	// Redirect the user to where he comes from
+	if ( ! empty( $activity->id ) ) {
+		bp_core_redirect( wp_get_referer() . '#activity-' . $activity->id );
+	} else {
+		return $inserted;
+	}
+}
+add_action( 'bp_actions', 'buddyreshare_activity_add_reshare' );
+
+/**
+ * Fallback in case JavaScript fails to remove an activity reshare.
+ *
+ * It's also used when deleting the reshared activity.
+ *
+ * @since 2.0.0
+ *
+ * @param array $args {
+ *  An array of arguments.
+ *  @type int    $activity_id    Pass an activity ID to reshare it.
+ *  @type int    $user_id        Pass a the ID of the user resharing it.
+ *  @type string $author_slug    Optional. The nicename of the author of the activty.
+ * }
+ */
+function buddyreshare_activity_remove_reshare( $args = array() ) {
+	$action = current_action();
+
+	// Delete the reshare(s)
+	if ( 'bp_activity_deleted_activities' === $action ) {
+
+	// Stop, it's not
+	} elseif ( 'bp_actions' === $action && ! ( bp_is_activity_component() && bp_is_current_action( buddyreshare_get_component_slug() ) && 'delete' === bp_action_variable() ) ) {
+		return;
+	}
+
+	$defaults = array(
+		'activity_id' => 0,
+		'user_id'     => get_current_user_id(),
+	);
+
+	$error_message = __( 'There was an error removing the reshare for the activity. Please try again.', 'bp-reshare' );
+
+	if ( bp_is_activity_component() && bp_is_current_action( buddyreshare_get_component_slug() ) && 'delete' === bp_action_variable() ) {
+		check_admin_referer( 'buddyreshare_delete' );
+
+		$activity = new BP_Activity_Activity( bp_action_variable( 1 ) );
+
+		if ( empty( $activity->id ) ) {
+			bp_core_add_message( $error_message, 'error' );
+		}
+
+		$r = wp_parse_args( array(
+			'activity_id' => $activity->id,
+			'author_slug' => bp_core_get_username( $activity->user_id )
+		), $defaults );
+	} else {
+		$r = wp_parse_args( $args, $defaults );
+	}
+
+	if ( empty( $r['user_id'] ) || empty( $r['activity_id'] ) ) {
+		bp_core_add_message( $error_message, 'error' );
+	} else {
+		global $wpdb;
+		$table   = bp_core_get_table_prefix() . 'bp_activity_user_reshares';
+		$deleted = $wpdb->query( $wpdb->prepare( "DELETE FROM {$table} WHERE user_id = %d AND activity_id = %d", $r['user_id'], $r['activity_id'] ) );
+
+		if ( is_wp_error( $deleted ) ) {
+			bp_core_add_message( $error_message, 'error' );
+		} else {
+			bp_core_add_message( __( 'Activity reshare removed.', 'bp-reshare' ) );
+
+			do_action( 'buddyreshare_reshare_deleted', $r );
+		}
+	}
+
+	// Redirect the user to where he comes from
+	if ( ! empty( $activity->id ) ) {
+		bp_core_redirect( wp_get_referer() . '#activity-' . $activity->id );
+	} else {
+		return $deleted;
+	}
+}
+add_action( 'bp_actions', 'buddyreshare_activity_remove_reshare' );
+add_action( 'bp_activity_deleted_activities', 'buddyreshare_activity_remove_reshare' );

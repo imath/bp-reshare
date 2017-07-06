@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
 function buddyreshare_posts_enqueue_assets() {
 	$post = get_post();
 
-	if ( ! is_singular( $post->post_type ) ) {
+	if ( is_404() || ! is_singular( $post->post_type ) ) {
 		return;
 	}
 
@@ -69,6 +69,16 @@ function buddyreshare_posts_enqueue_assets() {
 			$GLOBALS['activities_template'] = $reset_activities_template;
 		} else {
 			unset( $GLOBALS['activities_template'] );
+		}
+
+		// Catch the feedback messages if needed.
+		$notice = '';
+		ob_start();
+		do_action( 'template_notices' );
+		$notice = ob_get_clean();
+
+		if ( ! empty( $notice ) ) {
+			$templates['templates']['notice'] = sprintf( '<div id="template-notices" role="alert" aria-atomic="true">%s</div>', $notice );
 		}
 	}
 
