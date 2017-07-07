@@ -24,7 +24,7 @@ function buddyreshare_activity_get_templates( $template = 'all' ) {
 			</li>',
 			esc_url_raw( bp_loggedin_user_domain() . bp_get_activity_slug() . '/'. buddyreshare_get_component_slug() .'/' ),
 			esc_attr__( 'Activities I reshared.', 'bp-reshare' ),
-			esc_html__( 'My Reshares', 'bp-reshares' ),
+			esc_html__( 'My Reshares', 'bp-reshare' ),
 			'<span>%c</span>'
 		),
 	);

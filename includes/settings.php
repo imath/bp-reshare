@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
 function buddyreshare_settings_display_emails() {
 	?>
 	<label for="buddyreshare-emails">
-		<input id="buddyreshare-emails" type="checkbox" name="buddyreshare-emails" value="1" <?php checked( true, buddyreshare_are_emails_active() );?>> <?php esc_html_e( 'Yes', 'bp_reshare' ); ?>
+		<input id="buddyreshare-emails" type="checkbox" name="buddyreshare-emails" value="1" <?php checked( true, buddyreshare_are_emails_active() );?>> <?php esc_html_e( 'Yes', 'bp-reshare' ); ?>
 	</label>
 	<?php
 }
@@ -41,6 +41,7 @@ function buddyreshare_settings_display_activity_types() {
 		<fieldset style="border: solid 1px #ccc; margin-bottom: 1em">
 			<legend style="padding: 0 1em">
 				<label for="bp-reshare-selectall-<?php echo esc_attr( $component ); ?>">
+					<?php /* Translators: This string is already translated in BuddyPress */ ; ?>
 					<input id="bp-reshare-selectall-<?php echo esc_attr( $component ); ?>" type="checkbox" class="bp-reshare-selectall" data-component-id="<?php echo esc_attr( $component ); ?>"> <?php echo esc_html( __( $component_label, 'buddypress' ) ); ?>
 				</label>
 			</legend>

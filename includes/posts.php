@@ -52,10 +52,12 @@ function buddyreshare_posts_enqueue_assets() {
 
 		if ( in_array( (string) $script_data['params']['u'], $user_favorites, true ) ) {
 			$f_link  = bp_get_activity_unfavorite_link();
+			/* Translators: This string is already translated in BuddyPress */
 			$f_text  = __( 'Remove Favorite', 'buddypress' );
 			$f_class = 'fav';
 		} else {
 			$f_link  = bp_get_activity_favorite_link();
+			/* Translators: This string is already translated in BuddyPress */
 			$f_text  = __( 'Favorite', 'buddypress' );
 			$f_class = 'unfav';
 		}

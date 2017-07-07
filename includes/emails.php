@@ -36,11 +36,11 @@ function buddyreshare_emails_user_preferences() {
 			<label for="notification-activity-reshares-no" class="bp-screen-reader-text">%5$s</label>
 		</td>
 		</tr>',
-		esc_html__( 'A member reshares one of your updates.', 'bp-reshares' ),
+		esc_html__( 'A member reshares one of your updates.', 'bp-reshare' ),
 		$checked,
-		esc_html__( 'Yes, send email', 'bp-reshares' ),
+		esc_html__( 'Yes, send email', 'bp-reshare' ),
 		$unchecked,
-		esc_html__( 'No, do not send email', 'bp-reshares' )
+		esc_html__( 'No, do not send email', 'bp-reshare' )
 	);
 }
 add_action( 'bp_activity_screen_notification_settings', 'buddyreshare_emails_user_preferences' );

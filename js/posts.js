@@ -1,4 +1,4 @@
-/* global bpReshare */
+// Make sure the bpReshare object exists.
 window.bpReshare = window.bpReshare || {};
 
 ( function( bpReshare, document ) {
@@ -85,7 +85,7 @@ window.bpReshare = window.bpReshare || {};
 			event.preventDefault();
 
 			var button = event.currentTarget, classes = button.getAttribute( 'class' ).split( ' ' ),
-			    spans  = button.childNodes, container = document.getElementById( 'buddypress' );
+			    container = document.getElementById( 'buddypress' );
 
 			if ( -1 !== classes.indexOf( 'add-reshare' ) ) {
 				bpReshare.Ajax.post( bpReshare.activity.id, { 'user_id': bpReshare.params.u, 'author_slug': bpReshare.activity.author }, function( status, response ) {
@@ -97,7 +97,7 @@ window.bpReshare = window.bpReshare || {};
 
 						bpReshare.activity.reshares.push( bpReshare.params.u );
 
-						for( span in button.childNodes ) {
+						for ( var span in button.childNodes ) {
 							if ( 'SPAN' === button.childNodes[ span ].nodeName && 'count' === button.childNodes[ span ].getAttribute( 'class' ) ) {
 								button.childNodes[ span ].innerHTML = parseInt( button.childNodes[ span ].innerHTML, 10 ) + 1;
 							}
@@ -114,16 +114,16 @@ window.bpReshare = window.bpReshare || {};
 
 			// If the user is in the users who reshared: can remove reshare.
 			} else if ( -1 !== classes.indexOf( 'remove-reshare' ) ) {
-				bpReshare.Ajax.delete( bpReshare.activity.id, { 'user_id': bpReshare.params.u, 'author_slug': bpReshare.activity.author }, function( status, response ) {
+				bpReshare.Ajax.remove( bpReshare.activity.id, { 'user_id': bpReshare.params.u, 'author_slug': bpReshare.activity.author }, function( status, response ) {
 					if ( 200 === status ) {
 
 						// Update the link for a remove reshare one
-						button.setAttribute( 'class', button.getAttribute( 'class' ).replace( 'remove-reshare','add-reshare' ) )
+						button.setAttribute( 'class', button.getAttribute( 'class' ).replace( 'remove-reshare','add-reshare' ) );
 						button.setAttribute( 'href', bpReshare.strings.addLink.replace( '%i', bpReshare.activity.id ) );
 
 						bpReshare.activity.reshares.splice( bpReshare.activity.reshares.indexOf( bpReshare.params.u.toString() ), 1 );
 
-						for( span in button.childNodes ) {
+						for ( var span in button.childNodes ) {
 							if ( 'SPAN' === button.childNodes[ span ].nodeName && 'count' === button.childNodes[ span ].getAttribute( 'class' ) ) {
 								button.childNodes[ span ].innerHTML = parseInt( button.childNodes[ span ].innerHTML, 10 ) - 1;
 							}

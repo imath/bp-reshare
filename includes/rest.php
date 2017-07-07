@@ -62,7 +62,7 @@ function buddyreshare_rest_get_items( WP_REST_Request $request ) {
 	) );
 
 	if ( empty( $r['activity_id'] ) && empty( $r['include'] ) ) {
-		return new WP_Error( 'bp_reshare_missing_argument', __( 'Missing argument' ), array( 'status' => 500 ) );
+		return new WP_Error( 'bp_reshare_missing_argument', __( 'Missing argument', 'bp-reshare' ), array( 'status' => 500 ) );
 	}
 
 	$type = sanitize_key( $r['type'] );
@@ -71,7 +71,7 @@ function buddyreshare_rest_get_items( WP_REST_Request $request ) {
 	if ( empty( $r['include'] ) ) {
 
 		if ( ! function_exists( 'buddyreshare_users_get_' . $type  ) ) {
-			return new WP_Error( 'bp_reshare_unknown_callback', __( 'Missing callback' ), array( 'status' => 500 ) );
+			return new WP_Error( 'bp_reshare_unknown_callback', __( 'Missing callback', 'bp-reshare' ), array( 'status' => 500 ) );
 		}
 
 		$include = call_user_func( 'buddyreshare_users_get_' . $type, $r['activity_id'] );
@@ -155,7 +155,7 @@ function buddyreshare_rest_update_item( WP_REST_Request $request ) {
 	$r = array_intersect_key( wp_parse_args( $args, $defaults ), $defaults );
 
 	if ( empty( $r['user_id'] ) || empty( $r['activity_id'] ) || empty( $r['date_reshared'] ) ) {
-		return new WP_Error( 'bp_reshare_missing_argument', __( 'Missing argument' ), array( 'status' => 500 ) );
+		return new WP_Error( 'bp_reshare_missing_argument', __( 'Missing argument', 'bp-reshare' ), array( 'status' => 500 ) );
 	}
 
 	$result = array( 'reshared' => false );
@@ -187,7 +187,7 @@ function buddyreshare_rest_delete_item( WP_REST_Request $request ) {
 	$r = array_intersect_key( wp_parse_args( $args, $defaults ), $defaults );
 
 	if ( empty( $r['user_id'] ) || empty( $r['activity_id'] ) ) {
-		return new WP_Error( 'bp_reshare_missing_argument', __( 'Missing argument' ), array( 'status' => 500 ) );
+		return new WP_Error( 'bp_reshare_missing_argument', __( 'Missing argument', 'bp-reshare' ), array( 'status' => 500 ) );
 	}
 
 	$deleted = $wpdb->query( $wpdb->prepare( "DELETE FROM {$table} WHERE user_id = %d AND activity_id = %d", $r['user_id'], $r['activity_id'] ) );

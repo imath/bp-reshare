@@ -1,5 +1,3 @@
-/* global bpReshare */
-
 // Make sure the bpReshare object exists.
 window.bpReshare = window.bpReshare || {};
 
@@ -40,7 +38,7 @@ window.bpReshare = window.bpReshare || {};
 				background: 'url( ' + bpReshare.activity.loader +' ) no-repeat',
 				width: '100%',
 				height: '40px',
-				'background-position': '50% 50%',
+				'background-position': '50% 50%'
 			} )
 		);
 	};
@@ -59,7 +57,7 @@ window.bpReshare = window.bpReshare || {};
 			type:    navItemName,
 			include: bpReshare.activity.nav[ navItemName ].users.join( ',' ),
 			page:    page
-		}
+		};
 
 		bpReshare.Ajax.get( bpReshare.activity.id, getData, function( status, response ) {
 			if ( 200 === status && response.users ) {
@@ -72,7 +70,7 @@ window.bpReshare = window.bpReshare || {};
 
 				if ( 1 === page || ! $( '#' + navItemName + '-users' ).length ) {
 					$( content ).html(
-						$( '<ul></ul>' ).prop( { id: navItemName + '-users', class: 'item-list', 'aria-live': 'assertive', 'aria-relevant' : 'all' } )
+						$( '<ul></ul>' ).prop( { id: navItemName + '-users', class: 'item-list', 'aria-live': 'assertive', 'aria-relevant' : 'all' } ) // jshint ignore:line
 					);
 				} else if ( $( content ).find( '.loading' ).length ) {
 					$( content ).find( '.loading' ).remove();
@@ -146,7 +144,7 @@ window.bpReshare = window.bpReshare || {};
 			                                                             .prepend( $( '<span></span>' ).addClass( 'count' )
 			                                                             .html( bpReshare.activity.nav.favorites.count ) );
 		}
-	}
+	};
 
 	$( '#buddypress' ).on( 'click', '#buddyreshare-activity-nav li a', function( event ) {
 		var navItem = $( event.currentTarget ), contentItem = navItem.prop( 'id' ).replace( 'display', 'activity' ),
@@ -169,8 +167,6 @@ window.bpReshare = window.bpReshare || {};
 		}
 
 		$.each( $( '.buddyreshare-nav-content' ), function( c, content ) {
-			var output;
-
 			if ( $( content ).hasClass( contentItem ) ) {
 				$( content ).show();
 
@@ -197,8 +193,8 @@ window.bpReshare = window.bpReshare || {};
 	$( '#buddypress' ).on( 'click', '.buddyreshare-nav-content .load-more-users a', function( event ) {
 		event.preventDefault();
 
-		var page = $( event.currentTarget ).data( 'next-page' );
-		    content = $( event.currentTarget ).closest( '.buddyreshare-nav-content' );
+		var page = $( event.currentTarget ).data( 'next-page' ),
+		    content = $( event.currentTarget ).closest( '.buddyreshare-nav-content' ),
 		    navItemName = $( content ).prop( 'class' ).split( ' ' )[0].replace( 'activity-', '' );
 
 		$( event.currentTarget ).parent().addClass( 'loading' ).html(
@@ -241,7 +237,7 @@ window.bpReshare = window.bpReshare || {};
 		}
 
 		return count;
-	}
+	};
 
 	$( '#buddypress .activity-meta' ).on( 'click', 'a', function( event ) {
 		if ( bpReshare.isTypeDisabled( bpReshare.activity.id ) ) {
@@ -271,7 +267,7 @@ window.bpReshare = window.bpReshare || {};
 			return;
 		}
 
-		var requestData = decodeURIComponent( settings.data ), number = 1;
+		var requestData = decodeURIComponent( settings.data ), number = 1,
 		    action      = bpReshare.getURLparams( '?' + requestData, 'action' );
 
 		// Update the favorites nav label and the favorites count.
@@ -286,9 +282,8 @@ window.bpReshare = window.bpReshare || {};
 				$( '#activity-' + bpReshare.activity.id + ' .activity-meta' ).find( '.fav, .unfav' ).html(
 					$( '<span></span>' ).addClass( 'count' )
 				                      .html( bpReshare.activity.nav.favorites.count )
-				                      .get( 0 ).outerHTML
-					                  + '&nbsp;' + xhr.responseText
-				)
+				                      .get( 0 ).outerHTML + '&nbsp;' + xhr.responseText
+				);
 			}, 500 );
 
 		// Update the comments nav label.

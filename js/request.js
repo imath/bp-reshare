@@ -1,4 +1,6 @@
-/* global bpReshare */
+/* global JSON, ActiveXObject */
+
+// Make sure the bpReshare object exists.
 window.bpReshare = window.bpReshare || {};
 
 ( function( bpReshare ) {
@@ -37,7 +39,7 @@ window.bpReshare = window.bpReshare || {};
 			}
 
 			queryVars = Object.keys( data ).map( function( k ) {
-				return encodeURIComponent( k ) + '=' + encodeURIComponent( data[k] )
+				return encodeURIComponent( k ) + '=' + encodeURIComponent( data[k] );
 			} ).join( '&' );
 
 			ajaxRequest.onreadystatechange = function( event ) {
@@ -52,7 +54,7 @@ window.bpReshare = window.bpReshare || {};
 
 					response && response( status, r );
 				}
-			}
+			};
 
 			if ( 'DELETE' === method ) {
 				headers['X-HTTP-Method-Override'] = method;
@@ -65,7 +67,7 @@ window.bpReshare = window.bpReshare || {};
 
 			ajaxRequest.open( method, endpoint );
 
-			for ( h in headers ) {
+			for ( var h in headers ) {
 				ajaxRequest.setRequestHeader( h, headers[h] );
 			}
 
@@ -80,7 +82,7 @@ window.bpReshare = window.bpReshare || {};
 			return this.request( endpoint, data, 'POST', response );
 		},
 
-		delete: function( endpoint, data, response ) {
+		remove: function( endpoint, data, response ) {
 			return this.request( endpoint, data, 'DELETE', response );
 		},
 

@@ -1,5 +1,3 @@
-/* global bpReshare */
-
 // Make sure the bpReshare object exists.
 window.bpReshare = window.bpReshare || {};
 
@@ -74,7 +72,7 @@ window.bpReshare = window.bpReshare || {};
 		}
 
 		return isDisabled;
-	}
+	};
 
 	bpReshare.IndexOf = function( id, list ) {
 		var r = -1;
@@ -171,7 +169,7 @@ window.bpReshare = window.bpReshare || {};
 			activity = activityId;
 		} else {
 			activityId = parseInt( activityId, 10 );
-			var activityIndex = bpReshare.IndexOf( activityId, bpReshare.activities )
+			var activityIndex = bpReshare.IndexOf( activityId, bpReshare.activities );
 
 			if ( -1 === activityIndex ) {
 				return false;
@@ -216,7 +214,7 @@ window.bpReshare = window.bpReshare || {};
 		link.find( '.bp-screen-reader-text' ).html( bpReshare.strings[ reshareData.text ] );
 
 		return true;
-	}
+	};
 
 	bpReshare.get = function() {
 		if ( ! $( '.bp-reshare' ).length ) {
@@ -385,7 +383,7 @@ window.bpReshare = window.bpReshare || {};
 				bpReshare.get();
 			}, 500 );
 		}
-	}
+	};
 
 	$( document ).ready( function() {
 		bpReshare.Button( 'populate' );
@@ -404,7 +402,7 @@ window.bpReshare = window.bpReshare || {};
 		var requestData = decodeURIComponent( settings.data ),
 		    action      = bpReshare.getURLparams( '?' + requestData, 'action' ),
 		    isReshare   = settings.url && -1 !== settings.url.indexOf( bpReshare.params.root_url ),
-		    activities, content, newContent;
+		    activities;
 
 		if ( ! isReshare && -1 !== $.inArray( action, ['activity_get_older_updates', 'activity_widget_filter', 'post_update' ] ) ) {
 			if ( 'post_update' === action ) {
@@ -438,7 +436,7 @@ window.bpReshare = window.bpReshare || {};
 
 		// Wait a few milliseconds to be able to only get the Heartbeat Activities.
 		window.setTimeout( function() {
-			activities = $( '<ul></ul>' ).html( $.map( $( stream.find( '.just-posted' ) ), function( l ) {
+			var activities = $( '<ul></ul>' ).html( $.map( $( stream.find( '.just-posted' ) ), function( l ) {
 				return $( l ).prop( 'outerHTML' );
 			} ).join( ' ' ) );
 
@@ -499,7 +497,7 @@ window.bpReshare = window.bpReshare || {};
 
 		// If the user is in the users who reshared: can remove reshare.
 		} else if ( $( link ).hasClass( 'remove-reshare' ) ) {
-			bpReshare.Ajax.delete( id, { 'user_id': bpReshare.params.u, 'author_slug': author }, function( status, response ) {
+			bpReshare.Ajax.remove( id, { 'user_id': bpReshare.params.u, 'author_slug': author }, function( status, response ) {
 				if ( 200 === status ) {
 
 					// Update the link for a remove reshare one
@@ -527,7 +525,7 @@ window.bpReshare = window.bpReshare || {};
 				}
 			} );
 		}
-	}
+	};
 	$( '#buddypress' ).on( 'click', '.bp-reshare', bpReshare.add );
 
 } )( window.bpReshare, jQuery );

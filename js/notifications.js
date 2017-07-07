@@ -1,4 +1,4 @@
-/* global bpReshare */
+// Make sure the bpReshare object exists.
 window.bpReshare = window.bpReshare || {};
 
 ( function( bpReshare, document ) {
@@ -26,11 +26,11 @@ window.bpReshare = window.bpReshare || {};
 				if ( ! this.dN ) {
 					var list = document.querySelector( '#wp-admin-bar-bp-notifications-default' );
 
-					for( child in list.childNodes ) {
+					for ( var child in list.childNodes ) {
 						if ( 'LI' === list.childNodes[ child ].nodeName && ! this.dN ) {
 							this.dN = list.childNodes[ child ].cloneNode( true );
 						}
-					};
+					}
 
 					list.appendChild( this.dN );
 				} else {
@@ -100,7 +100,7 @@ window.bpReshare = window.bpReshare || {};
 			if ( ! this.amount ) {
 				return;
 			}
-			
+
 			this.bubble.innerHTML = parseInt( this.bubble.innerHTML, 10 ) - number;
 
 			if ( 0 === parseInt( this.bubble.innerHTML, 10 ) ) {
