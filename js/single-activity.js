@@ -7,6 +7,14 @@ window.bpReshare = window.bpReshare || {};
 		return;
 	}
 
+	/**
+	 * Displays an information to explain empty contents.
+	 *
+	 * @param  {Object} parent      The HTML container for the content.
+	 * @param  {String} navItemName The name of the current Tab to display the content for.
+	 * @param  {String} message     A message to override the one used to inform about empty contents.
+	 * @return {Void}
+	 */
 	bpReshare.outputNoItem = function( parent, navItemName, message ) {
 		if ( $( parent ).find( '#message' ).length ) {
 			return;
@@ -32,6 +40,12 @@ window.bpReshare = window.bpReshare || {};
 		);
 	};
 
+	/**
+	 * Displays a loader untill a REST API request reply.
+	 *
+	 * @param  {Object} container The HTML container for the content.
+	 * @return {Void}
+	 */
 	bpReshare.getLoading = function( container ) {
 		$( container ).html(
 			$( '<div></div>' ).css( {
@@ -43,6 +57,14 @@ window.bpReshare = window.bpReshare || {};
 		);
 	};
 
+	/**
+	 * List users for the current tab (Reshares or Favorites).
+	 *
+	 * @param  {Object}  content     The HTML container for the content.
+	 * @param  {String}  navItemName The name of the current Tab to list users for.
+	 * @param  {Integer} page        The page number.
+	 * @return {Void}
+	 */
 	bpReshare.getUsers = function( content, navItemName, page ) {
 		if ( ! page ) {
 			page = 1;
@@ -94,6 +116,11 @@ window.bpReshare = window.bpReshare || {};
 		} );
 	};
 
+	/**
+	 * Inserts a new navigation above Activity's comments area.
+	 *
+	 * @return {Void}
+	 */
 	bpReshare.activityNav = function() {
 		var i = 0, nav = [];
 
@@ -146,6 +173,12 @@ window.bpReshare = window.bpReshare || {};
 		}
 	};
 
+	/**
+	 * Listens to Activity Nav items click to display the corresponding content.
+	 *
+	 * @param  {Object} event The nav item click event.
+	 * @return {Void}
+	 */
 	$( '#buddypress' ).on( 'click', '#buddyreshare-activity-nav li a', function( event ) {
 		var navItem = $( event.currentTarget ), contentItem = navItem.prop( 'id' ).replace( 'display', 'activity' ),
 		    navItemName = navItem.prop( 'id' ).replace( 'display-', '' );
@@ -190,6 +223,12 @@ window.bpReshare = window.bpReshare || {};
 		} );
 	} );
 
+	/**
+	 * Listens to the pagination clicks before fetching new users.
+	 *
+	 * @param  {Object} event The pagination click.
+	 * @return {Void}
+	 */
 	$( '#buddypress' ).on( 'click', '.buddyreshare-nav-content .load-more-users a', function( event ) {
 		event.preventDefault();
 
@@ -204,6 +243,14 @@ window.bpReshare = window.bpReshare || {};
 		bpReshare.getUsers( content, navItemName, page );
 	} );
 
+	/**
+	 * Update the Action buttons count and the Nav item labels.
+	 *
+	 * @param  {String}  navItemName The name of the current Tab to list users for.
+	 * @param  {Integer} user        The User ID to add to fetched ones.
+	 * @param  {Integer} number      1 or -1: whether to increment or decrement the count.
+	 * @return {Void}
+	 */
 	bpReshare.refreshCounts = function( navItemName, user, number ) {
 		var count = 0;
 
@@ -218,7 +265,7 @@ window.bpReshare = window.bpReshare || {};
 			count = bpReshare.activity.nav[ navItemName ].users.length;
 
 			/**
-			 * Make sure to default to Comment(s) content so That
+			 * Make sure to default to Comment(s) content so that
 			 * the user needs to refresh the users who favorited
 			 * or reshared.
 			 */
@@ -239,6 +286,12 @@ window.bpReshare = window.bpReshare || {};
 		return count;
 	};
 
+	/**
+	 * Listen to Activity Meta buttons before updating counts.
+	 *
+	 * @param  {Object} event The click event.
+	 * @return {Void}
+	 */
 	$( '#buddypress .activity-meta' ).on( 'click', 'a', function( event ) {
 		if ( bpReshare.isTypeDisabled( bpReshare.activity.id ) ) {
 			return;
@@ -262,6 +315,14 @@ window.bpReshare = window.bpReshare || {};
 		}
 	} );
 
+	/**
+	 * Listens to BuddyPress Ajax requests success before updating counts.
+	 *
+	 * @param  {Object} event    The jQuery ajax Success event.
+	 * @param  {Object} xhr      The request.
+	 * @param  {Object} settings The settings data.
+	 * @return {Void}
+	 */
 	$( document ).ajaxSuccess( function( event, xhr, settings ) {
 		if ( bpReshare.isTypeDisabled( bpReshare.activity.id ) ) {
 			return;
@@ -298,6 +359,11 @@ window.bpReshare = window.bpReshare || {};
 		}
 	} );
 
+	/**
+	 * Waits for the document to be ready before inserting the navigation.
+	 *
+	 * @return {Void}
+	 */
 	$( document ).ready( function() {
 		if ( bpReshare.isTypeDisabled( bpReshare.activity.id ) ) {
 			return;

@@ -12,10 +12,20 @@ window.bpReshare = window.bpReshare || {};
 
 	/**
 	 * Ajax Class.
+	 *
 	 * @type {Object}
 	 */
 	bpReshare.Ajax = {
 
+		/**
+		 * Performs a WP REST API Request using Ajax.
+		 *
+		 * @param  {String} endpoint The WP REST API route endpoint.
+		 * @param  {Object} data     The request variables.
+		 * @param  {String} method   The method of the request (eg: POST, GET, DELETE..)
+		 * @param  {String} response The reply callback to handle the result of the request.
+		 * @return {Object}          The JSON result of the request
+		 */
 		request: function( endpoint, data, method, response ) {
 			var ajaxRequest, queryVars,
 			    headers = {
@@ -56,6 +66,7 @@ window.bpReshare = window.bpReshare || {};
 				}
 			};
 
+			// DELETE is often blocked by hosts.
 			if ( 'DELETE' === method ) {
 				headers['X-HTTP-Method-Override'] = method;
 				method = 'POST';
@@ -74,18 +85,50 @@ window.bpReshare = window.bpReshare || {};
 			ajaxRequest.send( queryVars );
 		},
 
+		/**
+		 * Perfoms a new GET request.
+		 *
+		 * @param  {String} endpoint The WP REST API route endpoint.
+		 * @param  {Object} data     The request variables.
+		 * @param  {string} response The reply callback to handle the result of the GET request.
+		 * @return {Object}          The JSON result for the GET request
+		 */
 		get: function( endpoint, data, response ) {
 			return this.request( endpoint, data, 'GET', response );
 		},
 
+		/**
+		 * Perfoms a new POST request.
+		 *
+		 * @param  {String} endpoint The WP REST API route endpoint.
+		 * @param  {Object} data     The request variables.
+		 * @param  {string} response The reply callback to handle the result of the POST request.
+		 * @return {Object}          The JSON result for the POST request
+		 */
 		post: function( endpoint, data, response ) {
 			return this.request( endpoint, data, 'POST', response );
 		},
 
+		/**
+		 * Perfoms a new DELETE request.
+		 *
+		 * @param  {String} endpoint The WP REST API route endpoint.
+		 * @param  {Object} data     The request variables.
+		 * @param  {string} response The reply callback to handle the result of the DELETE request.
+		 * @return {Object}          The JSON result for the DELETE request
+		 */
 		remove: function( endpoint, data, response ) {
 			return this.request( endpoint, data, 'DELETE', response );
 		},
 
+		/**
+		 * Outputs a "BuddyPress" like notice to the user for 4 seconds.
+		 *
+		 * @param  {Object} container The HTML container to append the notice into.
+		 * @param  {String} message   The content of the user notice.
+		 * @param  {String} type      The type of the notice (eg: 'error' or 'updated')
+		 * @return {Void}
+		 */
 		feedback: function( container, message, type ) {
 			var notice;
 

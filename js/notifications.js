@@ -10,9 +10,15 @@ window.bpReshare = window.bpReshare || {};
 
 	/**
 	 * Notifications Class.
+	 *
 	 * @type {Object}
 	 */
 	bpReshare.Notifications = {
+		/**
+		 * Parse the My Account Bubble to eventually add new entries for unread reshares.
+		 *
+		 * @return {Void}
+		 */
 		start: function() {
 			if ( bpReshare.userNotifications.items && 0 < bpReshare.userNotifications.items.length ) {
 				this.dN     = document.getElementById( 'wp-admin-bar-no-notifications' );
@@ -79,6 +85,11 @@ window.bpReshare = window.bpReshare || {};
 			}
 		},
 
+		/**
+		 * Adds a border to new reshares to make sure the current user will find them.
+		 *
+		 * @return {Void}
+		 */
 		highLightReshares: function() {
 			if ( ! this.amount || ! this.items ) {
 				return;
@@ -96,6 +107,12 @@ window.bpReshare = window.bpReshare || {};
 			this.updateBubbles( this.amount );
 		},
 
+		/**
+		 * Decrement the number of unread notifications into the My Account Bubble
+		 *
+		 * @param  {Integer} number The number of read notifications.
+		 * @return {Void}
+		 */
 		updateBubbles: function( number ) {
 			if ( ! this.amount ) {
 				return;
@@ -131,6 +148,11 @@ window.bpReshare = window.bpReshare || {};
 		}
 	};
 
+	/**
+	 * Waits for the window to be loaded before starting notifications
+	 *
+	 * @return {Void}
+	 */
 	window.addEventListener( 'load', function() {
 		var loaded = false;
 

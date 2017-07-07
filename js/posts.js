@@ -10,9 +10,15 @@ window.bpReshare = window.bpReshare || {};
 
 	/**
 	 * Posts Class.
+	 *
 	 * @type {Object}
 	 */
 	bpReshare.Posts = {
+		/**
+		 * Bootstrap function.
+		 *
+		 * @return {Void}
+		 */
 		start: function() {
 			this.printButtons();
 
@@ -24,23 +30,11 @@ window.bpReshare = window.bpReshare || {};
 			);
 		},
 
-		displayFeedback: function( container ) {
-			// Remove all previous notices.
-			if ( 'template-notices' === container.childNodes[0].getAttribute( 'id' ) ) {
-				container.childNodes[0].remove();
-			}
-
-			if ( ! bpReshare.templates.notice ) {
-				return;
-			}
-
-			container.innerHTML = bpReshare.templates.notice + container.innerHTML;
-
-			window.setTimeout( function() {
-				document.getElementById( 'template-notices' ).remove();
-			}, 4000 );
-		},
-
+		/**
+		 * Print Activity Action buttons above the Post's comments area.
+		 *
+		 * @return {Void}
+		 */
 		printButtons: function() {
 			var article = document.querySelector( bpReshare.commentsAreaID ).previousElementSibling,
 			    className = 'add-reshare', link = bpReshare.strings.addLink.replace( '%i', bpReshare.activity.id ),
@@ -65,7 +59,11 @@ window.bpReshare = window.bpReshare || {};
 			                                                            .replace( '%t', screenReaderText )
 			                                                            .replace( '%c', bpReshare.activity.reshares.length );
 
-			this.container.innerHTML += bpReshare.templates.favoritesButton;
+			// Only insert the favorite button is the feature is enabled.
+			if ( 'undefined' !== typeof bpReshare.templates.favoritesButton ) {
+				this.container.innerHTML += bpReshare.templates.favoritesButton;
+			}
+
 			article.appendChild( this.container );
 
 			if ( bpReshare.templates.notice ) {
@@ -73,6 +71,11 @@ window.bpReshare = window.bpReshare || {};
 			}
 		},
 
+		/**
+		 * If the URL contains a specific hash, scroll to it.
+		 *
+		 * @return {Void}
+		 */
 		scrollToBuddyPress: function() {
 			if ( '#activity-' + bpReshare.activity.id !== window.location.hash ) {
 				return;
@@ -81,6 +84,12 @@ window.bpReshare = window.bpReshare || {};
 			location.href = '#buddypress';
 		},
 
+		/**
+		 * Handles the Add/Remove Reshare actions.
+		 *
+		 * @param  {Object} event The User's click on the Reshare button.
+		 * @return {Void}
+		 */
 		reshareAction: function( event ) {
 			event.preventDefault();
 
@@ -141,6 +150,11 @@ window.bpReshare = window.bpReshare || {};
 		}
 	};
 
+	/**
+	 * Waits for the window to be loaded before inserting Post action buttons.
+	 *
+	 * @return {Void}
+	 */
 	window.addEventListener( 'load', function() {
 		var loaded = false;
 
