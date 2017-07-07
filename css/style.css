@@ -48,6 +48,11 @@ a.bp-reshare.disabled.remove-reshare .bp-reshare-icon {
 	background-image: url("data:image/svg+xml;charset=utf8,%3Csvg%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%23bbb%22%3E%3Cpath%20d%3D%22M18%208l-5%204v-2.99c-2.58%200.060-4.88%200.45-7%202.99%200.29-3.57%202.66-5.66%207-5.94v-3.060zM4%2014h11v-2l2-1.6v5.6h-15v-11h9.43c-1.83%200.32-3.31%201-4.41%202h-3.020v7z%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E");
 }
 
+#buddypress .activity-header .reshare-time-since {
+	font-style: italic;
+	font-size: 90%;
+}
+
 #buddypress .activity-meta a.fav span.count,
 #buddypress .activity-meta a.unfav span.count {
 	background: #767676;

@@ -162,11 +162,21 @@ add_filter( 'bp_activity_set_reshares_scope_args', 'buddyreshare_activity_filter
 
 function buddyreshare_activity_sort_by_reshared_date( $sql = '', $args = array() ) {
 	$and = '';
+	$show_sitewide = str_replace( 'AND a.hide_sitewide = 0', '', $sql );
 
 	if ( buddyreshare_is_user_profile_reshares() ) {
 		$and = ' AND r.date_reshared IS NOT NULL ';
+
+		// Display all reshared activities to the current user.
+		if ( bp_is_my_profile() || current_user_can( 'bp_moderate' ) ) {
+			$sql = $show_sitewide;
+		}
+
 	} elseif ( isset( $args['scope'] ) && 'reshares' === $args['scope'] ) {
 		$and = sprintf( ' AND r.user_id = %d ', get_current_user_id() );
+
+		// Display all reshares to the current user.
+		$sql = $show_sitewide;
 	}
 
 	if ( false === apply_filters( 'buddyreshare_activity_sort_by_reshared_date', 'reshares' === buddyreshare_get_activity_order_preference() ) || ! is_user_logged_in() ) {
