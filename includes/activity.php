@@ -10,6 +10,14 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Returns the templates and strings for JavaScript UIs.
+ *
+ * @since 2.0.0
+ *
+ * @param  string $template Which templates to get: 'all', 'reshareButton' or 'directoryTab' ?
+ * @return array           The templates & strings list.
+ */
 function buddyreshare_activity_get_templates( $template = 'all' ) {
 	$reshare_url = trailingslashit( bp_get_root_domain() ) .  bp_get_activity_root_slug() . '/' . buddyreshare_get_component_slug();
 
@@ -45,6 +53,14 @@ function buddyreshare_activity_get_templates( $template = 'all' ) {
 	);
 }
 
+/**
+ * Returns the data to JavaScript build the single activity navigation.
+ *
+ * @since 2.0.0
+ *
+ * @param  integer $activity_id The ID of the activity.
+ * @return array                Nav items for the single activity navigation.
+ */
 function buddyreshare_activity_get_single_nav( $activity_id = 0 ) {
 	if ( ! $activity_id ) {
 		return array();
@@ -78,9 +94,21 @@ function buddyreshare_activity_get_single_nav( $activity_id = 0 ) {
 		);
 	}
 
+	/**
+	 * Filter here to edit the single activity navigation.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param array $single_nav Nav items for the single activity navigation.
+	 */
 	return apply_filters( 'buddyreshare_activity_get_single_nav', $single_nav );
 }
 
+/**
+ * Enqueue the activity scripts and style needed.
+ *
+ * @since 2.0.0
+ */
 function buddyreshare_activity_enqueue_assets() {
 	$script_data = buddyreshare_get_common_script_data();
 
@@ -128,7 +156,25 @@ function buddyreshare_activity_enqueue_assets() {
 }
 add_action( 'bp_enqueue_scripts', 'buddyreshare_activity_enqueue_assets' );
 
+/**
+ * Set the Activity directory Reshares scope.
+ *
+ * NB: This is only used with default BuddyPress order.
+ *
+ * @since 2.0.0
+ *
+ * @param  array $retval Empty array by default.
+ * @param  array $filter Current activity arguments.
+ * @return array        Override arguments for the Reshares scope
+ */
 function buddyreshare_activity_filter_scope( $retval = array(), $filter = array() ) {
+	/**
+	 * Filter here to override the use of the scope filter.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param boolean $value Whether the order preference is set to date of reshared or not.
+	 */
 	if ( true === apply_filters( 'buddyreshare_activity_sort_by_reshared_date', 'reshares' === buddyreshare_get_activity_order_preference() ) ) {
 		return $retval;
 	}
@@ -160,6 +206,15 @@ function buddyreshare_activity_filter_scope( $retval = array(), $filter = array(
 }
 add_filter( 'bp_activity_set_reshares_scope_args', 'buddyreshare_activity_filter_scope', 10, 2 );
 
+/**
+ * Order the Activity stream according to the last reshared date.
+ *
+ * @since 2.0.0
+ *
+ * @param  string $sql  The main activity SQL Query.
+ * @param  array  $args The requested arguments for this query.
+ * @return string       The SQL Query ordered by reshared date (or unchanged).
+ */
 function buddyreshare_activity_sort_by_reshared_date( $sql = '', $args = array() ) {
 	$and = '';
 	$show_sitewide = str_replace( 'AND a.hide_sitewide = 0', '', $sql );
@@ -179,6 +234,13 @@ function buddyreshare_activity_sort_by_reshared_date( $sql = '', $args = array()
 		$sql = $show_sitewide;
 	}
 
+	/**
+	 * Filter here to override the sort preference.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param boolean $value Whether the order preference is set to date of reshared or not.
+	 */
 	if ( false === apply_filters( 'buddyreshare_activity_sort_by_reshared_date', 'reshares' === buddyreshare_get_activity_order_preference() ) || ! is_user_logged_in() ) {
 		if ( buddyreshare_is_user_profile_reshares() ) {
 			$sql = str_replace( array(
@@ -209,6 +271,11 @@ function buddyreshare_activity_sort_by_reshared_date( $sql = '', $args = array()
 }
 add_filter( 'bp_activity_paged_activities_sql', 'buddyreshare_activity_sort_by_reshared_date', 20, 2 );
 
+/**
+ * Clean the Activity stream cache on reshare's events.
+ *
+ * @since 2.0.0
+ */
 function buddyreshare_activity_reset_cache() {
 	wp_cache_delete( 'bp_activity_sitewide_front', 'bp' );
 	bp_core_reset_incrementor( 'bp_activity' );
@@ -276,6 +343,19 @@ function buddyreshare_activity_add_reshare( $args = array() ) {
 		} else {
 			bp_core_add_message( __( 'Activity reshared.', 'bp-reshare' ) );
 
+			/**
+			 * Hook here to perform custom actions once the reshare is added.
+			 *
+			 * @since 2.0.0
+			 *
+			 * @param array $r {
+			 *  An array of arguments.
+			 *  @type int    $activity_id    The activity ID the reshare refers to.
+			 *  @type int    $user_id        The ID of the user who's resharing it.
+			 *  @type string $date_reshared  The MySql formatted date for this reshare.
+			 *  @type string $author_slug    Optional. The nicename of the author of the activty.
+			 * }
+			 */
 			do_action( 'buddyreshare_reshare_added', $r );
 		}
 	}
@@ -322,6 +402,16 @@ function buddyreshare_activity_remove_reshare( $args = array() ) {
 		$deleted  = $wpdb->query( sprintf( "DELETE FROM {$table} WHERE activity_id IN ( %s )", join( ',', $deleted_activities ) ) );
 
 		if ( ! is_wp_error( $deleted ) ) {
+			/**
+			 * Hook here to perform custom actions once many activity where deleted.
+			 *
+			 * @since 2.0.0
+			 *
+			 * @param array $value {
+			 *  array $user_ids           The list of deleted activity authors.
+			 *  array $deleted_activities The list of IDs of the deleted activities.
+			 * }
+			 */
 			do_action( 'buddyreshare_reshares_deleted', array(
 				'user_ids'     => $user_ids,
 				'activity_ids' => $deleted_activities,
@@ -367,6 +457,18 @@ function buddyreshare_activity_remove_reshare( $args = array() ) {
 		} else {
 			bp_core_add_message( __( 'Activity reshare removed.', 'bp-reshare' ) );
 
+			/**
+			 * Hook here to perform custom actions once the reshare is removed.
+			 *
+			 * @since 2.0.0
+			 *
+			 * @param array $r {
+			 *  An array of arguments.
+			 *  @type int    $activity_id    The activity ID the reshare refers to.
+			 *  @type int    $user_id        The ID of the user who's reshared it.
+			 *  @type string $author_slug    Optional. The nicename of the author of the activty.
+			 * }
+			 */
 			do_action( 'buddyreshare_reshare_deleted', $r );
 		}
 	}

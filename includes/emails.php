@@ -48,13 +48,13 @@ add_action( 'bp_activity_screen_notification_settings', 'buddyreshare_emails_use
 /**
  * Appends the BP Reshare unsubscribe emails schema to BuddyPress one.
  *
- * NB: This markes sure the unsubscribe link, when clicked will disable
+ * NB: This makes sure the unsubscribe link, when clicked will disable
  * the 'buddyreshare_emails_send' notification for the user.
  *
  * @since 2.0.0
  *
- * @param  array  $emails [description]
- * @return [type]         [description]
+ * @param  array  $emails The BuddyPress emails schema.
+ * @return array          The BuddyPress emails schema with the Reshare's one.
  */
 function buddyreshare_emails_schema( $emails = array() ) {
 	return array_merge( $emails, array(

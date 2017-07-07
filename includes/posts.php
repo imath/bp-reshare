@@ -10,6 +10,11 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Enqueue the single Post Type scripts and style needed.
+ *
+ * @since 2.0.0
+ */
 function buddyreshare_posts_enqueue_assets() {
 	$post = get_post();
 
@@ -87,6 +92,13 @@ function buddyreshare_posts_enqueue_assets() {
 	$reshare_url = trailingslashit( bp_get_root_domain() ) .  bp_get_activity_root_slug() . '/' . buddyreshare_get_component_slug();
 
 	$script_data = array_merge( $script_data, array(
+		/**
+		 * Filter here to change the comments area ID, if your theme is using another one.
+		 *
+		 * @since 2.0.0
+		 *
+		 * @param string $value The comments area selector.
+		 */
 		'commentsAreaID' => apply_filters( 'buddyreshare_posts_comments_area_id', '#comments' ),
 		'activity'       => array(
 			'id'       => $activity->id,
