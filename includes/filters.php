@@ -207,3 +207,36 @@ function buddyreshare_activity_filter_action_url( $action_url = '' ) {
 
 	return $action_url;
 }
+
+function buddyreshare_activity_secondary_avatar_object( $object = 'group' ) {
+	global $activities_template;
+
+	if ( 'reshare_update' === $activities_template->activity->type ) {
+		$object = 'user';
+	}
+
+	return $object;
+}
+add_filter( 'bp_get_activity_secondary_avatar_object_groups', 'buddyreshare_activity_secondary_avatar_object', 10, 1 );
+
+function buddyreshare_activity_secondary_avatar_item_id( $item_id = 0 ) {
+	global $activities_template;
+
+	if ( 'reshare_update' === $activities_template->activity->type ) {
+		preg_match_all( '/href=\"(.*?)\"/', $activities_template->activity->action, $links );
+
+		if ( ! empty( $links[1] ) ) {
+			$path          = explode( '/', trim( parse_url( end( $links[1] ), PHP_URL_PATH ), '/' ) );
+			$user_nicename = end( $path );
+
+			$user_id = bp_core_get_userid_from_nicename( $user_nicename );
+
+			if ( $user_id ) {
+				$item_id = $user_id;
+			}
+		}
+	}
+
+	return $item_id;
+}
+add_filter( 'bp_get_activity_secondary_avatar_item_id', 'buddyreshare_activity_secondary_avatar_item_id', 10, 1 );
