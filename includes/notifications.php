@@ -10,6 +10,14 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Gets the activity IDs that were reshared to notify the user about it.
+ *
+ * @since 2.0.0
+ *
+ * @param  integer $user_id The ID of the user to notify.
+ * @return array            The list of activity IDs.
+ */
 function buddyreshare_notifications_get_unread_item_ids( $user_id = 0 ) {
 	if ( ! $user_id ) {
 		$user_id = get_current_user_id();
@@ -34,6 +42,11 @@ function buddyreshare_notifications_get_unread_item_ids( $user_id = 0 ) {
 	return $reshared_updates;
 }
 
+/**
+ * Enqueue the Notifications JavaScript and Style assets.
+ *
+ * @since 2.0.0
+ */
 function buddyreshare_notifications_enqueue_assets() {
 	if ( ! is_user_logged_in() ) {
 		return;
@@ -63,6 +76,18 @@ function buddyreshare_notifications_enqueue_assets() {
 }
 add_action( 'admin_bar_init', 'buddyreshare_notifications_enqueue_assets' );
 
+/**
+ * Adds a new entry into the activty author notifications on reshared.
+ *
+ * @since 2.0.0
+ *
+ * @param array $args {
+ *  An array of arguments.
+ *  @type int    $activity_id    The activity ID the reshare refers to.
+ *  @type int    $user_id        The ID of the user who's reshared it.
+ *  @type string $author_slug    The nicename of the author of the activty.
+ * }
+ */
 function buddyreshare_notifications_add( $args = array() ) {
 	if ( empty( $args['author_slug'] ) || empty( $args['activity_id'] ) || empty( $args['user_id'] ) ) {
 		return;
@@ -84,10 +109,29 @@ function buddyreshare_notifications_add( $args = array() ) {
 		'is_new'            => 1,
 	) );
 
+	/**
+	 * Hook here to add custom actions once the notification has been added.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param integer $author_id The activity author ID.
+	 */
 	do_action( 'buddyreshare_notifications_added', $author_id );
 }
 add_action( 'buddyreshare_reshare_added', 'buddyreshare_notifications_add', 10, 1 );
 
+/**
+ * Removes an entry from the activty author notifications when a reshare is deleted.
+ *
+ * @since 2.0.0
+ *
+ * @param array $args {
+ *  An array of arguments.
+ *  @type int    $activity_id    The activity ID the reshare refers to.
+ *  @type int    $user_id        The ID of the user who's reshared it.
+ *  @type string $author_slug    The nicename of the author of the activty.
+ * }
+ */
 function buddyreshare_notifications_remove( $args = array() ) {
 	if ( empty( $args['author_slug'] ) || empty( $args['activity_id'] ) || empty( $args['user_id'] ) ) {
 		return;
@@ -107,10 +151,28 @@ function buddyreshare_notifications_remove( $args = array() ) {
 		$args['user_id']
 	);
 
+	/**
+	 * Hook here to add custom actions once the notification has been removed.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param integer $author_id The activity author ID.
+	 */
 	do_action( 'buddyreshare_notifications_removed', $author_id );
 }
 add_action( 'buddyreshare_reshare_deleted', 'buddyreshare_notifications_remove', 10, 1 );
 
+/**
+ * Removes entries from the activty author notifications when activity are batch deleted.
+ *
+ * @since 2.0.0
+ *
+ * @param array $args {
+ *  An array of arguments.
+ *  @type array    $activity_ids  The list of deleted activity IDs.
+ *  @type array    $user_ids      The list of activity author IDs.
+ * }
+ */
 function buddyreshare_notifications_remove_these( $args = array() ) {
 	if ( empty( $args['activity_ids'] ) || empty( $args['user_ids'] ) ) {
 		return;
@@ -130,10 +192,28 @@ function buddyreshare_notifications_remove_these( $args = array() ) {
 		wp_cache_delete( $user_id, 'reshared_notifications' );
 	}
 
+	/**
+	 * Hook here to add custom actions when notifications were batch deleted.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param array $args {
+	 *  An array of arguments.
+	 *  @type array    $activity_ids  The list of deleted activity IDs.
+	 *  @type array    $user_ids      The list of activity author IDs.
+	 * }
+	 */
 	do_action( 'buddyreshare_notifications_removed_these', $args );
 }
 add_action( 'buddyreshare_reshares_deleted', 'buddyreshare_notifications_remove_these', 10, 1 );
 
+/**
+ * Mark notification(s) as read.
+ *
+ * @since 2.0.0
+ *
+ * @param  BP_Activity_Activity $activity The activity object.
+ */
 function buddyreshare_notifications_read( $activity = null ) {
 	$unread = array();
 
@@ -163,12 +243,26 @@ function buddyreshare_notifications_read( $activity = null ) {
 			'new_reshare'
 		) );
 
+		/**
+		 * Hook here to add custom actions when notifications has been marked as read.
+		 *
+		 * @since 2.0.0
+		 *
+		 * @param integer $user_id The ID of the activity author.
+		 */
 		do_action( 'buddyreshare_notifications_marked_read', $user_id );
 	}
 }
 add_action( 'buddyreshare_users_reshared_screen',           'buddyreshare_notifications_read', 10, 1 );
 add_action( 'bp_activity_screen_single_activity_permalink', 'buddyreshare_notifications_read', 10, 1 );
 
+/**
+ * Cleans Reshare notifications cache.
+ *
+ * @since 2.0.0
+ *
+ * @param  integer $user_id The ID of the user.
+ */
 function buddyreshare_notifications_clean_cache( $user_id = 0 ) {
 	if ( ! $user_id ) {
 		return;

@@ -10,7 +10,14 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-
+/**
+ * Read permission checks for GET requests.
+ *
+ * @since 2.0.0
+ *
+ * @param  WP_REST_Request $request The WP REST API request.
+ * @return boolean                  True if user can read. False otherwise.
+ */
 function buddyreshare_rest_read_permissions_check( WP_REST_Request $request ) {
 	if ( is_user_logged_in() ) {
 		return true;
@@ -19,6 +26,14 @@ function buddyreshare_rest_read_permissions_check( WP_REST_Request $request ) {
 	return false;
 }
 
+/**
+ * Gets reshares for a list of activity ids.
+ *
+ * @since 2.0.0
+ *
+ * @param  WP_REST_Request $request The WP REST API request.
+ * @return string                   The JSON reply.
+ */
 function buddyreshare_rest_get_all_items( WP_REST_Request $request ) {
 	global $wpdb;
 
@@ -46,6 +61,14 @@ function buddyreshare_rest_get_all_items( WP_REST_Request $request ) {
 	return rest_ensure_response( array_values( $result ) );
 }
 
+/**
+ * Get a list of users who favorited or reshared an activity.
+ *
+ * @since 2.0.0
+ *
+ * @param  WP_REST_Request $request The WP REST API request.
+ * @return string                   The JSON reply.
+ */
 function buddyreshare_rest_get_items( WP_REST_Request $request ) {
 	$args = $request->get_params();
 
@@ -126,16 +149,32 @@ function buddyreshare_rest_get_items( WP_REST_Request $request ) {
 	return rest_ensure_response( $result );
 }
 
+/**
+ * Edit permission checks for POST/DELETE requests.
+ *
+ * @since 2.0.0
+ *
+ * @param  WP_REST_Request $request The WP REST API request.
+ * @return boolean                  True if user can edit. False otherwise.
+ */
 function buddyreshare_rest_edit_permissions_check( WP_REST_Request $request ) {
 	$user_id = $request->get_param( 'user_id' );
 
-	if ( (int) $user_id === (int) get_current_user_id() || current_user_can( 'edit_users' ) ) {
+	if ( (int) $user_id === (int) get_current_user_id() || current_user_can( 'bp_moderate' ) ) {
 		return true;
 	}
 
 	return false;
 }
 
+/**
+ * Add a new reshare to an activity.
+ *
+ * @since 2.0.0
+ *
+ * @param  WP_REST_Request $request The WP REST API request.
+ * @return string                   The JSON reply.
+ */
 function buddyreshare_rest_update_item( WP_REST_Request $request ) {
 	global $wpdb;
 
@@ -164,11 +203,32 @@ function buddyreshare_rest_update_item( WP_REST_Request $request ) {
 		$result['reshared'] = strtotime( $r['date_reshared'] );
 	}
 
+	/**
+	 * Hook here to perform custom actions once the reshare is added.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param array $args {
+	 *  An array of arguments.
+	 *  @type int    $activity_id    The activity ID the reshare refers to.
+	 *  @type int    $user_id        The ID of the user who's resharing it.
+	 *  @type string $date_reshared  The MySql formatted date for this reshare.
+	 *  @type string $author_slug    Optional. The nicename of the author of the activty.
+	 * }
+	 */
 	do_action( 'buddyreshare_reshare_added', $args );
 
 	return rest_ensure_response( $result );
 }
 
+/**
+ * Remove a reshare from an activity.
+ *
+ * @since 2.0.0
+ *
+ * @param  WP_REST_Request $request The WP REST API request.
+ * @return string                   The JSON reply.
+ */
 function buddyreshare_rest_delete_item( WP_REST_Request $request ) {
 	global $wpdb;
 
@@ -196,11 +256,28 @@ function buddyreshare_rest_delete_item( WP_REST_Request $request ) {
 		return $deleted;
 	}
 
+	/**
+	 * Hook here to perform custom actions once the reshare is removed.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param array $args {
+	 *  An array of arguments.
+	 *  @type int    $activity_id    The activity ID the reshare refers to.
+	 *  @type int    $user_id        The ID of the user who's reshared it.
+	 *  @type string $author_slug    Optional. The nicename of the author of the activty.
+	 * }
+	 */
 	do_action( 'buddyreshare_reshare_deleted', $args );
 
 	return rest_ensure_response( array( 'deleted' => (bool) $deleted ) );
 }
 
+/**
+ * Register the Reshare REST routes.
+ *
+ * @since 2.0.0
+ */
 function buddyreshare_rest_routes() {
 	$buddyreshare = buddyreshare();
 

@@ -10,6 +10,11 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Display callback for the Email notifications setting.
+ *
+ * @since 2.0.0
+ */
 function buddyreshare_settings_display_emails() {
 	?>
 	<label for="buddyreshare-emails">
@@ -18,6 +23,11 @@ function buddyreshare_settings_display_emails() {
 	<?php
 }
 
+/**
+ * Display callback for the Activity types setting.
+ *
+ * @since 2.0.0
+ */
 function buddyreshare_settings_display_activity_types() {
 	$disabled         = buddyreshare_get_disabled_activity_types();
 	$activity_actions = bp_activity_get_actions();
@@ -29,7 +39,10 @@ function buddyreshare_settings_display_activity_types() {
 
 	// Remove some noisy types.
 	unset( $activity_actions->xprofile );
-	unset( $activity_actions->friends->friends_register_activity_action );
+
+	if ( bp_is_active( 'friends' ) ) {
+		unset( $activity_actions->friends->friends_register_activity_action );
+	}
 
 	foreach ( $activity_actions as $component => $activity_types ) {
 		$component_label = ucfirst( $component );
@@ -63,12 +76,25 @@ function buddyreshare_settings_display_activity_types() {
 	}
 }
 
+/**
+ * Sanitization callback for the activity types setting.
+ *
+ * @since 2.0.0
+ *
+ * @param  array  $option The activity types to disable.
+ * @return array          The sanitized activity types.
+ */
 function buddyreshare_settings_sanitize_activity_types( $option = array() ) {
 	$option = array_map( 'sanitize_key', (array) $option );
 
 	return join( ',', $option );
 }
 
+/**
+ * Display callback for the Activity stream order setting.
+ *
+ * @since 2.0.0
+ */
 function buddyreshare_settings_display_activity_ordering() {
 	$order_preference = buddyreshare_get_activity_order_preference();
 
@@ -89,7 +115,21 @@ function buddyreshare_settings_display_activity_ordering() {
 	<?php
 }
 
+/**
+ * Returns the settings fields for the Reshare feature.
+ *
+ * @since 2.0.0
+ *
+ * @return array The settings fields for the Reshare feature.
+ */
 function buddyreshare_settings_get_fields() {
+	/**
+	 * Filter here to edit the settings fields for the Reshare feature.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param array $value The settings fields for the Reshare feature.
+	 */
 	return apply_filters( 'buddyreshare_get_settings', array(
 		'buddyreshare-emails' => array(
 			'option_name'       => 'buddyreshare-emails',
@@ -127,6 +167,11 @@ function buddyreshare_settings_get_fields() {
 	) );
 }
 
+/**
+ * Add the Reshare feature settings to BuddyPress ones.
+ *
+ * @since 2.0.0
+ */
 function buddyreshare_settings_register_fields() {
 	$fields = buddyreshare_settings_get_fields();
 
@@ -150,6 +195,11 @@ function buddyreshare_settings_register_fields() {
 }
 add_action( 'bp_register_admin_settings', 'buddyreshare_settings_register_fields', 421 );
 
+/**
+ * Adds an inline script to activate/deactivate all activity types of a BP component.
+ *
+ * @since 2.0.0
+ */
 function buddyreshare_settings_enqueue_scripts() {
 	if ( false === strpos( get_current_screen()->id, 'bp-settings' ) ) {
 		return false;

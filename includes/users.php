@@ -38,6 +38,14 @@ function buddyreshare_users_reshares_count( $user_id = 0 ) {
 	return $reshares_count;
 }
 
+/**
+ * Gets the activity IDs a user reshared.
+ *
+ * @since 2.0.0
+ *
+ * @param  integer $user_id The user ID to get the activity ids he reshared.
+ * @return array            The activity IDs a user reshared.
+ */
 function buddyreshare_users_get_reshared( $user_id = 0 ) {
 	if ( ! $user_id ) {
 		$user_id = get_current_user_id();
@@ -58,16 +66,31 @@ function buddyreshare_users_get_reshared( $user_id = 0 ) {
 	return $reshared;
 }
 
+/**
+ * BP Screen callback for the current user's Reshared Activity page.
+ *
+ * @since 2.0.0
+ */
 function buddyreshare_users_reshared_screen() {
 	if ( ! buddyreshare_is_user_profile_reshares() ) {
 		return;
 	}
 
+	/**
+	 * Fires before the current user's Reshared Activity page is displayed.
+	 *
+	 * @since 2.0.0
+	 */
 	do_action( 'buddyreshare_users_reshared_screen' );
 
 	bp_core_load_template( apply_filters( 'buddyreshare_users_reshared_template', 'members/single/home' ) );
 }
 
+/**
+ * Adds a BP Sub Nav item to the User's Activity pages.
+ *
+ * @since 2.0.0
+ */
 function buddyreshare_users_navigation() {
 	$link = bp_displayed_user_id() ? bp_displayed_user_domain() : bp_loggedin_user_domain();
 
@@ -83,7 +106,11 @@ function buddyreshare_users_navigation() {
 }
 add_action( 'bp_activity_setup_nav', 'buddyreshare_users_navigation' );
 
-
+/**
+ * Adds a new sub menu to the WP Admin Bar User's account Activity menu.
+ *
+ * @since 2.0.0
+ */
 function buddyreshare_users_admin_menu() {
 	$GLOBALS['wp_admin_bar']->add_menu( array(
 		'parent' => 'my-account-activity',
@@ -94,6 +121,14 @@ function buddyreshare_users_admin_menu() {
 }
 add_action( 'bp_activity_setup_admin_bar', 'buddyreshare_users_admin_menu' );
 
+/**
+ * Gets the user ids who favorited an activity.
+ *
+ * @since 2.0.0
+ *
+ * @param  integer $activity_id The activity ID
+ * @return array                The list of users who favorited the activity.
+ */
 function buddyreshare_users_get_favorites( $activity_id = 0 ) {
 	$user_favorites = array();
 
@@ -118,6 +153,14 @@ function buddyreshare_users_get_favorites( $activity_id = 0 ) {
 	return $user_favorites;
 }
 
+/**
+ * Gets the user ids who reshared an activity.
+ *
+ * @since 2.0.0
+ *
+ * @param  integer $activity_id The activity ID
+ * @return array                The list of users who reshared the activity.
+ */
 function buddyreshare_users_get_reshares( $activity_id = 0 ) {
 	$user_reshares = array();
 
@@ -142,6 +185,17 @@ function buddyreshare_users_get_reshares( $activity_id = 0 ) {
 	return $user_reshares;
 }
 
+/**
+ * Clean user reshares cache
+ *
+ * @since 2.0.0
+ *
+ * @param array $args {
+ *  An array of arguments.
+ *  @type int    $activity_id    The activity ID the reshare refers to.
+ *  @type int    $user_id        The ID of the user who's reshared it.
+ * }
+ */
 function buddyreshare_users_clean_reshares_cache( $args = array() ) {
 	if ( empty( $args['user_id'] ) || empty( $args['activity_id'] ) ) {
 		return;
@@ -156,6 +210,13 @@ function buddyreshare_users_clean_reshares_cache( $args = array() ) {
 add_action( 'buddyreshare_reshare_added',   'buddyreshare_users_clean_reshares_cache', 12, 1 );
 add_action( 'buddyreshare_reshare_deleted', 'buddyreshare_users_clean_reshares_cache', 12, 1 );
 
+/**
+ * Clean user favorites cache.
+ *
+ * @since 2.0.0
+ *
+ * @param  integer $activity_id The activity ID
+ */
 function buddyreshare_users_clean_favorites_cache( $activity_id = 0 ) {
 	if ( ! $activity_id ) {
 		return;
@@ -166,7 +227,18 @@ function buddyreshare_users_clean_favorites_cache( $activity_id = 0 ) {
 add_action( 'bp_activity_add_user_favorite',    'buddyreshare_users_clean_favorites_cache', 12, 1 );
 add_action( 'bp_activity_remove_user_favorite', 'buddyreshare_users_clean_favorites_cache', 12, 1 );
 
-function buddyreshare_users_clean_reshares_caches( $args = array() ) {
+/**
+ * Clean Favorite and Reshare caches.
+ *
+ * @since 2.0.0
+ *
+ * @param  array  $args {
+ *  An array of arguments.
+ *  array $user_ids           The list of deleted activity authors.
+ *  array $deleted_activities The list of IDs of the deleted activities.
+ * }
+ */
+function buddyreshare_users_clean_caches( $args = array() ) {
 	if ( ! empty( $args['user_ids'] ) ) {
 		foreach ( (array) $args['user_ids'] as $user_id ) {
 			wp_cache_delete( $user_id, 'reshares_count' );
@@ -181,7 +253,7 @@ function buddyreshare_users_clean_reshares_caches( $args = array() ) {
 		}
 	}
 }
-add_action( 'buddyreshare_reshares_deleted', 'buddyreshare_users_clean_reshares_caches', 12, 1 );
+add_action( 'buddyreshare_reshares_deleted', 'buddyreshare_users_clean_caches', 12, 1 );
 
 /**
  * Sanitize user favorites so that each Activity IDs are interpreted as string before serialization.

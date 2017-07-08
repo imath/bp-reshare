@@ -175,10 +175,24 @@ function buddyreshare_get_disabled_activity_types() {
 	return (array) apply_filters( 'buddyreshare_get_disabled_activity_types', array_filter( $disabled_types ) );
 }
 
+/**
+ * What is the order preference for the activity stream?
+ *
+ * @since 2.0.0
+ *
+ * @return string The order preference for the activity stream.
+ */
 function buddyreshare_get_activity_order_preference() {
 	return bp_get_option( 'buddyreshare-activity-order-preferences', 'reshares' );
 }
 
+/**
+ * Returns strings to be used in JavaScript to build the reshared time since.
+ *
+ * @since 2.0.0
+ *
+ * @return array the list of strings to be used in JavaScript to build the reshared time since.
+ */
 function buddyreshare_get_l10n_time_since() {
 	return array(
 		'sometime'  => _x( '(Reshared sometime)', 'javascript time since', 'bp-reshare' ),
@@ -211,9 +225,23 @@ function buddyreshare_get_l10n_time_since() {
 	);
 }
 
+/**
+ * Gets the common script data used in all JavaScript UIs.
+ *
+ * @since 2.0.0
+ *
+ * @return array The common script data used in all JavaScript UIs.
+ */
 function buddyreshare_get_common_script_data() {
 	$buddyreshare = buddyreshare();
 
+	/**
+	 * Filter here to edit the common script data used in all JavaScript UIs.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param array $value The common script data used in all JavaScript UIs.
+	 */
 	return apply_filters( 'buddyreshare_get_common_script_data', array(
 		'params' => array(
 			'root_url'       => esc_url_raw( rest_url( trailingslashit( $buddyreshare->rest->namespace . '/' . $buddyreshare->rest->version ) ) ),
@@ -224,6 +252,11 @@ function buddyreshare_get_common_script_data() {
 	) );
 }
 
+/**
+ * Register the JavaScripts and Style assets.
+ *
+ * @since 2.0.0
+ */
 function buddyreshare_register_assets() {
 	$min     = buddyreshare_min_suffix();
 	$version = buddyreshare_get_plugin_version();
@@ -257,6 +290,11 @@ function buddyreshare_register_assets() {
 }
 add_action( 'bp_init', 'buddyreshare_register_assets' );
 
+/**
+ * Load translations.
+ *
+ * @since 2.0.0
+ */
 function buddyreshare_load_textdomain() {
 	$buddyreshare = buddyreshare();
 
