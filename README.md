@@ -9,9 +9,8 @@ Available in french and english.
 Configuration needed
 --------------------
 
-+ WordPress 3.4.2 and BuddyPress 1.6.1
-+ Working in WordPress 3.5 RC 3 and BuddyPress 1.7 Bleeding
-+ 1.0-beta2 introduced compatibility with BuddyPress 1.5.5
++ WordPress 3.7.1 and BuddyPress 1.8.1
++ Working in WordPress 3.8-beta1 and BuddyPress 1.9-beta1
 
 Installation
 ------------
