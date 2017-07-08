@@ -17,7 +17,7 @@ function buddyreshare_handle_ajax_reshare() {
 	// Bail if not a POST action
 	if ( 'POST' !== strtoupper( $_SERVER['REQUEST_METHOD'] ) )
 		return;
-	
+
 	check_ajax_referer( 'buddyreshare_update', 'nonce' );
 
 	$response = array(
@@ -26,12 +26,12 @@ function buddyreshare_handle_ajax_reshare() {
 	);
 
 	$activity_id = intval( $_POST['activity'] );
-	
+
 	if( empty( $activity_id ) ) {
 		$response['message'] = __( 'The activity was not found.', 'bp-reshare' );
 		exit( json_encode( $response ) );
 	}
-	
+
 	$args = buddyreshare_prepare_reshare( $activity_id );
 
 	if( isset( $args['error'] ) ) {
@@ -40,7 +40,7 @@ function buddyreshare_handle_ajax_reshare() {
 	}
 
 	$reshare_id = bp_activity_add( $args );
-	
+
 	if( ! empty( $reshare_id ) ) {
 		do_action( 'buddyreshare_reshare_added', $reshare_id );
 
@@ -77,14 +77,14 @@ function buddyreshare_ajax_delete_reshare() {
 		'result'  => 'error',
 		'message' => __( 'OOps, error while trying to delete your reshare..', 'bp-reshare' )
 	);
-	
+
 	$reshare_id = intval( $_POST['activity'] );
 
 	if( empty( $reshare_id ) ) {
 		$response['message'] = __( 'The reshare was not found.', 'bp-reshare' );
 		exit( json_encode( $response ) );
 	}
-	
+
 	$reshare_to_delete = bp_activity_get_specific( array( 'activity_ids' => $reshare_id ) );
 	if( empty( $reshare_to_delete ) ) {
 		$response['message'] = __( 'The reshare was not found.', 'bp-reshare' );
@@ -92,16 +92,16 @@ function buddyreshare_ajax_delete_reshare() {
 	}
 
 	$reshare = $reshare_to_delete['activities'][0];
-	
+
 	$reset = buddyreshare_reset_metas( $reshare->secondary_item_id, $reshare->user_id );
 
 	if( empty( $reset ) ) {
 		$response['message'] = __( 'Unable to reset the properties of the reshared activity', 'bp-reshare' );
 		exit( json_encode( $response ) );
 	}
-	
+
 	$deleted_reshare = bp_activity_delete( array('type' => 'reshare_update',  'id' => $reshare_id ) );
-	
+
 	if( ! empty( $deleted_reshare ) ) {
 		do_action( 'buddyreshare_reshare_deleted', $reshare_id );
 
@@ -110,7 +110,7 @@ function buddyreshare_ajax_delete_reshare() {
 	} else {
 		do_action( 'buddyreshare_reshare_deleted_error', $reshare_id );
 	}
-	
+
 	exit( json_encode( $response ) );
 }
 
