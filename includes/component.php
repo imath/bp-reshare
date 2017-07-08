@@ -47,7 +47,7 @@ class BP_Reshare extends BP_Component {
 	 */
 	public function setup_globals( $args = array() ) {
 		$bp = buddypress();
-		
+
 		$args = array(
 			'slug'                  => buddyreshare_get_component_slug(),
 			'has_directory'         => false,
@@ -111,7 +111,7 @@ class BP_Reshare extends BP_Component {
 		// BuddyPress Filters
 		add_filter( 'bp_has_activities',                'buddyreshare_extend_activities_template',  10, 3 );
 		add_filter( 'bp_ajax_querystring',              'buddyreshare_activity_querystring_filter', 12, 2 );
-		add_filter( 'bp_activity_get_user_join_filter', 'buddyreshare_order_by_most_reshared',      10, 6 );
+		add_filter( 'bp_activity_paged_activities_sql', 'buddyreshare_order_by_most_reshared',      10, 2 );
 		add_filter( 'bp_get_activity_delete_link',      'buddyreshare_maybe_replace_delete_link',   10, 1 );
 
 		// Self filters
@@ -143,7 +143,7 @@ class BP_Reshare extends BP_Component {
 
 	/**
 	 * Builds a new BuddyPress subnav for the settings component
-	 * 
+	 *
 	 * @package BP Reshare
 	 * @subpackage Component
 	 * @since 1.0
@@ -161,8 +161,8 @@ class BP_Reshare extends BP_Component {
 			'slug' 		      => buddyreshare_get_component_slug(),
 			'parent_slug'     => bp_get_activity_slug(),
 			'parent_url' 	  => trailingslashit( $link . bp_get_activity_slug() ),
-			'css_id'          => 'activity-reshares', 
-			'user_has_access' => true, 
+			'css_id'          => 'activity-reshares',
+			'user_has_access' => true,
 			'screen_function' => 'buddyreshare_screen_user_reshares',
 			'position' 	      => 40
 		) );
@@ -170,11 +170,11 @@ class BP_Reshare extends BP_Component {
 
 	/**
 	 * Builds a new user sub menu for the settings component in WP Admin Bar
-	 * 
+	 *
 	 * @package BP Reshare
 	 * @subpackage Component
 	 * @since 1.0
-	 * 
+	 *
 	 * @global $wp_admin_bar object
 	 * @uses  buddyreshare_get_component_slug() to get the slug of the component
 	 * @uses  bp_loggedin_user_domain() to get the loggedin user profil url
@@ -189,17 +189,17 @@ class BP_Reshare extends BP_Component {
 			'title'  => $this->name,
 			'href'   => trailingslashit( bp_loggedin_user_domain() . bp_get_activity_slug() . '/' . buddyreshare_get_component_slug() ),
 		);
-			
+
 		$wp_admin_bar->add_menu( $activity_menu );
 	}
 
 	/**
 	 * Registers the plugin's activity actions
-	 * 
+	 *
 	 * @package BP Reshare
 	 * @subpackage Component
 	 * @since 1.0
-	 * 
+	 *
 	 * @uses  bp_is_active() to check Activity component is on
 	 * @uses  bp_activity_set_action() to set the components activity actions
 	 * @uses  is_admin() to check for administration screens
@@ -219,11 +219,11 @@ class BP_Reshare extends BP_Component {
 
 	/**
 	 * Displays the filters in Activity filter boxes
-	 * 
+	 *
 	 * @package BP Reshare
 	 * @subpackage Component
 	 * @since 1.0
-	 * 
+	 *
 	 * @uses  buddyreshare_reshare_types() to get the reshare activity actions
 	 * @uses  esc_attr() to sanitize output
 	 */
