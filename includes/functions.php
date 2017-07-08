@@ -61,7 +61,7 @@ function buddyreshare_prepare_reshare( $activity_id = 0 ) {
 		if( strpos( $activity->primary_link, $user_link ) === false ) {
 
 			$action = apply_filters( 'buddyreshare_prepare_reshare_content', sprintf(
-				__( '%s reshared a <a href="%s">content</a> originally shared by %s', 'bp-reshare' ),
+				__( '%s reshared <a href="%s">content</a> originally shared by %s', 'bp-reshare' ),
 				bp_core_get_userlink( bp_loggedin_user_id() ),
 				$activity->primary_link,
 				bp_core_get_userlink( $activity->user_id )
@@ -69,7 +69,7 @@ function buddyreshare_prepare_reshare( $activity_id = 0 ) {
 
 		} else {
 			$action = apply_filters( 'buddyreshare_prepare_reshare_nocontent', sprintf(
-				__( '%s reshared some content originally shared by %s', 'bp-reshare' ),
+				__( '%s reshared content originally shared by %s', 'bp-reshare' ),
 				bp_core_get_userlink( bp_loggedin_user_id() ),
 				bp_core_get_userlink( $activity->user_id )
 			), $activity );
