@@ -75,6 +75,7 @@ class BuddyReshare {
 	private function setup_globals() {
 		/** BP Reshare globals ********************************************/
 		$this->version      = '2.0.0-beta1';
+		$this->db_version   = bp_get_option( 'bp-reshare-version', 0 );
 		$this->domain       = 'bp-reshare';
 		$this->file         = __FILE__;
 		$this->basename     = plugin_basename( $this->file );
@@ -114,32 +115,35 @@ class BuddyReshare {
 	private function includes() {
 		require( $this->includes_dir . 'functions.php' );
 
-		if ( bp_is_active( 'activity' ) ) {
-			require( $this->includes_dir . 'rest.php'     );
-			require( $this->includes_dir . 'users.php'    );
-			require( $this->includes_dir . 'activity.php' );
+		if ( 2.0 <= (float) $this->db_version ) {
+			if ( bp_is_active( 'activity' ) ) {
+				require( $this->includes_dir . 'rest.php'     );
+				require( $this->includes_dir . 'users.php'    );
+				require( $this->includes_dir . 'activity.php' );
 
-			if ( buddyreshare_are_emails_active() ) {
-				require( $this->includes_dir . 'emails.php' );
+				if ( buddyreshare_are_emails_active() ) {
+					require( $this->includes_dir . 'emails.php' );
+				}
+
+				if ( bp_is_active( 'notifications' ) ) {
+					require( $this->includes_dir . 'notifications.php' );
+				}
+
+				if ( bp_is_active( 'blogs' ) ) {
+					require( $this->includes_dir . 'posts.php' );
+				}
+
+				if ( defined( 'WP_DEBUG' ) && true === WP_DEBUG ) {
+					require( $this->includes_dir . 'deprecated.php' );
+				}
 			}
 
-			if ( bp_is_active( 'notifications' ) ) {
-				require( $this->includes_dir . 'notifications.php' );
-			}
-
-			if ( bp_is_active( 'blogs' ) ) {
-				require( $this->includes_dir . 'posts.php' );
-			}
-
-			if ( defined( 'WP_DEBUG' ) && true === WP_DEBUG ) {
-				require( $this->includes_dir . 'deprecated.php' );
+			if ( is_admin() ) {
+				require( $this->includes_dir . 'settings.php' );
 			}
 		}
-
-		if ( is_admin() ) {
-			require( $this->includes_dir . 'settings.php' );
-			require( $this->includes_dir . 'upgrade.php' );
-		}
+		
+		require( $this->includes_dir . 'upgrade.php' );
 	}
 
 	/**

@@ -22,6 +22,17 @@ function buddyreshare_get_plugin_version() {
 }
 
 /**
+ * Returns plugin DB version
+ *
+ * @since 1.0
+ *
+ * @return string The plugin's DB version
+ */
+function buddyreshare_get_plugin_db_version() {
+	return buddyreshare()->db_version;
+}
+
+/**
  * Returns plugin's dir
  *
  * @since 1.0
