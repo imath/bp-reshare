@@ -190,68 +190,59 @@ function buddyreshare_upgrade_db_version() {
  * Registers upgrade routines into the Entrepôt Upgrade API.
  *
  * @since  2.0.0
- *
- * @param  array  $tasks The Entrepôt registered upgrade tasks.
- * @return array         The Entrepôt registered upgrade tasks.
  */
-function buddyreshare_add_upgrade_routines( $tasks = array() ) {
+function buddyreshare_add_upgrade_routines() {
 	$db_version = bp_get_option( 'bp-reshare-version', 0 );
 
-	// We are not using the Entrepôt for install.
+	// We are not using the Entrepôt Upgrade API for install.
 	if ( 0 === (int) $db_version ) {
-		return $tasks;
+		return;
 	}
 
 	if ( version_compare( $db_version, buddyreshare_get_plugin_version(), '<' ) ) {
-		$tasks['bp-reshare'] = (object) array(
-			'slug'           => 'bp-reshare',
-			'db_version'     => $db_version,
-			'tasks'          => array(
-				'2.0.0' => array(
-					array(
-						'callback' => 'buddyreshare_upgrade_create_table',
-						'count'    => '__return_true',
-						'message'  => _x( 'Create the Activity Reshares table', 'Upgrader feedback message', 'bp-reshare' ),
-						'number'   => 1,
-					),
-					array(
-						'callback' => 'buddyreshare_upgrade_migrate_reshares',
-						'count'    => 'buddyreshare_upgrade_migrate_reshares_count',
-						'message'  => _x( 'Migrate the Reshare Updates into the new table', 'Upgrader feedback message', 'bp-reshare' ),
-						'number'   => 5,
-					),
-					array(
-						'callback' => 'buddyreshare_upgrade_remove_activity_metas',
-						'count'    => '__return_true',
-						'message'  => _x( 'Delete Activity reshared metas', 'Upgrader feedback message', 'bp-reshare' ),
-						'number'   => 1,
-					),
-					array(
-						'callback' => 'buddyreshare_upgrade_remove_other_metas',
-						'count'    => '__return_true',
-						'message'  => _x( 'Delete users and site reshared metas', 'Upgrader feedback message', 'bp-reshare' ),
-						'number'   => 1,
-					),
-					array(
-						'callback' => 'buddyreshare_upgrade_create_emails',
-						'count'    => '__return_true',
-						'message'  => _x( 'Create the BuddyPress email template', 'Upgrader feedback message', 'bp-reshare' ),
-						'number'   => 1,
-					),
-					array(
-						'callback' => 'buddyreshare_upgrade_db_version',
-						'count'    => '__return_true',
-						'message'  => _x( 'Upgrade the plugin version', 'Upgrader feedback message', 'bp-reshare' ),
-						'number'   => 1,
-					),
+		entrepot_register_upgrade_tasks( 'bp-reshare', $db_version, array(
+			'2.0.0' => array(
+				array(
+					'callback' => 'buddyreshare_upgrade_create_table',
+					'count'    => '__return_true',
+					'message'  => _x( 'Create the Activity Reshares table', 'Upgrader feedback message', 'bp-reshare' ),
+					'number'   => 1,
+				),
+				array(
+					'callback' => 'buddyreshare_upgrade_migrate_reshares',
+					'count'    => 'buddyreshare_upgrade_migrate_reshares_count',
+					'message'  => _x( 'Migrate the Reshare Updates into the new table', 'Upgrader feedback message', 'bp-reshare' ),
+					'number'   => 5,
+				),
+				array(
+					'callback' => 'buddyreshare_upgrade_remove_activity_metas',
+					'count'    => '__return_true',
+					'message'  => _x( 'Delete Activity reshared metas', 'Upgrader feedback message', 'bp-reshare' ),
+					'number'   => 1,
+				),
+				array(
+					'callback' => 'buddyreshare_upgrade_remove_other_metas',
+					'count'    => '__return_true',
+					'message'  => _x( 'Delete users and site reshared metas', 'Upgrader feedback message', 'bp-reshare' ),
+					'number'   => 1,
+				),
+				array(
+					'callback' => 'buddyreshare_upgrade_create_emails',
+					'count'    => '__return_true',
+					'message'  => _x( 'Create the BuddyPress email template', 'Upgrader feedback message', 'bp-reshare' ),
+					'number'   => 1,
+				),
+				array(
+					'callback' => 'buddyreshare_upgrade_db_version',
+					'count'    => '__return_true',
+					'message'  => _x( 'Upgrade the plugin version', 'Upgrader feedback message', 'bp-reshare' ),
+					'number'   => 1,
 				),
 			),
-		);
+		) );
 	}
-
-	return $tasks;
 }
-add_filter( 'entrepot_add_upgrader_tasks', 'buddyreshare_add_upgrade_routines' );
+add_action( 'entrepot_register_upgrade_tasks', 'buddyreshare_add_upgrade_routines' );
 
 /**
  * Install the plugin.

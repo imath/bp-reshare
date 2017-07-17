@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: BP Reshare 2.0.0-beta1\n"
 "Report-Msgid-Bugs-To: https://github.com/imath/bp-reshare/issues\n"
-"POT-Creation-Date: 2017-07-07 04:00:46+00:00\n"
+"POT-Creation-Date: 2017-07-17 17:59:22+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -13,79 +13,79 @@ msgstr ""
 "Language-Team: FRENCH <contact@imathi.eu>\n"
 "X-Generator: grunt-wp-i18n 0.5.4\n"
 
-#: includes/activity.php:26
+#: includes/activity.php:34
 msgid "Activities I reshared."
 msgstr ""
 
-#: includes/activity.php:27
+#: includes/activity.php:35
 msgid "My Reshares"
 msgstr ""
 
-#: includes/activity.php:39
+#: includes/activity.php:47
 msgid "Reshare this activity"
 msgstr ""
 
-#: includes/activity.php:40
+#: includes/activity.php:48
 msgid "Remove the Reshare of this activity"
 msgstr ""
 
-#: includes/activity.php:43
+#: includes/activity.php:51
 msgid "Unknown error, please try again later."
 msgstr ""
 
-#: includes/activity.php:55
+#: includes/activity.php:71
 msgid "Comment"
 msgstr ""
 
-#: includes/activity.php:56
+#: includes/activity.php:72
 msgid "Comments"
 msgstr ""
 
-#: includes/activity.php:59
+#: includes/activity.php:75
 msgid "This activity has no comments yet, add yours!"
 msgstr ""
 
-#: includes/activity.php:60
+#: includes/activity.php:76
 msgid "Activity comments are closed."
 msgstr ""
 
-#: includes/activity.php:63
+#: includes/activity.php:79
 msgid "User who Reshared"
 msgstr ""
 
-#: includes/activity.php:64
+#: includes/activity.php:80
 msgid "Users who Reshared"
 msgstr ""
 
-#: includes/activity.php:67
+#: includes/activity.php:83
 msgid "This activity has no reshares yet, reshare it!"
 msgstr ""
 
-#: includes/activity.php:73
+#: includes/activity.php:89
 msgid "User who Favorited"
 msgstr ""
 
-#: includes/activity.php:74
+#: includes/activity.php:90
 msgid "Users who Favorited"
 msgstr ""
 
-#: includes/activity.php:77
+#: includes/activity.php:93
 msgid "This activity is not favorited yet, add it to your favorites!"
 msgstr ""
 
-#: includes/activity.php:235
+#: includes/activity.php:312
 msgid "There was an error resharing the activity. Please try again."
 msgstr ""
 
-#: includes/activity.php:267
+#: includes/activity.php:344
 msgid "Activity reshared."
 msgstr ""
 
-#: includes/activity.php:331
+#: includes/activity.php:431
 msgid "There was an error removing the reshare for the activity. Please try again."
 msgstr ""
 
-#: includes/activity.php:358
+#: includes/activity.php:458
 msgid "Activity reshare removed."
 msgstr ""
 
@@ -109,89 +109,96 @@ msgstr ""
 msgid "You will no longer receive emails when someone reshared on of your activity."
 msgstr ""
 
-#: includes/notifications.php:54
+#: includes/notifications.php:67
 msgid "New reshared activity"
 msgstr ""
 
-#: includes/notifications.php:55
+#: includes/notifications.php:68
 msgid "New reshared activities"
-msgstr ""
-
-#: includes/posts.php:56
-#. Translators: This string is already translated in BuddyPress
-msgid "Remove Favorite"
 msgstr ""
 
 #: includes/posts.php:61
 #. Translators: This string is already translated in BuddyPress
+msgid "Remove Favorite"
+msgstr ""
+
+#: includes/posts.php:66
+#. Translators: This string is already translated in BuddyPress
 msgid "Favorite"
 msgstr ""
 
-#: includes/rest.php:65 includes/rest.php:158 includes/rest.php:190
+#: includes/rest.php:88 includes/rest.php:197 includes/rest.php:250
 msgid "Missing argument"
 msgstr ""
 
-#: includes/rest.php:74
+#: includes/rest.php:97
 msgid "Missing callback"
 msgstr ""
 
-#: includes/rest.php:212
+#: includes/rest.php:289
 msgid "Unique identifier for the object."
 msgstr ""
 
-#: includes/rest.php:227
+#: includes/rest.php:304
 msgid "The page number to fetch"
 msgstr ""
 
-#: includes/rest.php:232
+#: includes/rest.php:309
 msgid "The number of results to fetch."
 msgstr ""
 
-#: includes/rest.php:237
+#: includes/rest.php:314
 msgid "A comma separated user id list to limit the results to fetch."
 msgstr ""
 
-#: includes/rest.php:242
+#: includes/rest.php:319
 msgid "The type of user action to fetch."
 msgstr ""
 
-#: includes/rest.php:254 includes/rest.php:271
+#: includes/rest.php:331 includes/rest.php:348
 msgid "The user ID."
 msgstr ""
 
-#: includes/rest.php:259 includes/rest.php:276
+#: includes/rest.php:336 includes/rest.php:353
 msgid "The activity author slug."
 msgstr ""
 
-#: includes/rest.php:291
+#: includes/rest.php:368
 msgid "comma separated list of activity ids to fetch"
 msgstr ""
 
-#: includes/settings.php:16
+#: includes/settings.php:21
 msgid "Yes"
 msgstr ""
 
-#: includes/settings.php:76
+#: includes/settings.php:102
 msgid "Ordered by reshared date"
 msgstr ""
 
-#: includes/settings.php:77
+#: includes/settings.php:103
 msgid "Ordered by recorded date (BuddyPress default)"
 msgstr ""
 
-#: includes/settings.php:97
+#: includes/settings.php:137
 msgid "Enable Email notifications about activity reshares."
 msgstr ""
 
-#: includes/settings.php:108
+#: includes/settings.php:148
 msgid "Activity types to disable for reshares."
 msgstr ""
 
-#: includes/settings.php:119
+#: includes/settings.php:159
 msgid "Activity ordering preferences."
 msgstr ""
 
-#: includes/users.php:75 includes/users.php:91
+#: includes/upgrade.php:25
+msgid ""
+"BP Reshare needs to perform some upgrade tasks on your database. It appears "
+"you are not using %s, you will need to run manually the tasks listed into "
+"the /includes/upgrade.php file of this plugin."
+msgstr ""
+
+#: includes/users.php:98 includes/users.php:118
 msgid "Reshared Activities"
 msgstr ""
 
@@ -245,92 +252,122 @@ msgid ""
 "Go to your update: {{{thread.url}}}"
 msgstr ""
 
-#: includes/functions.php:184
+#: includes/functions.php:209
 msgctxt "javascript time since"
 msgid "(Reshared sometime)"
 msgstr ""
 
-#: includes/functions.php:185
+#: includes/functions.php:210
 msgctxt "javascript time since"
 msgid "(Reshared right now)"
 msgstr ""
 
-#: includes/functions.php:186
+#: includes/functions.php:211
 msgctxt "javascript time since"
 msgid "(Reshared % ago)"
 msgstr ""
 
-#: includes/functions.php:187
+#: includes/functions.php:212
 msgctxt "Separator in javascript time since"
 msgid ","
 msgstr ""
 
-#: includes/functions.php:188
+#: includes/functions.php:213
 msgctxt "javascript time since singular"
 msgid "% year"
 msgstr ""
 
-#: includes/functions.php:190
+#: includes/functions.php:215
 msgctxt "javascript time since singular"
 msgid "% month"
 msgstr ""
 
-#: includes/functions.php:192
+#: includes/functions.php:217
 msgctxt "javascript time since singular"
 msgid "% week"
 msgstr ""
 
-#: includes/functions.php:194
+#: includes/functions.php:219
 msgctxt "javascript time since singular"
 msgid "% day"
 msgstr ""
 
-#: includes/functions.php:196
+#: includes/functions.php:221
 msgctxt "javascript time since singular"
 msgid "% hour"
 msgstr ""
 
-#: includes/functions.php:198
+#: includes/functions.php:223
 msgctxt "javascript time since singular"
 msgid "% minute"
 msgstr ""
 
-#: includes/functions.php:200
+#: includes/functions.php:225
 msgctxt "javascript time since singular"
 msgid "% second"
 msgstr ""
 
-#: includes/functions.php:189
+#: includes/functions.php:214
 msgctxt "javascript time since plural"
 msgid "% years"
 msgstr ""
 
-#: includes/functions.php:191
+#: includes/functions.php:216
 msgctxt "javascript time since plural"
 msgid "% months"
 msgstr ""
 
-#: includes/functions.php:193
+#: includes/functions.php:218
 msgctxt "javascript time since plural"
 msgid "% weeks"
 msgstr ""
 
-#: includes/functions.php:195
+#: includes/functions.php:220
 msgctxt "javascript time since plural"
 msgid "% days"
 msgstr ""
 
-#: includes/functions.php:197
+#: includes/functions.php:222
 msgctxt "javascript time since plural"
 msgid "% hours"
 msgstr ""
 
-#: includes/functions.php:199
+#: includes/functions.php:224
 msgctxt "javascript time since plural"
 msgid "% minutes"
 msgstr ""
 
-#: includes/functions.php:201
+#: includes/functions.php:226
 msgctxt "javascript time since plural"
 msgid "% seconds"
+msgstr ""
+
+#: includes/upgrade.php:208
+msgctxt "Upgrader feedback message"
+msgid "Create the Activity Reshares table"
+msgstr ""
+
+#: includes/upgrade.php:214
+msgctxt "Upgrader feedback message"
+msgid "Migrate the Reshare Updates into the new table"
+msgstr ""
+
+#: includes/upgrade.php:220
+msgctxt "Upgrader feedback message"
+msgid "Delete Activity reshared metas"
+msgstr ""
+
+#: includes/upgrade.php:226
+msgctxt "Upgrader feedback message"
+msgid "Delete users and site reshared metas"
+msgstr ""
+
+#: includes/upgrade.php:232
+msgctxt "Upgrader feedback message"
+msgid "Create the BuddyPress email template"
+msgstr ""
+
+#: includes/upgrade.php:238
+msgctxt "Upgrader feedback message"
+msgid "Upgrade the plugin version"
 msgstr ""

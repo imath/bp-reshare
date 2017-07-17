@@ -195,7 +195,7 @@ window.bpReshare = window.bpReshare || {};
 			retval = bpReshare.params.time_since.ago.replace( '%', time_since.shift() );
 		}
 
-		return '&nbsp;' + retval
+		return '&nbsp;' + retval;
 	};
 
 	/**
