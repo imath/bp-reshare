@@ -52,9 +52,11 @@ function buddyreshare_notifications_enqueue_assets() {
 		return;
 	}
 
+	$min = buddyreshare_min_suffix();
+
 	wp_enqueue_script(
 		'bp-reshare-notifications',
-		buddyreshare_get_js_url() . 'notifications.js',
+		buddyreshare_get_js_url() . "notifications{$min}.js",
 		array(),
 		buddyreshare_get_plugin_version(),
 		true
