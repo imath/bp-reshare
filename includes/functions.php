@@ -311,4 +311,4 @@ function buddyreshare_load_textdomain() {
 
 	load_plugin_textdomain( $buddyreshare->domain, false, trailingslashit( basename( $buddyreshare->plugin_dir ) ) . 'languages' );
 }
-add_action( 'bp_init', 'buddyreshare_load_textdomain', 6 );
+add_action( 'bp_init', 'buddyreshare_load_textdomain', 1 );

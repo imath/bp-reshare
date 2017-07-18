@@ -139,7 +139,7 @@ window.bpReshare = window.bpReshare || {};
 
 		// Returns sometime
 		if ( undefined === timestamp ) {
-			return bpReshare.params.time_since.sometime;
+			return '&nbsp;' + bpReshare.params.time_since.sometime;
 		}
 
 		// Javascript timestamps are in ms.
@@ -150,7 +150,7 @@ window.bpReshare = window.bpReshare || {};
 
 		// Returns right now
 		if ( 1000 > diff ) {
-			return bpReshare.params.time_since.now;
+			return '&nbsp;' + bpReshare.params.time_since.now;
 		}
 
 		$.each( time_chunks, function( c, chunk ) {
@@ -300,8 +300,8 @@ window.bpReshare = window.bpReshare || {};
 						var activityId = parseInt( r.id, 10 ), a = bpReshare.IndexOf( activityId, bpReshare.activities );
 
 						if ( -1 !== a ) {
-							bpReshare.activities[a].users     = r.users;
-							bpReshare.activities[a].time      = r.time;
+							bpReshare.activities[a].users = r.users;
+							bpReshare.activities[a].time  = r.time;
 
 							bpReshare.refreshActivity( activityId );
 						}
@@ -382,6 +382,18 @@ window.bpReshare = window.bpReshare || {};
 			$( selector ).find( '.activity-meta a' ).first().after(
 				bpReshare.activities[i].markUp
 			);
+
+			if ( bpReshare.displayedUser ) {
+				var activityAvatar      = $( selector ).find( '.activity-avatar' ),
+				    displayedUserAvatar = $( bpReshare.displayedUser.avatar ).prop( 'src' );
+
+				if ( displayedUserAvatar.split( '?' )[0] !== activityAvatar.find( 'img' ).prop( 'src' ).split( '?' )[0] && ! $( selector ).find( '.activity-reshared-by' ).length ) {
+					$( activityAvatar ).before(
+						$( '<div></div>' ).addClass( 'activity-reshared-by' )
+						                  .html( bpReshare.displayedUser.resharedText.replace( '%s', bpReshare.displayedUser.avatar ) )
+					);
+				}
+			}
 		} );
 
 		return true;
@@ -604,7 +616,7 @@ window.bpReshare = window.bpReshare || {};
 
 					bpReshare.activityTab( '-1' );
 
-					if ( bpReshare.isResharesScope() ) {
+					if ( bpReshare.isResharesScope() || ( bpReshare.displayedUser && bpReshare.params.u === bpReshare.displayedUser.userID ) ) {
 						$( '#activity-' + id ).remove();
 					}
 				} else {

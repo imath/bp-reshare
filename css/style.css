@@ -140,3 +140,19 @@ body.activity-permalink #buddypress .buddyreshare-nav-content .load-more-users:n
 body.activity-permalink #buddypress .buddyreshare-nav-content .load-more-users:not(.loading) {
 	display: block;
 }
+
+body.just-me #activity-stream li .activity-reshared-by img {
+	float: none;
+}
+
+body.just-me #activity-stream li .activity-reshared-by {
+	line-height: 40px;
+	overflow: hidden;
+	display: table;
+	width: inherit;
+	background: #fff;
+	margin-bottom: 1em;
+	padding: 0 1em 0 0.5em;
+	box-shadow: 0 1px 1px 0 rgba( 0, 0, 0, 0.1 );
+	font-style: italic;
+}

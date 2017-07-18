@@ -13,7 +13,7 @@
  * Description:       Allows members to reshare activities in a BuddyPress powered community
  * Version:           2.0.0-beta1
  * Author:            imath
- * Author URI:        http://imathi.eu
+ * Author URI:        https://imathi.eu
  * Text Domain:       bp-reshare
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
@@ -142,7 +142,7 @@ class BuddyReshare {
 				require( $this->includes_dir . 'settings.php' );
 			}
 		}
-		
+
 		require( $this->includes_dir . 'upgrade.php' );
 	}
 

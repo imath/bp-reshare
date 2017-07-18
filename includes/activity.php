@@ -147,7 +147,14 @@ function buddyreshare_activity_enqueue_assets() {
 			) );
 		}
 
-		$reshare_url = trailingslashit( bp_get_root_domain() ) .  bp_get_activity_root_slug() . '/' . buddyreshare_get_component_slug();
+		if ( bp_is_user_activity() && 'just-me' === bp_current_action() ) {
+			$script_data['displayedUser'] = array(
+				'avatar'       => bp_get_displayed_user_avatar( array( 'width' => '40px', 'height' => '40px' ) ),
+				/* Translators: Do not omit the placeholder it is used to be replaced by the user avatar */
+				'resharedText' => __( '%s reshared this activity', 'bp-reshare' ),
+				'userID'       => bp_displayed_user_id(),
+			);
+		}
 
 		$script_data = array_merge( $script_data, buddyreshare_activity_get_templates() );
 	}
