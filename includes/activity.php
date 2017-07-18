@@ -207,6 +207,48 @@ function buddyreshare_activity_filter_scope( $retval = array(), $filter = array(
 add_filter( 'bp_activity_set_reshares_scope_args', 'buddyreshare_activity_filter_scope', 10, 2 );
 
 /**
+ * Add activities the user reshared into his personal stream.
+ *
+ * @since 2.0.0
+ *
+ * @param  array  $retval Activity arguments for use with the 'just-me' scope.
+ * @param  array  $filter Current activity arguments.
+ * @return array          Activity arguments for use with the 'just-me' scope.
+ */
+function buddyreshare_activity_just_me_scope( $retval = array(), $filter = array() ) {
+	if ( empty( $retval[0] ) || 'user_id' !== $retval[0]['column'] ) {
+		return $retval;
+	}
+
+	$retval['relation'] = 'OR';
+	array_push( $retval, array(
+		'column'  => 'id',
+		'compare' => 'IN',
+		'value'   => (array) buddyreshare_users_get_reshared( $retval[0]['value'] ),
+	) );
+
+	if ( ! bp_is_my_profile() ) {
+		$columns = wp_list_pluck( array_diff_key( $retval, array(
+			'relation' => false,
+			'override' => false )
+		), 'column' );
+
+		$hide_sitewide_index = array_search( 'hide_sitewide', $columns );
+
+		if ( false !== $hide_sitewide_index ) {
+			unset( $retval[ $hide_sitewide_index] );
+
+			if ( isset( $retval['override'] ) ) {
+				$retval['override']['show_hidden'] = 0;
+			}
+		}
+	}
+
+	return $retval;
+}
+add_filter( 'bp_activity_set_just-me_scope_args', 'buddyreshare_activity_just_me_scope', 20, 2 );
+
+/**
  * Order the Activity stream according to the last reshared date.
  *
  * @since 2.0.0
