@@ -11,6 +11,32 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
+ * Get the BuddyPress Activity favorite/unfavorite link
+ *
+ * @since 2.0.0
+ *
+ * @return array The Fav and Unfav links for the activity.
+ */
+function buddyreshare_get_activity_favorite_links() {
+	$needs_switch = ! bp_is_root_blog();
+
+	if ( $needs_switch ) {
+		switch_to_blog( bp_get_root_blog_id() );
+	}
+
+	$links = array(
+		'fav'   => bp_get_activity_favorite_link(),
+		'unfav' => bp_get_activity_unfavorite_link(),
+	);
+
+	if ( $needs_switch ) {
+		restore_current_blog();
+	}
+
+	return $links;
+}
+
+/**
  * Enqueue the single Post Type scripts and style needed.
  *
  * @since 2.0.0
@@ -54,14 +80,15 @@ function buddyreshare_posts_enqueue_assets() {
 
 		$GLOBALS['activities_template'] = (object) array( 'activity' => $activity );
 		$user_favorites                 = buddyreshare_users_get_favorites( $activity->id );
+		$favorite_links                 = buddyreshare_get_activity_favorite_links();
 
 		if ( in_array( (string) $script_data['params']['u'], $user_favorites, true ) ) {
-			$f_link  = bp_get_activity_unfavorite_link();
+			$f_link  = $favorite_links['unfav'];
 			/* Translators: This string is already translated in BuddyPress */
 			$f_text  = __( 'Remove Favorite', 'buddypress' );
 			$f_class = 'fav';
 		} else {
-			$f_link  = bp_get_activity_favorite_link();
+			$f_link  = $favorite_links['fav'];
 			/* Translators: This string is already translated in BuddyPress */
 			$f_text  = __( 'Favorite', 'buddypress' );
 			$f_class = 'unfav';
