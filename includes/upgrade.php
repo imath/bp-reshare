@@ -16,7 +16,9 @@ defined( 'ABSPATH' ) || exit;
  * @since 1.0.0
  */
 function buddyreshare_needs_upgrade_notice() {
-	if ( 2.0 <= (float) buddyreshare_get_plugin_db_version() || function_exists( 'entrepot' ) ) {
+	$version = buddyreshare_get_plugin_db_version();
+	
+	if ( ! $version || 2.0 <= (float) $version || function_exists( 'entrepot' ) ) {
 		return;
 	}
 	?>
