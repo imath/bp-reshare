@@ -141,8 +141,9 @@ body.activity-permalink #buddypress .buddyreshare-nav-content .load-more-users:n
 	display: block;
 }
 
-body.just-me #activity-stream li .activity-reshared-by img {
+body.just-me #buddypress ul.item-list li .activity-reshared-by img.avatar {
 	float: none;
+	vertical-align: middle;
 }
 
 body.just-me #activity-stream li .activity-reshared-by {
