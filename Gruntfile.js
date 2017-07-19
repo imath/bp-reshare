@@ -77,12 +77,7 @@ module.exports = function( grunt ) {
 				extDot: 'last',
 				expand: true,
 				ext: '.min.css',
-				src: ['css/*.css', '!*.min.css'],
-				options: {
-					banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' +
-					'<%= grunt.template.today("UTC:yyyy-mm-dd h:MM:ss TT Z") %> - ' +
-					'https://imathi.eu/tag/reshare */'
-				}
+				src: ['css/*.css', '!*.min.css']
 			}
 		},
 		jsvalidate:{
@@ -93,31 +88,13 @@ module.exports = function( grunt ) {
 				verbose: false
 			}
 		},
-		compress: {
-			main: {
+		'git-archive': {
+			archive: {
 				options: {
-					archive: '<%= pkg.name %>.zip'
-				},
-				files: [{
-					expand: true,
-					src: [
-						'**/*',
-						'!node_modules/**',
-						'!npm-debug.log',
-						'!.editorconfig',
-						'!.git/**',
-						'!.gitignore',
-						'!.gitattributes',
-						'!grunt/**',
-						'!.jshintrc',
-						'!.jshintignore',
-						'!Gruntfile.js',
-						'!package.json',
-						'LICENSE',
-						'!icon.png'
-					],
-					dest: './'
-				}]
+					'format'  : 'zip',
+					'output'  : '<%= pkg.name %>.zip',
+					'tree-ish': 'HEAD@{0}'
+				}
 			}
 		}
 	} );
@@ -127,9 +104,11 @@ module.exports = function( grunt ) {
 	 */
 	grunt.registerTask( 'jstest', ['jsvalidate', 'jshint'] );
 
+	grunt.registerTask( 'zip', ['git-archive'] );
+
 	grunt.registerTask( 'shrink', ['cssmin', 'uglify'] );
 
-	grunt.registerTask( 'release', ['checktextdomain', 'makepot', 'clean', 'jstest', 'shrink', 'compress'] );
+	grunt.registerTask( 'release', ['checktextdomain', 'makepot', 'clean', 'jstest', 'shrink', 'git-archive'] );
 
 	// Default task.
 	grunt.registerTask( 'default', ['commit'] );
