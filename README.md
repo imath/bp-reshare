@@ -1,5 +1,7 @@
 # BP Reshare
 
+![Personal stream](https://c1.staticflickr.com/5/4305/35212895163_f459cb68c6_o.png)
+
 This is a **BuddyPress** plugin extending the Activity component with a reshare feature. Members will be able to promote the activity updates they found interesting by **re**-sharing them into their personal activity stream.
 
 ![Users list](https://c1.staticflickr.com/5/4318/35177996884_6fe6dc2114_o.png)
@@ -53,7 +55,7 @@ WordPress **4.8+** and BuddyPress **2.8+**
 
 ## Installation & Updates
 
-![Installation & Updates](https://c1.staticflickr.com/5/4296/35177996804_b226ee8266_o.png)
+![Installation & Updates](https://c1.staticflickr.com/5/4292/35184370524_015ba027d0_o.png)
 
 BP Reshare is registered into the [Entrepôt](https://github.com/imath/entrepot/releases). If you use this alternative source of free and open source WordPress plugins, installing or updating BP Reshare is automatic.
 

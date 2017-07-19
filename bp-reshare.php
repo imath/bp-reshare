@@ -136,10 +136,10 @@ class BuddyReshare {
 				if ( defined( 'WP_DEBUG' ) && true === WP_DEBUG ) {
 					require( $this->includes_dir . 'deprecated.php' );
 				}
-			}
 
-			if ( is_admin() ) {
-				require( $this->includes_dir . 'settings.php' );
+				if ( is_admin() ) {
+					require( $this->includes_dir . 'settings.php' );
+				}
 			}
 		}
 
