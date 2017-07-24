@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the BP reshare package.
 msgid ""
 msgstr ""
-"Project-Id-Version: BP reshare 1.0-beta1\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/bp-reshare\n"
-"POT-Creation-Date: 2017-07-08 17:55:07+00:00\n"
-"PO-Revision-Date: 2017-07-08 20:03+0100\n"
+"Project-Id-Version: BP reshare 2.0.0\n"
+"Report-Msgid-Bugs-To: https://github.com/imath/bp-reshare/issues\n"
+"POT-Creation-Date: 2017-07-24 16:43:28+00:00\n"
+"PO-Revision-Date: 2017-07-24 21:44+0100\n"
 "Last-Translator: imath <mathchristo@yahoo.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -14,164 +14,223 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.7.1\n"
 
-#: includes/actions.php:53
-msgid "Activity reshared !"
-msgstr "Activité repartagée !"
+#: includes/activity.php:34
+msgid "Activities I reshared."
+msgstr "Activités que j'ai repartagées."
 
-#: includes/actions.php:59 includes/actions.php:150 includes/ajax.php:25
-msgid "OOps, error while trying to reshare.."
-msgstr "OOps, une erreur est survenue pendant le repartage.."
-
-#: includes/actions.php:132 includes/ajax.php:99
-msgid "Unable to reset the properties of the reshared activity"
-msgstr ""
-"Les propriétés de l&#39;activité repartagée n&#39;ont pu être mises à jour"
-
-#: includes/actions.php:142
-msgid "Reshare deleted !"
-msgstr "Activité repartagée supprimée !"
-
-#: includes/actions.php:224
-msgid "Reshared by :"
-msgstr "Repartagé par :"
-
-#: includes/admin.php:91
-msgid ""
-"BuddyPress is activated on the network, please deactivate BP Reshare from "
-"this site and make sure to activate BP Reshare on the network."
-msgstr ""
-"BuddyPress est activé sur le réseau, merci de désactiver BP Reshare de ce "
-"site et de l&#39;activer sur le réseau."
-
-#: includes/admin.php:93
-msgid ""
-"BP Reshare has been activated on a site where BuddyPress is not, please "
-"deactivate BP Reshare from this site and activate it on the same site where "
-"BuddyPress is activated."
-msgstr ""
-"BP Reshare a été activé sur un site sur lequel BuddyPress ne l'est pas. "
-"Merci de désactiver BP Reshare de ce site et de l'activer sur le site où "
-"BuddyPress est activé."
-
-#: includes/admin.php:114
-msgid ""
-"BP Reshare requires at least <strong>BuddyPress %s</strong>, please upgrade"
-msgstr ""
-"BP Reshare nécessite à minima <strong>BuddyPress %s</strong>, merci de "
-"mettre à jour votre configuration."
-
-#: includes/admin.php:158
-msgid "Reshared user list"
-msgstr "Liste d&#39;utilisateurs ayant repartagé"
-
-#: includes/admin.php:166
-msgid "\"Resharable\" Activity types"
-msgstr "Types d&#39;activité \"Repartageables\""
-
-#: includes/admin.php:190
-msgid "Amount of user&#39;s avatar to show when a single activity is displayed"
-msgstr ""
-"Nombre d'avatars d'utilisateurs à montrer lorsqu'une activité unique est "
-"affichée"
-
-#: includes/ajax.php:31
-msgid "The activity was not found."
-msgstr "Activité introuvable"
-
-#: includes/ajax.php:48
-msgid "Activity successfully reshared."
-msgstr "Activité repartagée avec succès."
-
-#: includes/ajax.php:78
-msgid "OOps, error while trying to delete your reshare.."
-msgstr ""
-"OOps, une erreur est survenue lors de la tentative de suppresion de l&#39;"
-"activité repartagée.."
-
-#: includes/ajax.php:84 includes/ajax.php:90
-msgid "The reshare was not found."
-msgstr "L&#39;activité repartagée est introuvable."
-
-#: includes/ajax.php:109
-msgid "Reshare successfully deleted."
-msgstr "﻿Le repartage a été correctement supprimé."
-
-#: includes/component.php:139
-msgid "Activities i reshared."
-msgstr "Activités que j&#39;ai repartagées."
-
-#: includes/component.php:139
-msgid "%s <span>%s</span>"
-msgstr "%s <span>%s</span>"
-
-#: includes/component.php:139 includes/helpers.php:147
+#: includes/activity.php:35
 msgid "My Reshares"
 msgstr "Mes Repartages"
 
-#: includes/component.php:212
-msgid "Reshares"
-msgstr "Repartages"
+#: includes/activity.php:47
+msgid "Reshare this activity"
+msgstr "Repartager cette activité"
 
-#: includes/component.php:215
-msgid "Most Reshared"
-msgstr "Les plus repartagées"
+#: includes/activity.php:48
+msgid "Remove the Reshare of this activity"
+msgstr "Supprimer le repartage de cette activité"
 
-#: includes/filters.php:149
-msgid "Delete"
-msgstr "Supprimer"
+#: includes/activity.php:51
+msgid "Unknown error, please try again later."
+msgstr ""
+"Une erreur inconnue est survenue. Veuillez faire un nouvel essai un peu plus "
+"tard."
 
-#: includes/filters.php:184
-msgid "Unshare"
-msgstr "Effacer le Repartage"
+#: includes/activity.php:71
+msgid "Comment"
+msgstr "Commentaire"
 
-#: includes/functions.php:27
-msgid "OOps, looks like the activity does not exist anymore"
-msgstr "OOps, on dirait que l&#39;activité n&#39;existe plus."
+#: includes/activity.php:72
+msgid "Comments"
+msgstr "Commentaires"
 
-#: includes/functions.php:34
-msgid "OOps, looks like you already reshared this activity"
-msgstr "OOps, il semblerait que vous ayez déjà repartagé cette activité."
+#: includes/activity.php:75
+msgid "This activity has no comments yet, add yours!"
+msgstr "Cette activité n'a pas été commentée jusqu'à présent, commentez la!"
 
-#: includes/functions.php:37
-msgid "OOps, looks like you are trying to reshare your own activity"
-msgstr "OOps, il semblerait que vous soyez l&#39;auteur de l&#39;activité"
+#: includes/activity.php:76
+msgid "Activity comments are closed."
+msgstr "Les commentaires d'activité sont fermés."
 
-#: includes/functions.php:64
-msgid "%s reshared <a href=\"%s\">content</a> originally shared by %s"
-msgstr "%s a repartagé un <a href=\"%s\">contenu</a> d'abord partagé par %s"
+#: includes/activity.php:79
+msgid "User who Reshared"
+msgstr "Utilisateur ayant repartagé"
 
-#: includes/functions.php:72
-msgid "%s reshared content originally shared by %s"
-msgstr "%s a repartagé du contenu d'abord partagé par %s"
+#: includes/activity.php:80
+msgid "Users who Reshared"
+msgstr "Utilisateurs ayant repartagé"
 
-#: includes/functions.php:81
-msgid "%s reshared an activity originally shared by %s"
-msgstr "%s a repartagé une activité d&#39;abord partagée par %s"
+#: includes/activity.php:83
+msgid "This activity has no reshares yet, reshare it!"
+msgstr "Cette activité n'a toujours pas été repartagée, repartagez la !"
 
-#: includes/helpers.php:143
-msgid "You have not reshared any activities yet."
-msgstr "Aucune activité repartagée jusqu'à présent."
+#: includes/activity.php:89
+msgid "User who Favorited"
+msgstr "Utilisateur ayant mis l'activité en favoris"
 
-#: includes/helpers.php:144
-msgid "Cheating ?!"
-msgstr "On triche ?!"
+#: includes/activity.php:90
+msgid "Users who Favorited"
+msgstr "Utilisateurs ayant mis l'activité en favoris"
 
-#: includes/helpers.php:145 includes/templates.php:171
-msgid "Reshared"
-msgstr "Repartagé"
+#: includes/activity.php:93
+msgid "This activity is not favorited yet, add it to your favorites!"
+msgstr ""
+"Cette activité n'a pas été mise en favoris jusqu'à présent, lancez vous !"
 
-#: includes/templates.php:171
-msgid "Reshare"
-msgstr "Repartage"
+#. Translators: Do not omit the placeholder it is used to be replaced by the
+#. user avatar
+#: includes/activity.php:154
+msgid "%s reshared this activity"
+msgstr "%s a repartagé cette activité"
+
+#: includes/activity.php:361
+msgid "There was an error resharing the activity. Please try again."
+msgstr "Une erreur s'est produite pendant le repartage. Veuillez recommencer."
+
+#: includes/activity.php:393
+msgid "Activity reshared."
+msgstr "Activité repartagée."
+
+#: includes/activity.php:480
+msgid ""
+"There was an error removing the reshare for the activity. Please try again."
+msgstr ""
+"Une erreur s'est produite pendant la suppression du repartage de cette "
+"activité. Veuillez recommencer."
+
+#: includes/activity.php:507
+msgid "Activity reshare removed."
+msgstr "Repartage supprimé."
+
+#: includes/emails.php:39
+msgid "A member reshares one of your updates."
+msgstr "Un membre a repartagé une de vos activités."
+
+#: includes/emails.php:41
+msgid "Yes, send email"
+msgstr "Oui, envoyer un email"
+
+#: includes/emails.php:43
+msgid "No, do not send email"
+msgstr "Non, ne pas envoyer d'email"
+
+#: includes/emails.php:62
+msgid "Reshared activities."
+msgstr "Activités repartagées."
+
+#: includes/emails.php:65
+msgid ""
+"You will no longer receive emails when someone reshared on of your activity."
+msgstr ""
+"Vous ne recevrez plus d'email lorsque vos activités seront repartagées."
+
+#: includes/notifications.php:69
+msgid "New reshared activity"
+msgstr "Nouvelle activité repartagée"
+
+#: includes/notifications.php:70
+msgid "New reshared activities"
+msgstr "Nouvelles activités repartagées."
+
+#. Translators: This string is already translated in BuddyPress
+#: includes/posts.php:88
+msgid "Remove Favorite"
+msgstr "Supprimer des favoris"
+
+#. Translators: This string is already translated in BuddyPress
+#: includes/posts.php:93
+msgid "Favorite"
+msgstr "Mettre en favoris"
+
+#: includes/rest.php:88 includes/rest.php:197 includes/rest.php:250
+msgid "Missing argument"
+msgstr "Argument manquant"
+
+#: includes/rest.php:97
+msgid "Missing callback"
+msgstr "Fonction de rappel manquante"
+
+#: includes/rest.php:289
+msgid "Unique identifier for the object."
+msgstr "Identifiant unique pour l'objet."
+
+#: includes/rest.php:304
+msgid "The page number to fetch"
+msgstr "Le nombre de page à récupérer"
+
+#: includes/rest.php:309
+msgid "The number of results to fetch."
+msgstr "Le nombre de résultats à récupérer."
+
+#: includes/rest.php:314
+msgid "A comma separated user id list to limit the results to fetch."
+msgstr ""
+"Une liste d'identifiants d'utilisateur séparée par des virgules à inclure "
+"dans les résultats."
+
+#: includes/rest.php:319
+msgid "The type of user action to fetch."
+msgstr "Le type d'action à récupérer."
+
+#: includes/rest.php:331 includes/rest.php:348
+msgid "The user ID."
+msgstr "L'Identifiant utilisateur."
+
+#: includes/rest.php:336 includes/rest.php:353
+msgid "The activity author slug."
+msgstr "Le slug de l'auteur de l'activité"
+
+#: includes/rest.php:368
+msgid "comma separated list of activity ids to fetch"
+msgstr "Liste d'identifiants à inclure, séparés par des virgules."
+
+#: includes/settings.php:21
+msgid "Yes"
+msgstr "Oui"
+
+#: includes/settings.php:102
+msgid "Ordered by reshared date"
+msgstr "Classé selon la date de repartage"
+
+#: includes/settings.php:103
+msgid "Ordered by recorded date (BuddyPress default)"
+msgstr "Classé selon la date de création (par défaut)"
+
+#: includes/settings.php:137
+msgid "Enable Email notifications about activity reshares."
+msgstr "Activez les notifications par email pour les activités repartagées."
+
+#: includes/settings.php:148
+msgid "Activity types to disable for reshares."
+msgstr "Types d'activité dont le repartage n'est pas autorisé."
+
+#: includes/settings.php:159
+msgid "Activity ordering preferences."
+msgstr "Définissez l'ordre de votre préférence."
+
+#: includes/upgrade.php:27
+msgid ""
+"BP Reshare needs to perform some upgrade tasks on your database. It appears "
+"you are not using %s, you will need to run manually the tasks listed into "
+"the /includes/upgrade.php file of this plugin."
+msgstr ""
+"BP Reshare a besoin de réaliser des tâches de mise à niveau sur votre base "
+"de données. Il apparait que vous n'utilisez pas %s, vous aurez donc besoin "
+"de manuellement faire tourner les tâches listées dans le fichier /includes/"
+"upgrade.php  de cette extension."
+
+#: includes/users.php:98 includes/users.php:118
+msgid "Reshared Activities"
+msgstr "Activités repartagées"
 
 #. Plugin URI of the plugin/theme
-msgid "http://imathi.eu/2012/12/07/bp-reshare"
-msgstr "http://imathi.eu/2012/12/07/bp-reshare"
+msgid "https://imathi.eu/tag/reshare/"
+msgstr "https://imathi.eu/tag/reshare"
 
 #. Description of the plugin/theme
 msgid "Allows members to reshare activities in a BuddyPress powered community"
 msgstr ""
-"Permet aux membres de repartager des activités au sein d&#39;une communauté "
+"Permet aux membres de repartager des activités au sein d'une communauté "
 "motorisée par BuddyPress"
 
 #. Author of the plugin/theme
@@ -179,5 +238,166 @@ msgid "imath"
 msgstr "imath"
 
 #. Author URI of the plugin/theme
-msgid "http://imathi.eu"
-msgstr "http://imathi.eu"
+msgid "https://imathi.eu"
+msgstr "https://imathi.eu"
+
+#: includes/emails.php:158
+msgctxt "BP Email template description"
+msgid "A member reshared an activity"
+msgstr "Un membre a repartagé une activité"
+
+#: includes/emails.php:160
+msgctxt "BP Email template subject"
+msgid "[{{{site.name}}}] {{poster.name}} reshared your update"
+msgstr "[{{{site.name}}}] {{poster.name}} a repartagé votre activité"
+
+#: includes/emails.php:161
+msgctxt "BP Email template HTML text"
+msgid ""
+"{{poster.name}} reshared this update:\n"
+"\n"
+"<blockquote>&quot;{{usermessage}}&quot;</blockquote>\n"
+"\n"
+"<a href=\"{{{thread.url}}}\">Go to your update</a>."
+msgstr ""
+"{{poster.name}} a repartagé votre activité:\n"
+"\n"
+"<blockquote>&quot;{{usermessage}}&quot;</blockquote>\n"
+"\n"
+"<a href=\"{{{thread.url}}}\">Affichez la</a>."
+
+#: includes/emails.php:162
+msgctxt "BP Email template plain text"
+msgid ""
+"{{poster.name}} reshared this update:\n"
+"\n"
+"\"{{usermessage}}\"\n"
+"\n"
+"Go to your update: {{{thread.url}}}"
+msgstr ""
+"{{poster.name}} a repartagé votre activité:\n"
+"\n"
+"\"{{usermessage}}\"\n"
+"\n"
+"Affichez la : {{{thread.url}}}"
+
+#: includes/functions.php:209
+msgctxt "javascript time since"
+msgid "(Reshared sometime)"
+msgstr "(Repartagé il y a un moment)"
+
+#: includes/functions.php:210
+msgctxt "javascript time since"
+msgid "(Reshared right now)"
+msgstr "(Repartagé à l'instant)"
+
+#: includes/functions.php:211
+msgctxt "javascript time since"
+msgid "(Reshared % ago)"
+msgstr "(Repartagé il y a %)"
+
+#: includes/functions.php:212
+msgctxt "Separator in javascript time since"
+msgid ","
+msgstr ","
+
+#: includes/functions.php:213
+msgctxt "javascript time since singular"
+msgid "% year"
+msgstr "% année"
+
+#: includes/functions.php:215
+msgctxt "javascript time since singular"
+msgid "% month"
+msgstr "% mois"
+
+#: includes/functions.php:217
+msgctxt "javascript time since singular"
+msgid "% week"
+msgstr "% semaine"
+
+#: includes/functions.php:219
+msgctxt "javascript time since singular"
+msgid "% day"
+msgstr "% jour"
+
+#: includes/functions.php:221
+msgctxt "javascript time since singular"
+msgid "% hour"
+msgstr "% heure"
+
+#: includes/functions.php:223
+msgctxt "javascript time since singular"
+msgid "% minute"
+msgstr "% minute"
+
+#: includes/functions.php:225
+msgctxt "javascript time since singular"
+msgid "% second"
+msgstr "% seconde"
+
+#: includes/functions.php:214
+msgctxt "javascript time since plural"
+msgid "% years"
+msgstr "% années"
+
+#: includes/functions.php:216
+msgctxt "javascript time since plural"
+msgid "% months"
+msgstr "% mois"
+
+#: includes/functions.php:218
+msgctxt "javascript time since plural"
+msgid "% weeks"
+msgstr "% semaines"
+
+#: includes/functions.php:220
+msgctxt "javascript time since plural"
+msgid "% days"
+msgstr "% jours"
+
+#: includes/functions.php:222
+msgctxt "javascript time since plural"
+msgid "% hours"
+msgstr "% heures"
+
+#: includes/functions.php:224
+msgctxt "javascript time since plural"
+msgid "% minutes"
+msgstr "% minutes"
+
+#: includes/functions.php:226
+msgctxt "javascript time since plural"
+msgid "% seconds"
+msgstr "% secondes"
+
+#: includes/upgrade.php:210
+msgctxt "Upgrader feedback message"
+msgid "Create the Activity Reshares table"
+msgstr "Création de la table des activités repartagées"
+
+#: includes/upgrade.php:216
+msgctxt "Upgrader feedback message"
+msgid "Migrate the Reshare Updates into the new table"
+msgstr "Migration des activités du type repartage dans la nouvelle table"
+
+#: includes/upgrade.php:222
+msgctxt "Upgrader feedback message"
+msgid "Delete Activity reshared metas"
+msgstr "Suppression des métadonnées de repartage des activités"
+
+#: includes/upgrade.php:228
+msgctxt "Upgrader feedback message"
+msgid "Delete users and site reshared metas"
+msgstr ""
+"Suppression des métadonnées d'utilisateurs et de sites liées aux repartages"
+
+#: includes/upgrade.php:234
+msgctxt "Upgrader feedback message"
+msgid "Create the BuddyPress email template"
+msgstr "Création du modèle d'email pour BuddyPress"
+
+#: includes/upgrade.php:240
+msgctxt "Upgrader feedback message"
+msgid "Upgrade the plugin version"
+msgstr "Mise à jour de la version de l'extension"

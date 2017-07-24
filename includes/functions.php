@@ -1,220 +1,314 @@
 <?php
-// Exit if accessed directly
-if ( !defined( 'ABSPATH' ) ) exit;
+/**
+ * Main functions.
+ *
+ * @package BP Reshare\includes
+ *
+ * @since 1.0.0
+ */
+
+// Exit if accessed directly.
+defined( 'ABSPATH' ) || exit;
 
 /**
- * Builds the argument of the reshared activity
+ * Returns plugin version
  *
- * @package BP Reshare
- * @since    1.0
+ * @since 1.0
  *
- * @param  integer $activity_id the activity id
- * @uses   bp_activity_get_specific() to fetch the specific activity
- * @uses   bp_activity_get_meta() to get some meta infos about the activity
- * @uses   bp_loggedin_user_id() to get current user id
- * @uses   bp_activity_update_meta() to save some meta infos for the activity
- * @uses   bp_core_fetch_avatar() to build the avatar for the user
- * @uses   bp_core_get_userlink() to build the user link
- * @uses   bp_core_current_time() to date the reshare
- * @uses   apply_filters() at various places to let plugins/themes override values
- * @return array the reshared activity arguments
+ * @return string The plugin's version
  */
-function buddyreshare_prepare_reshare( $activity_id = 0 ) {
+function buddyreshare_get_plugin_version() {
+	return buddyreshare()->version;
+}
 
-	$activity_to_reshare = bp_activity_get_specific( array( 'activity_ids' => $activity_id ) );
+/**
+ * Returns plugin DB version
+ *
+ * @since 1.0
+ *
+ * @return string The plugin's DB version
+ */
+function buddyreshare_get_plugin_db_version() {
+	return buddyreshare()->db_version;
+}
 
-	if( empty( $activity_to_reshare ) )
-		return array( 'error' => __( 'OOps, looks like the activity does not exist anymore', 'bp-reshare' ) );
+/**
+ * Returns plugin's dir
+ *
+ * @since 1.0
+ *
+ * @return string The plugin's dir path
+ */
+function buddyreshare_get_plugin_dir() {
+	return buddyreshare()->plugin_dir;
+}
 
-	$activity = $activity_to_reshare['activities'][0];
+/**
+ * Returns plugin's includes dir
+ *
+ * @since 1.0
+ *
+ * @return string The plugin's includes dir path
+ */
+function buddyreshare_get_includes_dir() {
+	return buddyreshare()->includes_dir;
+}
 
-	$reshared_by = bp_activity_get_meta( $activity_id, 'reshared_by' );
+/**
+ * Returns plugin's js url
+ *
+ * @since  1.0
+ * @since  2.0.0 Path edited to one level up.
+ *
+ * @return string The plugin's url to JavaScript's dir.
+ */
+function buddyreshare_get_js_url() {
+	return buddyreshare()->js_url;
+}
 
-	if( is_array( $reshared_by ) && in_array( bp_loggedin_user_id(), $reshared_by ) )
-		return array( 'error' => __( 'OOps, looks like you already reshared this activity', 'bp-reshare' ) );
+/**
+ * Returns plugin's css url
+ *
+ * @since  1.0
+ * @since  2.0.0 Path edited to one level up.
+ *
+ * @return string The plugin's url to Style's dir.
+ */
+function buddyreshare_get_css_url() {
+	return buddyreshare()->css_url;
+}
 
-	if( $activity->user_id == bp_loggedin_user_id() )
-		return array( 'error' => __( 'OOps, looks like you are trying to reshare your own activity', 'bp-reshare' ) );
+/**
+ * Get the JS/CSS minified suffix.
+ *
+ * @since 2.0.0
+ *
+ * @return string the JS/CSS minified suffix.
+ */
+function buddyreshare_min_suffix() {
+	$min = '.min';
 
-	/* get and increment reshared count */
-	$rs_count = bp_activity_get_meta( $activity_id, 'reshared_count' );
-	$rs_count = !empty( $rs_count ) ? (int)$rs_count + 1 : 1;
-	bp_activity_update_meta( $activity_id, 'reshared_count', $rs_count );
-
-	if ( is_array( $reshared_by ) && ! in_array( bp_loggedin_user_id(), $reshared_by, true ) ) {
-		$reshared_by[] = bp_loggedin_user_id();
-	} else {
-		$reshared_by = array( bp_loggedin_user_id() );
+	if ( defined( 'SCRIPT_DEBUG' ) && true === SCRIPT_DEBUG )  {
+		$min = '';
 	}
 
-	bp_activity_update_meta( $activity_id, 'reshared_by', $reshared_by );
+	/**
+	 * Filter here to edit the minified suffix.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param  string $min The minified suffix.
+	 */
+	return apply_filters( 'buddyreshare_min_suffix', $min );
+}
 
-	$secondary_avatar = bp_core_fetch_avatar( array( 'item_id' => $activity->user_id, 'object' => 'user', 'type' => 'thumb', 'class' => 'avatar', 'width' => 20, 'height' => 20 ) );
+/**
+ * Returns plugin's component id
+ *
+ * @since 1.0
+ *
+ * @return string plugin's component id
+ */
+function buddyreshare_get_component_id() {
+	return buddyreshare()->component_id;
+}
 
-	$component = $activity->component;
-	$item_id = $activity->item_id;
+/**
+ * Returns plugin's component slug
+ *
+ * @since 1.0
+ *
+ * @return string plugin's component slug
+ */
+function buddyreshare_get_component_slug() {
+	return apply_filters( 'buddyreshare_get_component_slug', buddyreshare()->component_slug );
+}
 
-	if( $component != 'activity' ){
+/**
+ * Displays the component name
+ *
+ * @since 1.0
+ */
+function buddyreshare_component_name() {
+	echo buddyreshare_get_component_name();
+}
 
-		$user_link = bp_core_get_userlink( $activity->user_id );
+/**
+ * Returns plugin's component name
+ *
+ * @since 1.0
+ *
+ * @return string plugin's component name
+ */
+function buddyreshare_get_component_name() {
+	return apply_filters( 'buddyreshare_get_component_name', buddyreshare()->component_name );
+}
 
-		if( strpos( $activity->primary_link, $user_link ) === false ) {
+/**
+ * Are email notifications active ?
+ *
+ * @since 2.0.0
+ *
+ * @return boolean True to send emails, False otherwise.
+ */
+function buddyreshare_are_emails_active() {
+	return (bool) apply_filters( 'buddyreshare_are_emails_active', bp_get_option( 'buddyreshare-emails', false ) );
+}
 
-			$action = apply_filters( 'buddyreshare_prepare_reshare_content', sprintf(
-				__( '%s reshared <a href="%s">content</a> originally shared by %s', 'bp-reshare' ),
-				bp_core_get_userlink( bp_loggedin_user_id() ),
-				$activity->primary_link,
-				bp_core_get_userlink( $activity->user_id )
-			), $activity );
+/**
+ * Are we on a the current user's profile reshare tab
+ *
+ * @since 1.0
+ * @since 2.0.0 Code clean up.
+ *
+ * @return  boolean true|false
+ */
+function buddyreshare_is_user_profile_reshares() {
+	$return = false;
 
-		} else {
-			$action = apply_filters( 'buddyreshare_prepare_reshare_nocontent', sprintf(
-				__( '%s reshared content originally shared by %s', 'bp-reshare' ),
-				bp_core_get_userlink( bp_loggedin_user_id() ),
-				bp_core_get_userlink( $activity->user_id )
-			), $activity );
-		}
-
-	} else {
-
-		$action = apply_filters( 'buddyreshare_prepare_reshare_activity', sprintf(
-			__( '%s reshared an activity originally shared by %s', 'bp-reshare' ),
-			bp_core_get_userlink( bp_loggedin_user_id() ),
-			$secondary_avatar . bp_core_get_userlink( $activity->user_id )
-		), $activity );
-
+	if ( bp_is_activity_component() && bp_is_user() && bp_is_current_action( buddyreshare_get_component_slug() ) ) {
+		$return = true;
 	}
 
-	$reshared_args = array(
-		'action'            => apply_filters( 'bp_reshare_action_parent_activity' , $action, $activity->type ),
-		'content'           => $activity->content,
-		'component'         => $component,
-		'type'              => 'reshare_update',
-		'user_id'           => bp_loggedin_user_id(),
-		'secondary_item_id' => $activity_id,
-		'recorded_time'     => bp_core_current_time(),
-		'hide_sitewide'     => $activity->hide_sitewide
+	return $return;
+}
+
+/**
+ * Returns the disabled activity actions
+ *
+ * @since 2.0.0
+ *
+ * @return array the disabled activity actions.
+ */
+function buddyreshare_get_disabled_activity_types() {
+	$disabled_types = explode( ',', trim( bp_get_option( 'buddyreshare-disabled-activity-types', '' ), ' ' ) );
+
+	return (array) apply_filters( 'buddyreshare_get_disabled_activity_types', array_filter( $disabled_types ) );
+}
+
+/**
+ * What is the order preference for the activity stream?
+ *
+ * @since 2.0.0
+ *
+ * @return string The order preference for the activity stream.
+ */
+function buddyreshare_get_activity_order_preference() {
+	return bp_get_option( 'buddyreshare-activity-order-preferences', 'reshares' );
+}
+
+/**
+ * Returns strings to be used in JavaScript to build the reshared time since.
+ *
+ * @since 2.0.0
+ *
+ * @return array the list of strings to be used in JavaScript to build the reshared time since.
+ */
+function buddyreshare_get_l10n_time_since() {
+	return array(
+		'sometime'  => _x( '(Reshared sometime)', 'javascript time since', 'bp-reshare' ),
+		'now'       => _x( '(Reshared right now)', 'javascript time since', 'bp-reshare' ),
+		'ago'       => _x( '(Reshared % ago)', 'javascript time since', 'bp-reshare' ),
+		'separator' => _x( ',', 'Separator in javascript time since', 'bp-reshare' ),
+		'year'      => _x( '% year', 'javascript time since singular', 'bp-reshare' ),
+		'years'     => _x( '% years', 'javascript time since plural', 'bp-reshare' ),
+		'month'     => _x( '% month', 'javascript time since singular', 'bp-reshare' ),
+		'months'    => _x( '% months', 'javascript time since plural', 'bp-reshare' ),
+		'week'      => _x( '% week', 'javascript time since singular', 'bp-reshare' ),
+		'weeks'     => _x( '% weeks', 'javascript time since plural', 'bp-reshare' ),
+		'day'       => _x( '% day', 'javascript time since singular', 'bp-reshare' ),
+		'days'      => _x( '% days', 'javascript time since plural', 'bp-reshare' ),
+		'hour'      => _x( '% hour', 'javascript time since singular', 'bp-reshare' ),
+		'hours'     => _x( '% hours', 'javascript time since plural', 'bp-reshare' ),
+		'minute'    => _x( '% minute', 'javascript time since singular', 'bp-reshare' ),
+		'minutes'   => _x( '% minutes', 'javascript time since plural', 'bp-reshare' ),
+		'second'    => _x( '% second', 'javascript time since singular', 'bp-reshare' ),
+		'seconds'   => _x( '% seconds', 'javascript time since plural', 'bp-reshare' ),
+		'time_chunks' => array(
+			'a_year'   => YEAR_IN_SECONDS,
+			'b_month'  => 30 * DAY_IN_SECONDS,
+			'c_week'   => WEEK_IN_SECONDS,
+			'd_day'    => DAY_IN_SECONDS,
+			'e_hour'   => HOUR_IN_SECONDS,
+			'f_minute' => MINUTE_IN_SECONDS,
+			'g_second' => 1,
+		),
+	);
+}
+
+/**
+ * Gets the common script data used in all JavaScript UIs.
+ *
+ * @since 2.0.0
+ *
+ * @return array The common script data used in all JavaScript UIs.
+ */
+function buddyreshare_get_common_script_data() {
+	$buddyreshare = buddyreshare();
+
+	/**
+	 * Filter here to edit the common script data used in all JavaScript UIs.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param array $value The common script data used in all JavaScript UIs.
+	 */
+	return apply_filters( 'buddyreshare_get_common_script_data', array(
+		'params' => array(
+			'root_url'       => esc_url_raw( rest_url( trailingslashit( $buddyreshare->rest->namespace . '/' . $buddyreshare->rest->version ) ) ),
+			'nonce'          => wp_create_nonce( 'wp_rest' ),
+			'u'              => get_current_user_id(),
+			'disabled_types' => buddyreshare_get_disabled_activity_types(),
+		),
+	) );
+}
+
+/**
+ * Register the JavaScripts and Style assets.
+ *
+ * @since 2.0.0
+ */
+function buddyreshare_register_assets() {
+	$min     = buddyreshare_min_suffix();
+	$version = buddyreshare_get_plugin_version();
+	$assets  = array(
+		array( 'type' => 'js', 'handle' => 'bp-reshare-request', 'src' => "request{$min}.js", 'deps' => array() ),
+		array( 'type' => 'js', 'handle' => 'bp-reshare', 'src' => "script{$min}.js", 'deps' => array( 'bp-reshare-request', 'jquery' ) ),
+		array( 'type' => 'js', 'handle' => 'bp-reshare-activity', 'src' => "single-activity{$min}.js", 'deps' => array( 'bp-reshare' ) ),
+		array( 'type' => 'js', 'handle' => 'bp-reshare-posts', 'src' => "posts{$min}.js", 'deps' => array( 'bp-reshare-request' ) ),
+		array( 'type' => 'css', 'handle' => 'bp-reshare-style', 'src' => "style{$min}.css", 'deps' => array() ),
 	);
 
-	if( !empty( $item_id ) )
-		$reshared_args['item_id'] = $item_id;
-
-	return apply_filters( 'buddyreshare_prepare_reshare', $reshared_args, $activity_id );
-}
-
-/**
- * In case of a reshare delete, reset some activity metas
- *
- * @package BP Reshare
- * @since    1.0
- *
- * @param  integer $activity_id the reshared activity id
- * @param  integer $user_id     the user id
- * @uses   bp_activity_get_meta() to get some meta infos about the activity
- * @uses   bp_activity_delete_meta() to delete some meta infos for the activity
- * @uses   bp_activity_update_meta() to save some meta infos for the activity
- * @return boolean true
- */
-function buddyreshare_reset_metas( $activity_id = 0, $user_id = 0 ) {
-	if( empty( $activity_id ) || empty( $user_id ) )
-		return false;
-
-	$count = bp_activity_get_meta( $activity_id, 'reshared_count' );
-	$count = $count - 1;
-	$reshared_by = bp_activity_get_meta( $activity_id, 'reshared_by' );
-
-	if( $count == 0 ) {
-		// if count is null, then we can delete all metas !
-		bp_activity_delete_meta( $activity_id, 'reshared_count' );
-		bp_activity_delete_meta( $activity_id, 'reshared_by' );
-	} else {
-		foreach( $reshared_by as $key => $val ) {
-			if( $user_id  == $val )
-				unset( $reshared_by[$key] );
+	foreach ( $assets as $asset ) {
+		if ( 'js' === $asset['type'] ) {
+			wp_register_script(
+				$asset['handle'],
+				buddyreshare_get_js_url() . $asset['src'],
+				$asset['deps'],
+				$version,
+				true
+			);
+		} elseif ( 'css' === $asset['type'] ) {
+			wp_register_style(
+				$asset['handle'],
+				buddyreshare_get_css_url() . $asset['src'],
+				array(),
+				$version,
+				'all'
+			);
 		}
-		bp_activity_update_meta( $activity_id, 'reshared_count', $count );
-		bp_activity_update_meta( $activity_id, 'reshared_by', $reshared_by );
 	}
-
-	return true;
-
 }
+add_action( 'bp_init', 'buddyreshare_register_assets' );
 
 /**
- * Returns the total reshares for a given user
+ * Load translations.
  *
- * @package BP Reshare
- * @since    1.0
- *
- * @param  integer $user_id [description]
- * @uses   bp_get_user_meta() to get the number of reshares of the user
- * @return integer the number of reshares of the user
+ * @since 2.0.0
  */
-function buddyreshare_get_total_reshares_count( $user_id = 0 ) {
-	return intval( bp_get_user_meta( $user_id, 'buddyreshare_count', true ) );
+function buddyreshare_load_textdomain() {
+	$buddyreshare = buddyreshare();
+
+	load_plugin_textdomain( $buddyreshare->domain, false, trailingslashit( basename( $buddyreshare->plugin_dir ) ) . 'languages' );
 }
-
-/**
- * Can this activity be reshared
- *
- * @package BP Reshare
- * @since    1.0
- *
- * @param  BP_Activity_Activity $activity the activity object
- * @uses   is_user_logged_in() to check we have a logged in user
- * @uses   buddyreshare_activity_types() to get the "resharable" activities
- * @uses   buddyreshare_is_user_profile_reshares() to check for the user reshare tab of his profile
- * @uses   bp_is_my_profile() to check if the displayed profile is the one of the loggedin user
- * @return boolean true|false
- */
-function buddyreshare_can_reshare( $activity = null ) {
-	if( empty( $activity ) )
-		return false;
-
-	if( ! is_user_logged_in() )
-		return false;
-
-	if ( ! empty( $activity->hide_sitewide ) )
-		return false;
-
-	if( ! in_array( $activity->type, buddyreshare_activity_types() ) )
-		return false;
-
-	if( buddyreshare_is_user_profile_reshares() && ! bp_is_my_profile() )
-		return false;
-
-	return true;
-}
-
-
-/**
- * Returns the reshared css class in case an activity has been reshared by the user
- *
- * @package BP Reshare
- * @since    1.0
- *
- * @param  BP_Activity_Activity $activity the activity object
- * @param  integer $activity_first_id the reshared activity id
- * @uses   bp_loggedin_user_id() to get current user id
- * @uses   bp_activity_get_meta() to get some meta infos about the activity
- * @uses   bp_activity_get_specific() to fetch the specific activity
- * @return string the reshared css class
- */
-function buddyreshare_get_class( $activity = null, $activity_first_id = 0 ) {
-	if( empty( $activity ) )
-		return false;
-
-	if( bp_loggedin_user_id() == $activity->user_id )
-		return 'reshared';
-
-	$reshared_by = bp_activity_get_meta( $activity_first_id, 'reshared_by' );
-
-	if( is_array( $reshared_by ) && in_array( bp_loggedin_user_id(), $reshared_by ) )
-		return 'reshared';
-
-	// is the loggedin_user the original author ?
-	$originally_shared = bp_activity_get_specific( array( 'activity_ids' => $activity_first_id ) );
-
-	if( $originally_shared['activities'][0]->user_id == bp_loggedin_user_id() )
-		return 'reshared';
-}
+add_action( 'bp_init', 'buddyreshare_load_textdomain', 1 );
