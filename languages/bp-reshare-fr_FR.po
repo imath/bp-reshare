@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the BP reshare package.
 msgid ""
 msgstr ""
-"Project-Id-Version: BP reshare 1.0-beta1\n"
+"Project-Id-Version: BP reshare 2.0.0\n"
 "Report-Msgid-Bugs-To: https://github.com/imath/bp-reshare/issues\n"
-"POT-Creation-Date: 2017-07-18 21:36:19+00:00\n"
-"PO-Revision-Date: 2017-07-18 23:37+0100\n"
+"POT-Creation-Date: 2017-07-24 16:43:28+00:00\n"
+"PO-Revision-Date: 2017-07-24 18:45+0100\n"
 "Last-Translator: imath <mathchristo@yahoo.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -16,7 +16,7 @@ msgstr ""
 
 #: includes/activity.php:34
 msgid "Activities I reshared."
-msgstr "Activités que j&#39;ai repartagées."
+msgstr "Activités que j'ai repartagées."
 
 #: includes/activity.php:35
 msgid "My Reshares"
@@ -242,7 +242,6 @@ msgid "imath"
 msgstr "imath"
 
 #. Author URI of the plugin/theme
-#, fuzzy
 msgid "https://imathi.eu"
 msgstr "https://imathi.eu"
 
