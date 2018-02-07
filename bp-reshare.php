@@ -11,7 +11,7 @@
  * Plugin Name:       BP Reshare
  * Plugin URI:        https://imathi.eu/tag/reshare/
  * Description:       Allows members to reshare activities in a BuddyPress powered community
- * Version:           2.0.0
+ * Version:           2.0.1
  * Author:            imath
  * Author URI:        https://imathi.eu
  * Text Domain:       bp-reshare
@@ -74,7 +74,7 @@ class BuddyReshare {
 	 */
 	private function setup_globals() {
 		/** BP Reshare globals ********************************************/
-		$this->version      = '2.0.0';
+		$this->version      = '2.0.1';
 		$this->db_version   = bp_get_option( 'bp-reshare-version', 0 );
 		$this->domain       = 'bp-reshare';
 		$this->file         = __FILE__;
