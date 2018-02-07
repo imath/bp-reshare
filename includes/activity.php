@@ -223,7 +223,7 @@ add_filter( 'bp_activity_set_reshares_scope_args', 'buddyreshare_activity_filter
  * @return array          Activity arguments for use with the 'just-me' scope.
  */
 function buddyreshare_activity_just_me_scope( $retval = array(), $filter = array() ) {
-	if ( empty( $retval[0] ) || 'user_id' !== $retval[0]['column'] ) {
+	if ( empty( $retval[0]['column'] ) || 'user_id' !== $retval[0]['column'] ) {
 		return $retval;
 	}
 
