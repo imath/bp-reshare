@@ -182,6 +182,7 @@ function buddyreshare_is_user_profile_reshares() {
  */
 function buddyreshare_get_disabled_activity_types() {
 	$disabled_types = explode( ',', trim( bp_get_option( 'buddyreshare-disabled-activity-types', '' ), ' ' ) );
+	$disabled_types = array_merge( $disabled_types, array( 'activity_comment' ) );
 
 	return (array) apply_filters( 'buddyreshare_get_disabled_activity_types', array_filter( $disabled_types ) );
 }

@@ -62,6 +62,9 @@ function buddyreshare_settings_display_activity_types() {
 			<ul style="margin: 1em 2em 1em;">
 
 			<?php foreach ( $activity_types as $activity_type ) {
+				if ( 'activity_comment' === $activity_type['key'] ) {
+					continue;
+				}
 				?>
 					<li>
 						<label for="bp-reshare-activity-type-<?php echo esc_attr( $activity_type['key'] ); ?>">

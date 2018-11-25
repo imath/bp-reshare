@@ -307,6 +307,16 @@ function buddyreshare_activity_sort_by_reshared_date( $sql = '', $args = array()
 		return $sql;
 	}
 
+	// Only reorder the user's just-me activity stream
+	if ( bp_is_user_activity() && bp_current_action() !== 'just-me' ) {
+		return $sql;
+	}
+
+	// Only reorder activity main/reshares stream
+	if ( bp_is_activity_directory() && ! in_array( $args['scope'], array( '', 'all', 'reshares' ), true ) ) {
+		return $sql;
+	}
+
 	return str_replace( array(
 			'WHERE',
 			'ORDER BY a.date_recorded DESC'
