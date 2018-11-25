@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the BP reshare package.
 msgid ""
 msgstr ""
-"Project-Id-Version: BP reshare 2.0.0\n"
+"Project-Id-Version: BP reshare 2.0.1\n"
 "Report-Msgid-Bugs-To: https://github.com/imath/bp-reshare/issues\n"
-"POT-Creation-Date: 2017-07-24 16:43:28+00:00\n"
-"PO-Revision-Date: 2017-07-24 21:44+0100\n"
+"POT-Creation-Date: 2018-11-25 14:19:28+00:00\n"
+"PO-Revision-Date: 2018-11-25 15:21+0100\n"
 "Last-Translator: imath <mathchristo@yahoo.fr>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -14,91 +14,91 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.7.1\n"
 
-#: includes/activity.php:34
+#: includes/activity.php:42
 msgid "Activities I reshared."
 msgstr "Activités que j'ai repartagées."
 
-#: includes/activity.php:35
+#: includes/activity.php:43
 msgid "My Reshares"
 msgstr "Mes Repartages"
 
-#: includes/activity.php:47
+#: includes/activity.php:55
 msgid "Reshare this activity"
 msgstr "Repartager cette activité"
 
-#: includes/activity.php:48
+#: includes/activity.php:56
 msgid "Remove the Reshare of this activity"
 msgstr "Supprimer le repartage de cette activité"
 
-#: includes/activity.php:51
+#: includes/activity.php:59
 msgid "Unknown error, please try again later."
 msgstr ""
 "Une erreur inconnue est survenue. Veuillez faire un nouvel essai un peu plus "
 "tard."
 
-#: includes/activity.php:71
+#: includes/activity.php:79
 msgid "Comment"
 msgstr "Commentaire"
 
-#: includes/activity.php:72
+#: includes/activity.php:80
 msgid "Comments"
 msgstr "Commentaires"
 
-#: includes/activity.php:75
+#: includes/activity.php:83
 msgid "This activity has no comments yet, add yours!"
 msgstr "Cette activité n'a pas été commentée jusqu'à présent, commentez la!"
 
-#: includes/activity.php:76
+#: includes/activity.php:84
 msgid "Activity comments are closed."
 msgstr "Les commentaires d'activité sont fermés."
 
-#: includes/activity.php:79
+#: includes/activity.php:87
 msgid "User who Reshared"
 msgstr "Utilisateur ayant repartagé"
 
-#: includes/activity.php:80
+#: includes/activity.php:88
 msgid "Users who Reshared"
 msgstr "Utilisateurs ayant repartagé"
 
-#: includes/activity.php:83
+#: includes/activity.php:91
 msgid "This activity has no reshares yet, reshare it!"
 msgstr "Cette activité n'a toujours pas été repartagée, repartagez la !"
 
-#: includes/activity.php:89
+#: includes/activity.php:97
 msgid "User who Favorited"
 msgstr "Utilisateur ayant mis l'activité en favoris"
 
-#: includes/activity.php:90
+#: includes/activity.php:98
 msgid "Users who Favorited"
 msgstr "Utilisateurs ayant mis l'activité en favoris"
 
-#: includes/activity.php:93
+#: includes/activity.php:101
 msgid "This activity is not favorited yet, add it to your favorites!"
 msgstr ""
 "Cette activité n'a pas été mise en favoris jusqu'à présent, lancez vous !"
 
 #. Translators: Do not omit the placeholder it is used to be replaced by the
 #. user avatar
-#: includes/activity.php:154
+#: includes/activity.php:162
 msgid "%s reshared this activity"
 msgstr "%s a repartagé cette activité"
 
-#: includes/activity.php:361
+#: includes/activity.php:379
 msgid "There was an error resharing the activity. Please try again."
 msgstr "Une erreur s'est produite pendant le repartage. Veuillez recommencer."
 
-#: includes/activity.php:393
+#: includes/activity.php:411
 msgid "Activity reshared."
 msgstr "Activité repartagée."
 
-#: includes/activity.php:480
+#: includes/activity.php:498
 msgid ""
 "There was an error removing the reshare for the activity. Please try again."
 msgstr ""
 "Une erreur s'est produite pendant la suppression du repartage de cette "
 "activité. Veuillez recommencer."
 
-#: includes/activity.php:507
+#: includes/activity.php:525
 msgid "Activity reshare removed."
 msgstr "Repartage supprimé."
 
@@ -188,23 +188,23 @@ msgstr "Liste d'identifiants à inclure, séparés par des virgules."
 msgid "Yes"
 msgstr "Oui"
 
-#: includes/settings.php:102
+#: includes/settings.php:105
 msgid "Ordered by reshared date"
 msgstr "Classé selon la date de repartage"
 
-#: includes/settings.php:103
+#: includes/settings.php:106
 msgid "Ordered by recorded date (BuddyPress default)"
 msgstr "Classé selon la date de création (par défaut)"
 
-#: includes/settings.php:137
+#: includes/settings.php:140
 msgid "Enable Email notifications about activity reshares."
 msgstr "Activez les notifications par email pour les activités repartagées."
 
-#: includes/settings.php:148
+#: includes/settings.php:151
 msgid "Activity types to disable for reshares."
 msgstr "Types d'activité dont le repartage n'est pas autorisé."
 
-#: includes/settings.php:159
+#: includes/settings.php:162
 msgid "Activity ordering preferences."
 msgstr "Définissez l'ordre de votre préférence."
 
@@ -222,6 +222,11 @@ msgstr ""
 #: includes/users.php:98 includes/users.php:118
 msgid "Reshared Activities"
 msgstr "Activités repartagées"
+
+#. Plugin Name of the plugin/theme
+#, fuzzy
+msgid "BP Reshare"
+msgstr "BP Reshare"
 
 #. Plugin URI of the plugin/theme
 msgid "https://imathi.eu/tag/reshare/"
@@ -281,92 +286,92 @@ msgstr ""
 "\n"
 "Affichez la : {{{thread.url}}}"
 
-#: includes/functions.php:209
+#: includes/functions.php:210
 msgctxt "javascript time since"
 msgid "(Reshared sometime)"
 msgstr "(Repartagé il y a un moment)"
 
-#: includes/functions.php:210
+#: includes/functions.php:211
 msgctxt "javascript time since"
 msgid "(Reshared right now)"
 msgstr "(Repartagé à l'instant)"
 
-#: includes/functions.php:211
+#: includes/functions.php:212
 msgctxt "javascript time since"
 msgid "(Reshared % ago)"
 msgstr "(Repartagé il y a %)"
 
-#: includes/functions.php:212
+#: includes/functions.php:213
 msgctxt "Separator in javascript time since"
 msgid ","
 msgstr ","
 
-#: includes/functions.php:213
+#: includes/functions.php:214
 msgctxt "javascript time since singular"
 msgid "% year"
 msgstr "% année"
 
-#: includes/functions.php:215
+#: includes/functions.php:216
 msgctxt "javascript time since singular"
 msgid "% month"
 msgstr "% mois"
 
-#: includes/functions.php:217
+#: includes/functions.php:218
 msgctxt "javascript time since singular"
 msgid "% week"
 msgstr "% semaine"
 
-#: includes/functions.php:219
+#: includes/functions.php:220
 msgctxt "javascript time since singular"
 msgid "% day"
 msgstr "% jour"
 
-#: includes/functions.php:221
+#: includes/functions.php:222
 msgctxt "javascript time since singular"
 msgid "% hour"
 msgstr "% heure"
 
-#: includes/functions.php:223
+#: includes/functions.php:224
 msgctxt "javascript time since singular"
 msgid "% minute"
 msgstr "% minute"
 
-#: includes/functions.php:225
+#: includes/functions.php:226
 msgctxt "javascript time since singular"
 msgid "% second"
 msgstr "% seconde"
 
-#: includes/functions.php:214
+#: includes/functions.php:215
 msgctxt "javascript time since plural"
 msgid "% years"
 msgstr "% années"
 
-#: includes/functions.php:216
+#: includes/functions.php:217
 msgctxt "javascript time since plural"
 msgid "% months"
 msgstr "% mois"
 
-#: includes/functions.php:218
+#: includes/functions.php:219
 msgctxt "javascript time since plural"
 msgid "% weeks"
 msgstr "% semaines"
 
-#: includes/functions.php:220
+#: includes/functions.php:221
 msgctxt "javascript time since plural"
 msgid "% days"
 msgstr "% jours"
 
-#: includes/functions.php:222
+#: includes/functions.php:223
 msgctxt "javascript time since plural"
 msgid "% hours"
 msgstr "% heures"
 
-#: includes/functions.php:224
+#: includes/functions.php:225
 msgctxt "javascript time since plural"
 msgid "% minutes"
 msgstr "% minutes"
 
-#: includes/functions.php:226
+#: includes/functions.php:227
 msgctxt "javascript time since plural"
 msgid "% seconds"
 msgstr "% secondes"

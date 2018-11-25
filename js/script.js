@@ -1,3 +1,4 @@
+/* global bp */
 // Make sure the bpReshare object exists.
 window.bpReshare = window.bpReshare || {};
 
