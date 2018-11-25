@@ -2,6 +2,7 @@
  * BP Reshare button style
  */
 
+.activity-list .activity-item .activity-meta.action .button span.bp-reshare-icon,
 .bp-reshare-icon {
 	display: inline-block;
 	width: 17px;
@@ -18,30 +19,55 @@
 	background-image: url("data:image/svg+xml;charset=utf8,%3Csvg%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%3E%3Cpath%20d%3D%22M18%208l-5%204v-2.99c-2.58%200.060-4.88%200.45-7%202.99%200.29-3.57%202.66-5.66%207-5.94v-3.060zM4%2014h11v-2l2-1.6v5.6h-15v-11h9.43c-1.83%200.32-3.31%201-4.41%202h-3.020v7z%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E");
 }
 
+.activity-list .activity-item .activity-meta.action a.button.bp-reshare.disabled {
+	cursor: default;
+}
+
+body.bp-nouveau .activity-list .activity-item .activity-meta.action a.button.bp-reshare {
+	line-height: 20px;
+}
+
+body.bp-nouveau .activity-list .activity-item .activity-meta.action a.button.bp-reshare .count {
+	vertical-align: top;
+	display: inline-block;
+}
+
+.activity-list .activity-item .activity-meta.action a.button.bp-reshare.add-reshare:hover span.bp-reshare-icon,
+.activity-list .activity-item .activity-meta.action a.button.bp-reshare.remove-reshare span.bp-reshare-icon,
 a.bp-reshare.add-reshare:hover .bp-reshare-icon,
 a.bp-reshare.remove-reshare .bp-reshare-icon {
 	background-image: url("data:image/svg+xml;charset=utf8,%3Csvg%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%2346b450%22%3E%3Cpath%20d%3D%22M18%208l-5%204v-2.99c-2.58%200.060-4.88%200.45-7%202.99%200.29-3.57%202.66-5.66%207-5.94v-3.060zM4%2014h11v-2l2-1.6v5.6h-15v-11h9.43c-1.83%200.32-3.31%201-4.41%202h-3.020v7z%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E");
 }
 
+.activity-list .activity-item .activity-meta.action a.button.bp-reshare.remove-reshare:hover span.bp-reshare-icon,
 a.bp-reshare.remove-reshare:hover .bp-reshare-icon {
 	background-image: url("data:image/svg+xml;charset=utf8,%3Csvg%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%23a00%22%3E%3Cpath%20d%3D%22M18%208l-5%204v-2.99c-2.58%200.060-4.88%200.45-7%202.99%200.29-3.57%202.66-5.66%207-5.94v-3.060zM4%2014h11v-2l2-1.6v5.6h-15v-11h9.43c-1.83%200.32-3.31%201-4.41%202h-3.020v7z%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E");
 }
 
+.activity-list .activity-item .activity-meta.action a.button.bp-reshare.add-reshare:hover .count,
+.activity-list .activity-item .activity-meta.action a.button.bp-reshare.remove-reshare .count,
 a.bp-reshare.add-reshare:hover .count,
 a.bp-reshare.remove-reshare .count {
 	color: #46b450;
 }
 
+.activity-list .activity-item .activity-meta.action a.button.bp-reshare.remove-reshare:hover .count,
 a.bp-reshare.remove-reshare:hover .count {
 	color: #a00;
 }
 
+.activity-list .activity-item .activity-meta.action a.button.bp-reshare.disabled:hover .count,
+.activity-list .activity-item .activity-meta.action a.button.bp-reshare.disabled.add-reshare:hover .count,
+.activity-list .activity-item .activity-meta.action a.button.bp-reshare.disabled.remove-reshare:hover .count,
 a.bp-reshare.disabled:hover .count,
 a.bp-reshare.disabled.add-reshare:hover .count,
 a.bp-reshare.disabled.remove-reshare:hover .count {
 	color: inherit;
 }
 
+.activity-list .activity-item .activity-meta.action a.button.bp-reshare.disabled span.bp-reshare-icon,
+.activity-list .activity-item .activity-meta.action a.button.bp-reshare.disabled.add-reshare span.bp-reshare-icon,
+.activity-list .activity-item .activity-meta.action a.button.bp-reshare.disabled.remove-reshare span.bp-reshare-icon,
 a.bp-reshare.disabled .bp-reshare-icon,
 a.bp-reshare.disabled.add-reshare .bp-reshare-icon,
 a.bp-reshare.disabled.remove-reshare .bp-reshare-icon {
@@ -144,6 +170,9 @@ body.activity-permalink #buddypress .buddyreshare-nav-content .load-more-users:n
 body.just-me #buddypress ul.item-list li .activity-reshared-by img.avatar {
 	float: none;
 	vertical-align: middle;
+	width: inherit;
+	height: inherit;
+	display: inline-block;
 }
 
 body.just-me #activity-stream li .activity-reshared-by {
@@ -156,4 +185,5 @@ body.just-me #activity-stream li .activity-reshared-by {
 	padding: 0 1em 0 0.5em;
 	box-shadow: 0 1px 1px 0 rgba( 0, 0, 0, 0.1 );
 	font-style: italic;
+	font-size: 80%;
 }

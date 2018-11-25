@@ -238,6 +238,10 @@ window.bpReshare = window.bpReshare || {};
 				     .replace( /date-recorded-([0-9]+)/, 'date-recorded-' + activity.time )
 			);
 
+			if ( entry.data( 'bp-timestamp' ) ) {
+				entry.data( 'bp-timestamp', activity.time );
+			}
+
 			if ( ! entry.find( timeSince ).length ) {
 				timeSince = '.activity-header span.time-since';
 			}
@@ -406,6 +410,10 @@ window.bpReshare = window.bpReshare || {};
 	 *                   False otherwise.
 	 */
 	bpReshare.isResharesScope = function() {
+		if ( 'undefined' !== typeof bp.Nouveau ) {
+			return 'reshares' === bp.Nouveau.getStorage( 'bp-activity', 'scope' );
+		}
+
 		return 'reshares' === decodeURIComponent( document.cookie ).split( ';' ).map( function( i ) {
 			var j = i.split( '=' );
 
@@ -446,7 +454,12 @@ window.bpReshare = window.bpReshare || {};
 		if ( $( 'body.directory #activity-reshares' ).length ) {
 			$( 'body.directory #activity-reshares' ).find( 'span' ).first().html( bpReshare.params.u_count );
 		} else {
-			$( 'body.directory .activity-type-tabs ul li' ).first().after(
+			var nav = '.activity-type-tabs';
+			if ( 0 !== $( 'body.directory .activity-type-navs' ).length ) {
+				nav = '.activity-type-navs';
+			}
+
+			$( 'body.directory ' + nav + ' ul li' ).first().after(
 				$( bpReshare.templates.directoryTab.replace( '%c', bpReshare.params.u_count ) ).addClass( true === tabClass ? 'selected' : '' )
 			);
 		}
@@ -501,11 +514,12 @@ window.bpReshare = window.bpReshare || {};
 		    isReshare   = settings.url && -1 !== settings.url.indexOf( bpReshare.params.root_url ),
 		    activities;
 
-		if ( ! isReshare && -1 !== $.inArray( action, ['activity_get_older_updates', 'activity_widget_filter', 'post_update' ] ) ) {
+		if ( ! isReshare && -1 !== $.inArray( action, ['activity_filter', 'activity_get_older_updates', 'activity_widget_filter', 'post_update' ] ) ) {
 			if ( 'post_update' === action ) {
-				activities = $( '<ul></ul>' ).html( xhr.responseText );
+				var activity = xhr.responseJSON ? xhr.responseJSON.data.activity : xhr.responseText;
+				activities = $( '<ul></ul>' ).html( activity );
 			} else {
-				activities = $( xhr.responseJSON.contents )[0];
+				activities = xhr.responseJSON.data ? $( xhr.responseJSON.data.contents )[0] : $( xhr.responseJSON.contents )[0];
 
 				if ( 'LI' === activities.nodeName ) {
 					activities = $( '<ul></ul>' ).html( $.map( $( xhr.responseJSON.contents ), function( l ) {
@@ -514,7 +528,7 @@ window.bpReshare = window.bpReshare || {};
 				}
 
 				// Reset the activities to get fresher reshares
-				if ( 'activity_widget_filter' === action ) {
+				if ( 'activity_widget_filter' === action || 'activity_filter' === action ) {
 					bpReshare.activities = [];
 				}
 			}

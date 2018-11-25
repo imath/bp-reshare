@@ -21,19 +21,27 @@ defined( 'ABSPATH' ) || exit;
 function buddyreshare_activity_get_templates( $template = 'all' ) {
 	$reshare_url = trailingslashit( bp_get_root_domain() ) .  bp_get_activity_root_slug() . '/' . buddyreshare_get_component_slug();
 
+	$tab_template = '<li id="activity-reshares">
+		<a href="%1$s" aria-label="%2$s">%3$s %4$s</a>
+	</li>';
+
+	if ( 'nouveau' === bp_get_theme_package_id() ) {
+		$tab_template = '<li id="activity-reshares" class="dynamic" data-bp-scope="reshares" data-bp-object="activity">
+			<a href="%1$s" aria-label="%2$s">%3$s %4$s</a>
+		</li>';
+	}
+
 	$templates = array(
 		'reshareButton' => '<a href="%l" class="bp-reshare button bp-secondary-action %r" data-activity-id="%a" data-author-name="%u">
 			<span class="bp-reshare-icon"></span>
 			<span class="bp-screen-reader-text">%t</span>
 			<span class="count">%c</span>
 		</a>',
-		'directoryTab' => sprintf( '<li id="activity-reshares">
-				<a href="%1$s" aria-label="%2$s">%3$s %4$s</a>
-			</li>',
+		'directoryTab' => sprintf( $tab_template,
 			esc_url_raw( bp_loggedin_user_domain() . bp_get_activity_slug() . '/'. buddyreshare_get_component_slug() .'/' ),
 			esc_attr__( 'Activities I reshared.', 'bp-reshare' ),
 			esc_html__( 'My Reshares', 'bp-reshare' ),
-			'<span>%c</span>'
+			'<span class="count">%c</span>'
 		),
 	);
 
