@@ -20,10 +20,12 @@
     "grunt-jsvalidate": "~0.2.2",
     "grunt-legacy-util": "^1.1.1",
     "grunt-wp-i18n": "^1.0.2",
-    "matchdep": "^2.0.0"
+    "matchdep": "^2.0.0",
+    "bl": ">=2.2.1"
   },
   "engines": {
-    "node": "~6.6.0"
+    "node": "12.16.0",
+    "npm": "6.14.0"
   },
   "keywords": [
     "activities",
