@@ -18,7 +18,7 @@
     "grunt-exec": "~1.0.1",
     "grunt-git-archive": "~0.0.3",
     "grunt-jsvalidate": "~0.2.2",
-    "grunt-legacy-util": "^1.1.1",
+    "grunt-legacy-util": "^2.0.1",
     "grunt-wp-i18n": "^1.0.2",
     "matchdep": "^2.0.0",
     "bl": ">=2.2.1"
